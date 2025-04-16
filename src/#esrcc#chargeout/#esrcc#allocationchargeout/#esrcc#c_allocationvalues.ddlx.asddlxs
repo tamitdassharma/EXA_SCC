@@ -1,0 +1,57 @@
+@Metadata.layer: #CORE
+
+@UI: {
+  headerInfo: {
+    typeName: 'Allocation Value',
+    typeNamePlural: 'Allocation Values'
+  }
+}
+
+annotate view /ESRCC/C_ALLOCATIONVALUES with
+{
+  @UI.facet: [
+    {
+     id: 'general',
+     type: #IDENTIFICATION_REFERENCE,
+     label: '',
+     purpose: #STANDARD,
+     position: 10
+    }]
+
+  @UI.lineItem: [
+   {  position: 10,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  ryear;
+  @UI.lineItem: [
+  {  position: 20,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @EndUserText.label: 'Period'
+  refpoper;
+  @UI.lineItem: [
+  {  position: 30,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  allockey;
+  @UI.lineItem: [
+  {  position: 40,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @EndUserText.label: 'Base Key Value'
+  reckpivalue;
+
+  //hidden fields
+  @UI.hidden: true
+  allocationperiod;
+  @UI.hidden: true
+  refperiod;
+  @UI.hidden: true
+  AllocationKeyDescription;
+
+}

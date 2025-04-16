@@ -1,0 +1,6 @@
+@EndUserText.label: 'Acces Control for Chargeout'
+@MappingRole: true
+define role /ESRCC/C_COSTBASESTEWARDSHIP {
+    grant select on /ESRCC/C_COSTBASESTEWARDSHIP
+     where inheriting conditions from entity /ESRCC/I_COSTBASESTEWARDSHIP;                       
+}

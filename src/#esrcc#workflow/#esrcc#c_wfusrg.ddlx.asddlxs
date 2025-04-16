@@ -1,0 +1,53 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Workflow User Group',
+    typeNamePlural: 'Workflow User Groups',
+    title: {
+      type: #STANDARD,
+      value: 'Usergroup'
+    }
+  }
+}
+annotate view /ESRCC/C_WfUsrG with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_WfUsrM',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 2,
+    targetElement: '_UserMapping'
+  } ]
+
+  @UI.lineItem: [ { position: 10 } ]
+  Usergroup;
+
+  @UI.lineItem: [ { position: 20 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 30, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 40 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 50, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'SCC Workflow Users'
+define service /ESRCC/UI_WORKFLOWUSERS {
+  expose /ESRCC/C_WORKFLOW_USERS as workflowusers;
+}

@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_SRTYPE_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_SrType_S alias ServiceTypeAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _ServiceType { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_SrType alias ServiceType
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _ServiceTypeAll { with draft; }
+  use association _ServiceTypeText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_SrTypeText alias ServiceTypeText
+
+{
+  use update;
+  use delete;
+
+  use association _ServiceTypeAll { with draft; }
+  use association _ServiceType { with draft; }
+}

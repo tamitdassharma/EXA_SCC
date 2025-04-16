@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_ReasonText {
+  grant select on /ESRCC/C_ReasonText
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_ReasonText;
+}

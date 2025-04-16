@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_BillingFrequency {
+  grant select on /ESRCC/C_BillingFrequency
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_BillingFrequency;
+}

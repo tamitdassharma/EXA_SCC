@@ -1,0 +1,37 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain VAT/Sales Tax Rate",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_LETAXINFO_O4",
+    "serviceName": "/ESRCC/UI_LETAXINFO_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "TaxInformationAll",
+    "name": "VAT/Sales Tax Rate",
+    "configurationGroup": "/ESRCC/BC_GROUP7",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "TaxInformation"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "TaxInformation",
+        "tableType": "gridTable",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "TaxInformationAll"
+      }
+    ]
+  }
+}

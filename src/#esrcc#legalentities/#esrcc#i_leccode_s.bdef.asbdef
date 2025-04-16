@@ -1,0 +1,112 @@
+managed with additional save implementation in class /ESRCC/BP_I_LECCODE unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LeCcode_S alias LeToCompanyCodeAll
+draft table /esrcc/d_lecco_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit with additional implementation;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation LeToCompanyCode~ValidateData;
+  }
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _LeToCompanyCode { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_LeCcode alias LeToCompanyCode
+persistent table /esrcc/le_ccode
+draft table /esrcc/d_le_ccod query /esrcc/i_leccode_d
+etag master LocalLastChangedAt
+lock dependent by _LeToCompanyCodeAll
+authorization dependent by _LeToCompanyCodeAll
+
+{
+  field ( mandatory : create )
+  Sysid,
+  Ccode;
+
+  field ( mandatory )
+  Legalentity;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Sysid,
+  Ccode;
+
+
+  update ( features : instance, precheck );
+  delete ( features : instance );
+
+  mapping for /ESRCC/LE_CCODE
+  {
+    Sysid = SYSID;
+    Ccode = CCODE;
+    Legalentity = LEGALENTITY;
+    Controllingarea = CONTROLLINGAREA;
+    Active = ACTIVE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _LeToCompanyCodeAll { with draft; }
+  association _CompanyCodeText { create ( features : instance ); with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_CcodeText alias CompanyCodeText
+persistent table /esrcc/ccodet
+draft table /esrcc/d_ccodet
+etag master LocalLastChangedAt
+lock dependent by _LeToCompanyCodeAll
+authorization dependent by _LeToCompanyCodeAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Sysid,
+  Ccode;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : instance );
+  delete ( features : instance );
+
+  mapping for /ESRCC/CCODET
+  {
+    Spras = SPRAS;
+    Sysid = SYSID;
+    Ccode = CCODE;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _LeToCompanyCodeAll { with draft; }
+  association _LeToCompanyCode { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

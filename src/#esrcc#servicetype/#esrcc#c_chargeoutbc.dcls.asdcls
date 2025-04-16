@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_ChargeoutBc {
+  grant select on /ESRCC/C_ChargeoutBc
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_ChargeoutBc;
+}

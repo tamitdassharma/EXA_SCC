@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Allocation'
+@MappingRole: true
+define role /ESRCC/I_ALLOCATIONSHARE {
+    grant select on /ESRCC/I_ALLOCATIONSHARE
+      where (Legalentity) = aspect pfcg_auth('/ESRCC/LE', /ESRCC/LE, ACTVT = '03') AND
+      (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');                        
+}

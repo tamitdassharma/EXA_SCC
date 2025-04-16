@@ -1,0 +1,4 @@
+@EndUserText.label: 'Adhoc Chargeout Service'
+define service /ESRCC/UI_ADHOCSERVICE {
+  expose /ESRCC/I_ADHOCSERVICE as AdhocService;
+}

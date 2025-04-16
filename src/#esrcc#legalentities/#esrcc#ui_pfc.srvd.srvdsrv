@@ -1,0 +1,5 @@
+define service /ESRCC/UI_PFC {
+  expose /ESRCC/C_PFC_S as ProfitCenterAll;
+  expose /ESRCC/C_PFC as ProfitCenter;
+  expose /ESRCC/C_PFCTEXT as PfcText;
+}

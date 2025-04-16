@@ -1,0 +1,6 @@
+@MappingRole: true
+define role /ESRCC/I_LeCcode {
+  grant select on /ESRCC/I_LeCcode
+  where ( ) = ASPECT pfcg_auth ( 'S_TABU_NAM', ACTVT = '03', TABLE = '/ESRCC/I_LECCODE' ) AND
+        (Legalentity) = aspect pfcg_auth('/ESRCC/LE', /ESRCC/LE, ACTVT = '03');
+}

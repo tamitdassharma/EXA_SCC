@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/ESRCC/CL_WF_UTILITY</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Workflow Static</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>X</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CLSNAME>/ESRCC/CL_WF_UTILITY</CLSNAME>
+     <CMPNAME>WF_STATUS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Status</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>/ESRCC/CL_WF_UTILITY</CLSNAME>
+     <CMPNAME>WF_STATUS_ACTION_FINALIZE</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Allowed status for &apos;Finalize&apos; Action</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>/ESRCC/CL_WF_UTILITY</CLSNAME>
+     <CMPNAME>WF_STATUS_ACTION_SUBMIT</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Allowed status for &apos;Submit&apos; Action</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CLSNAME>/ESRCC/CL_WF_UTILITY</CLSNAME>
+     <CMPNAME>WF_STATUS_CRITICALITY</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Criticality of Workflow Status (for Fiori)</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>IS_WF_ON</CMPNAME>
+     <SCONAME>EV_WF_ACTIVE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Is work flow Active</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>IS_WF_ON</CMPNAME>
+     <SCONAME>IV_APPTYPE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Application Type</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>WF_STATUS_CRITICALITY</CMPNAME>
+     <SCONAME>STATUS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Status</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

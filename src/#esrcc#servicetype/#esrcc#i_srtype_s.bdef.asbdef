@@ -1,0 +1,97 @@
+managed with additional save implementation in class /ESRCC/BP_I_SRTYPE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_SrType_S alias ServiceTypeAll
+draft table /ESRCC/D_SRTYP_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _ServiceType { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_SrType alias ServiceType
+persistent table /ESRCC/SRTYPE
+draft table /ESRCC/D_SRTYPE
+etag master LocalLastChangedAt
+lock dependent by _ServiceTypeAll
+authorization dependent by _ServiceTypeAll
+
+{
+  field ( mandatory : create )
+   Srvtype;
+
+  field ( readonly )
+   SingletonID,CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   Srvtype;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/SRTYPE
+  {
+    Srvtype = SRVTYPE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ServiceTypeAll { with draft; }
+  association _ServiceTypeText { create ( features : global ); with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_SrTypeText alias ServiceTypeText
+persistent table /ESRCC/SRVTYPET
+draft table /ESRCC/D_SRVTYPE
+etag master LocalLastChangedAt
+lock dependent by _ServiceTypeAll
+authorization dependent by _ServiceTypeAll
+
+{
+  field ( mandatory : create )
+   Spras;
+
+  field ( readonly )
+   SingletonID,
+   Srvtype;
+
+  field ( readonly : update )
+   Spras;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/SRVTYPET
+  {
+    Spras = SPRAS;
+    Srvtype = SRVTYPE;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ServiceTypeAll { with draft; }
+  association _ServiceType { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

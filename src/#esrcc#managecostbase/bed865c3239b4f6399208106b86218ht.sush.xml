@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SUSH" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <HEAD>
+    <NAME>BED865C3239B4F6399208106B86218</NAME>
+    <TYPE>HT</TYPE>
+    <DISPLAY_NAME>R3TR APIS /ESRCC/C_MANAGECOSTBASE             DDLS</DISPLAY_NAME>
+    <DEVCLASS>/ESRCC/MANAGECOSTBASE</DEVCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
+   </HEAD>
+   <USOBX>
+    <USOBX>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <OKFLAG>Y</OKFLAG>
+    </USOBX>
+    <USOBX>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <OKFLAG>Y</OKFLAG>
+    </USOBX>
+   </USOBX>
+   <USOBT>
+    <USOBT>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <FIELD>/ESRCC/CN</FIELD>
+    </USOBT>
+    <USOBT>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <FIELD>/ESRCC/OBJ</FIELD>
+    </USOBT>
+    <USOBT>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <FIELD>ACTVT</FIELD>
+     <LOW>03</LOW>
+    </USOBT>
+    <USOBT>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <FIELD>/ESRCC/LE</FIELD>
+    </USOBT>
+    <USOBT>
+     <NAME>BED865C3239B4F6399208106B86218</NAME>
+     <TYPE>HT</TYPE>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <FIELD>ACTVT</FIELD>
+     <LOW>03</LOW>
+    </USOBT>
+   </USOBT>
+   <USOBX_EXT>
+    <item>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <TTEXT>Authorization of Cost Objects</TTEXT>
+     <OCLSS>CPAE</OCLSS>
+     <OKFLAG>Y</OKFLAG>
+     <DEVCLASS>/ESRCC/SRVFND</DEVCLASS>
+     <CI_TEXT>Check/Maintain</CI_TEXT>
+     <CH_TEXT>Check</CH_TEXT>
+     <PR_TEXT>Yes</PR_TEXT>
+     <EXCEP>3</EXCEP>
+     <EXCEP_TX>Okay</EXCEP_TX>
+     <EXCEP_ICON>@08@</EXCEP_ICON>
+    </item>
+    <item>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <TTEXT>Authorization of Legal Entity</TTEXT>
+     <OCLSS>CPAE</OCLSS>
+     <OKFLAG>Y</OKFLAG>
+     <DEVCLASS>/ESRCC/SRVFND</DEVCLASS>
+     <CI_TEXT>Check/Maintain</CI_TEXT>
+     <CH_TEXT>Check</CH_TEXT>
+     <PR_TEXT>Yes</PR_TEXT>
+     <EXCEP>3</EXCEP>
+     <EXCEP_TX>Okay</EXCEP_TX>
+     <EXCEP_ICON>@08@</EXCEP_ICON>
+    </item>
+   </USOBX_EXT>
+   <USOBT_EXT>
+    <item>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <TTEXT>Authorization of Cost Objects</TTEXT>
+     <FIELD>/ESRCC/CN</FIELD>
+    </item>
+    <item>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <TTEXT>Authorization of Cost Objects</TTEXT>
+     <FIELD>/ESRCC/OBJ</FIELD>
+    </item>
+    <item>
+     <OBJECT>/ESRCC/CO</OBJECT>
+     <TTEXT>Authorization of Cost Objects</TTEXT>
+     <FIELD>ACTVT</FIELD>
+     <LOW>03</LOW>
+    </item>
+    <item>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <TTEXT>Authorization of Legal Entity</TTEXT>
+     <FIELD>/ESRCC/LE</FIELD>
+    </item>
+    <item>
+     <OBJECT>/ESRCC/LE</OBJECT>
+     <TTEXT>Authorization of Legal Entity</TTEXT>
+     <FIELD>ACTVT</FIELD>
+     <LOW>03</LOW>
+    </item>
+   </USOBT_EXT>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -1,0 +1,133 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Maintain & Assign Company Code',
+    typeNamePlural: 'Maintain & Assign Company Codes',
+    title: {
+      type: #STANDARD,
+      value: 'Ccode'
+    }
+  }
+}
+annotate view /ESRCC/C_LeCcode with
+{
+  @UI.facet: [ {
+   id: 'CE',
+   type: #COLLECTION,
+   position: 1
+  },
+  {
+    id: '/ESRCC/I_LeCcode',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 10
+  },
+  {
+   id: 'LegalEntity',
+   purpose: #STANDARD,
+   type: #FIELDGROUP_REFERENCE,
+   parentId: 'CE',
+   targetQualifier: 'LeGroup',
+   label: 'Legal Entity Information',
+   position: 20
+  },
+  {
+   id: 'Admin',
+   purpose: #STANDARD,
+   type: #FIELDGROUP_REFERENCE,
+   parentId: 'CE',
+   targetQualifier: 'AdminGroup',
+   label: 'Admin Information',
+   position: 30
+  },
+  {
+    id: '/ESRCC/I_CcodeText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 40,
+    targetElement: '_CompanyCodeText'
+  } ]
+
+  @UI.identification: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }, useForValidation: true }]
+  Sysid;
+
+  @UI.lineItem: [ { position: 2, cssDefault.width: '7.5rem' } ]
+  Ccode;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' }, useForValidation: true }]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'LeGroup' }]
+  Legalentity;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '7.5rem' } ]
+  Controllingarea;
+
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '4rem' } ]
+  Active;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '14rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @UI.fieldGroup: [{ position: 20, qualifier: 'LeGroup' }]
+  Entitytype;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '13rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @UI.fieldGroup: [{ position: 30, qualifier: 'LeGroup' }]
+  Role;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'LeGroup' }]
+  LocalCurr;
+
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.fieldGroup: [{ position: 50, qualifier: 'LeGroup' }]
+  Country;
+
+  @UI.lineItem: [ { position: 11, cssDefault.width: '10rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @UI.fieldGroup: [{ position: 60, qualifier: 'LeGroup' }]
+  Region;
+
+  @UI.lineItem: [ { position: 12 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 13, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 14 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 15, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 3 } ]
+  Description;
+
+  @UI.hidden: true
+  @EndUserText.label: 'System Description'
+  SysidDescription;
+  @UI.hidden: true
+  LegalentityDescription;
+  @UI.hidden: true
+  EntitytypeDesc;
+  @UI.hidden: true
+  RoleDesc;
+  @UI.hidden: true
+  RegionDesc;
+  @UI.hidden: true
+  LocalCurrDescription;
+  @UI.hidden: true
+  CountryDescription;
+}

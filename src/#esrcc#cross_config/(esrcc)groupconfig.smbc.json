@@ -1,0 +1,34 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Group Configuration",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_GROUPCONFIG_O4",
+    "serviceName": "/ESRCC/UI_GROUPCONFIG_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "GroupConfigAll",
+    "name": "Group Configuration",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "GroupConfig"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "GroupConfig",
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "GroupConfigAll"
+      }
+    ]
+  }
+}

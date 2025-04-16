@@ -1,0 +1,97 @@
+managed with additional save implementation in class /ESRCC/BP_I_BUSDIV_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_BusDiv_S alias BusinessDivisionAll
+draft table /ESRCC/D_BUS_D_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _BusinessDivision { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_BusDiv alias BusinessDivision
+persistent table /ESRCC/BUS_DIV
+draft table /ESRCC/D_BUS_DIV
+etag master LocalLastChangedAt
+lock dependent by _BusinessDivisionAll
+authorization dependent by _BusinessDivisionAll
+
+{
+  field ( mandatory : create )
+   BusinessDivision;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   BusinessDivision;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/BUS_DIV
+  {
+    BusinessDivision = BUSINESS_DIVISION;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _BusinessDivisionAll { with draft; }
+  association _BusinessDivisioText { create ( features : global ); with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_BusDivText alias BusinessDivisioText
+persistent table /ESRCC/BUS_DIVT
+draft table /ESRCC/D_BUSDIVT
+etag master LocalLastChangedAt
+lock dependent by _BusinessDivisionAll
+authorization dependent by _BusinessDivisionAll
+
+{
+  field ( mandatory : create )
+   Spras;
+
+  field ( readonly )
+   SingletonID,
+   BusinessDivision;
+
+  field ( readonly : update )
+   Spras;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/BUS_DIVT
+  {
+    Spras = SPRAS;
+    BusinessDivision = BUSINESS_DIVISION;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _BusinessDivisionAll { with draft; }
+  association _BusinessDivision { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

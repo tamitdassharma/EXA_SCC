@@ -1,0 +1,5 @@
+define service /ESRCC/UI_FUNCTIONALAREAS {
+  expose /ESRCC/C_FUNCTIONALAREAS_S as FunctionalAreasAll;
+  expose /ESRCC/C_FUNCTIONALAREAS as FunctionalAreas;
+  expose /ESRCC/C_FUNCTIONALAREASTEXT as FunctionalAreasText;
+}

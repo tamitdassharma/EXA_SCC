@@ -1,0 +1,28 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Stewardship'
+  }
+}
+annotate view /ESRCC/C_Stewrdshp_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_Stewrdshp', 
+    purpose: #STANDARD, 
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    label: 'Maintain Stewardship, Service Products & Receivers', 
+    position: 2,
+    targetQualifier: 'pVariant',
+    targetElement: '_Stewardship'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+  @UI.identification: [ { position: 2, importance: #HIGH } ]
+  TransportRequestID;
+}

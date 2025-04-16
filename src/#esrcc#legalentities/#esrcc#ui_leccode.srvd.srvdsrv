@@ -1,0 +1,5 @@
+define service /ESRCC/UI_LECCODE {
+  expose /ESRCC/C_LECCODE_S as LeToCompanyCodeAll;
+  expose /ESRCC/C_LECCODE as LeToCompanyCode;
+  expose /ESRCC/C_CCODETEXT as CompanyCodeText;
+}

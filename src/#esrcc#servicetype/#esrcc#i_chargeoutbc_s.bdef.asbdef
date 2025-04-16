@@ -1,0 +1,72 @@
+managed with additional save implementation in class /ESRCC/BP_I_CHARGEOUTBC unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_ChargeoutBc_S alias ChargeoutAll
+draft table /esrcc/d_charg_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation Chargeout~ValidateData;
+  }
+
+  association _Chargeout { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_ChargeoutBc alias Chargeout
+persistent table /esrcc/chargeout
+draft table /esrcc/d_chargeo
+etag master LocalLastChangedAt
+lock dependent by _ChargeoutAll
+authorization dependent by _ChargeoutAll
+
+{
+  field ( readonly )
+  SingletonID,
+  Uuid,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+  field ( mandatory : create, readonly : update )
+  Serviceproduct, Validfrom;
+
+  field ( mandatory )
+  Validto, ChargeoutRuleId;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  mapping for /ESRCC/CHARGEOUT
+  {
+    Uuid = UUID;
+    Serviceproduct = SERVICEPRODUCT;
+    Validfrom = VALIDFROM;
+    Validto = VALIDTO;
+    ChargeoutRuleId = CHARGEOUT_RULE_ID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ChargeoutAll { with draft; }
+  validation ValidateData on save { create; update; }
+}

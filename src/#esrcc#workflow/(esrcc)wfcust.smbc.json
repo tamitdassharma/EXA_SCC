@@ -1,0 +1,39 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Workflow Approval Configuration",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_WFCUST_O4",
+    "serviceName": "/ESRCC/UI_WFCUST",
+    "serviceVersion": "0001",
+    "rootEntitySet": "RoleAssignmentAll",
+    "name": "Workflow Approval",
+    "configurationGroup": "/ESRCC/BC_GROUP8",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "RoleAssignment"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "RoleAssignment",
+        "tableType": "gridTable",
+        "selectionMode": "auto",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "RoleAssignmentAll",
+        "selectionMode": "auto"
+      }
+    ]
+  }
+}

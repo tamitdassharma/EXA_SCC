@@ -1,0 +1,65 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Workflow Activation',
+    typeNamePlural: 'Workflow Activation',
+    title: {
+      type: #STANDARD,
+      value: 'Application'
+    }
+  }
+}
+annotate view /ESRCC/C_WfSwitch with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_WfSwitch',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Validity',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ValidityGroup',
+    label: 'Validity',
+    position: 2
+  } ]
+
+  @UI.lineItem: [ { position: 1, cssDefault.width: '14rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_APPLICATION_TYPE', element: 'ApplicationType'} }]
+  Application;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2, cssDefault.width: '7.5rem' } ]
+  Workflowactive;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'ValidityGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'ValidityGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'ValidityGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'ValidityGroup' }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  ApplicationDescription;
+}

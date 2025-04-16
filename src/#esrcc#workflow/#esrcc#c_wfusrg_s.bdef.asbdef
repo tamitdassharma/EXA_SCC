@@ -1,0 +1,35 @@
+projection;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_WfUsrG_S alias UserGroupAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _UserGroup { create; with draft; }
+}
+
+define behavior for /ESRCC/C_WfUsrG alias UserGroup
+
+{
+  use update;
+  use delete;
+
+  use association _UserGroupAll { with draft; }
+  use association _UserMapping { create; with draft; }
+}
+
+define behavior for /ESRCC/C_WfUsrM alias UserMapping
+
+{
+  use update;
+  use delete;
+
+  use association _UserGroupAll { with draft; }
+  use association _UserGroup { with draft; }
+}

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>Service Charge</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>/ESRCC/LFG_SERVICECHARGETOP</SOBJ_NAME>
+    <SOBJ_NAME>/ESRCC/SAPLFG_SERVICECHARGE</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>/ESRCC/FM_LAST_DAY_OF_MONTH</FUNCNAME>
+     <SHORT_TEXT>Last Day of the month</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>DAY_IN</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>/ESRCC/VALIDFROM</TYP>
+      </RSIMP>
+     </IMPORT>
+     <EXPORT>
+      <RSEXP>
+       <PARAMETER>END_OF_MONTH</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>/ESRCC/VALIDFROM</TYP>
+      </RSEXP>
+     </EXPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>DAY_IN</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>ABAP system field: Current date of application server</STEXT>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>END_OF_MONTH</PARAMETER>
+       <KIND>P</KIND>
+       <STEXT>ABAP system field: Current date of application server</STEXT>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

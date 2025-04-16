@@ -1,0 +1,11 @@
+@EndUserText.label: 'Access Control for Capacity Planning'
+@MappingRole: true
+define role /ESRCC/C_SERVICECAPACITY {
+    grant
+        select
+            on
+                /ESRCC/C_SERVICECAPACITY
+                    where
+                        inheriting conditions from entity /ESRCC/I_SERVICECAPACITY;
+                        
+}

@@ -1,0 +1,4 @@
+define service /ESRCC/UI_GROUPCONFIG {
+  expose /ESRCC/C_GROUPCONFIG_S as GroupConfigAll;
+  expose /ESRCC/C_GROUPCONFIG as GroupConfig;
+}

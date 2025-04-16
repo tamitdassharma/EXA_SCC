@@ -1,0 +1,5 @@
+@EndUserText.label: 'Receiver Indirect Allocation Share'
+define service /ESRCC/UI_REC_INDKPISHARE {
+  expose /ESRCC/C_ALLOCATIONSHARE as recindkpishare;
+  expose /ESRCC/C_ALLOCATIONVALUES as recindkpivalue;
+}

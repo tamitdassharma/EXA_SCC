@@ -1,0 +1,95 @@
+managed with additional save implementation in class /ESRCC/BP_I_WFUSRG unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_WfUsrG_S alias UserGroupAll
+draft table /esrcc/d_wfusr_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  association _UserGroup { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_WfUsrG alias UserGroup
+persistent table /esrcc/wfusrg
+draft table /esrcc/d_wfusrg
+etag master LocalLastChangedAt
+lock dependent by _UserGroupAll
+authorization dependent by _UserGroupAll
+
+{
+  field ( mandatory : create )
+  Usergroup;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Usergroup;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/WFUSRG
+  {
+    Usergroup = USERGROUP;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _UserGroupAll { with draft; }
+  association _UserMapping { create ( features : global ); with draft; }
+
+}
+
+define behavior for /ESRCC/I_WfUsrM alias UserMapping
+persistent table /esrcc/wfusrm
+draft table /esrcc/d_wfusrm
+etag master LocalLastChangedAt
+lock dependent by _UserGroupAll
+authorization dependent by _UserGroupAll
+
+{
+  field ( mandatory : create )
+  Userid;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Usergroup, Userid;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/WFUSRM
+  {
+    Usergroup = USERGROUP;
+    Userid = USERID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _UserGroupAll { with draft; }
+  association _UserGroup { with draft; }
+}

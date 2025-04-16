@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_DTEL" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <DD04V>
+    <ROLLNAME>/ESRCC/PASSCOST</ROLLNAME>
+    <DDLANGUAGE>E</DDLANGUAGE>
+    <HEADLEN>55</HEADLEN>
+    <SCRLEN3>40</SCRLEN3>
+    <DDTEXT>Interco. Markup on Pass-thr (%)</DDTEXT>
+    <REPTEXT>Interco. Markup on Pass-thr (%)</REPTEXT>
+    <SCRTEXT_L>Interco. Markup on Pass-thr (%)</SCRTEXT_L>
+    <DTELMASTER>E</DTELMASTER>
+    <DATATYPE>DEC</DATATYPE>
+    <LENG>000005</LENG>
+    <DECIMALS>000002</DECIMALS>
+    <OUTPUTLEN>000006</OUTPUTLEN>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
+   </DD04V>
+   <I18N_LANGS>
+    <LANGU>D</LANGU>
+   </I18N_LANGS>
+   <DD04_TEXTS>
+    <item>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DDTEXT>Interco. Aufschlag Durchlauf(%)</DDTEXT>
+     <REPTEXT>Interco. Aufschlag Durchlauf(%)</REPTEXT>
+     <SCRTEXT_L>Interco. Aufschlag Durchlauf(%)</SCRTEXT_L>
+    </item>
+   </DD04_TEXTS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

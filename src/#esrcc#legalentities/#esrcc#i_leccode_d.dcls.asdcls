@@ -1,0 +1,6 @@
+@EndUserText.label: 'Access Control for /ESRCC/I_LeCcode_D'
+@MappingRole: true
+define role /ESRCC/I_LECCODE_D {
+    grant select on /ESRCC/I_LECCODE_D
+    where inheriting conditions from entity /ESRCC/I_LeCcode;
+}

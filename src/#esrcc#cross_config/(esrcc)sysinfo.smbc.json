@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain (Source) System Information",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_SYSINFO_O4",
+    "serviceName": "/ESRCC/UI_SYSINFO_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "SystemInfoAll",
+    "name": "System Information",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "SystemInfo"
+      },
+      {
+        "entitySet": "SystemInfoText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "SystemInfo",
+        "tableType": "gridTable",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "SystemInfoAll"
+      },
+      {
+        "entitySet": "SystemInfoText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

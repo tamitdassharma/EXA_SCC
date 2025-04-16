@@ -1,0 +1,6 @@
+define service /ESRCC/UI_STEWRDSHP {
+  expose /ESRCC/C_Stewrdshp_S as StewardshipAll;
+  expose /ESRCC/C_Stewrdshp as Stewardship;
+  expose /ESRCC/C_StwdSp as ServiceProduct;
+  expose /ESRCC/C_StwdSpRec as ServiceReceiver;
+}

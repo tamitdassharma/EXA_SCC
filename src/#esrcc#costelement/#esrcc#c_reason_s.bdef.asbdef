@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_REASON unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_Reason_S alias ReasonAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _Reason { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_Reason alias Reason
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _ReasonAll { with draft; }
+  use association _ReasonText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_ReasonText alias ReasonText
+
+{
+  use update;
+  use delete;
+
+  use association _ReasonAll { with draft; }
+  use association _Reason { with draft; }
+}

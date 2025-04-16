@@ -1,0 +1,4 @@
+@EndUserText.label: 'Open Task Receiver Chargeout'
+define service /ESRCC/UI_REC_WORKFLOW {
+  expose /ESRCC/C_RECEIVER_WORKFLOW as opentaskreceiverworkflow;
+}

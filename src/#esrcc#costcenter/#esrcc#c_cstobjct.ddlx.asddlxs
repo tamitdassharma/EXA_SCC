@@ -1,0 +1,144 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Object',
+    typeNamePlural: 'Cost Objects',
+    title: {
+      type: #STANDARD,
+      value: 'CostCenter'
+    },
+    description: { value: 'Description' }
+  }
+}
+annotate view /ESRCC/C_CstObjct with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_CstObjct',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 2
+  },
+  {
+    id: '/ESRCC/I_CstObjctText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 3,
+    targetElement: '_CostObjectText'
+  } ]
+
+  @UI.hidden: true
+  CostObjectUuid;
+
+  @UI.identification: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'LegalEntity', element: 'Legalentity' },
+                                                           { localElement: 'CompanyCode', element: 'Ccode' }],
+                                       useForValidation: true }]
+  Sysid;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Legalentity' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'CompanyCode', element: 'Ccode' }],
+                                       useForValidation: true }]
+  LegalEntity;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'LegalEntity', element: 'Legalentity' }],
+                                       useForValidation: true }]
+  CompanyCode;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' } }]
+  CostObject;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5 } ]
+  CostCenter;
+
+  @UI.lineItem: [ { position: 6 } ]
+  @EndUserText.quickInfo: 'Cost Object Number Description'
+  Description;
+
+  @UI.identification: [ { position: 7 } ]
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }, useForValidation: true }]
+  FunctionalArea;
+
+  @UI.identification: [ { position: 8 } ]
+  @UI.lineItem: [ { position: 8 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }, useForValidation: true }]
+  ProfitCenter;
+
+  @UI.identification: [ { position: 9 } ]
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }, useForValidation: true }]
+  BusinessDivision;
+
+  @UI.identification: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
+  BillingFrequency;
+
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 13 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 14, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  SysidDescription;
+  @UI.hidden: true
+  CompanyCodeDescription;
+  @UI.hidden: true
+  LegalEntityDescription;
+  @UI.hidden: true
+  CostObjectDescription;
+  @UI.hidden: true
+  FunctionalAreaDescription;
+  @UI.hidden: true
+  ProfitCenterDescription;
+  @UI.hidden: true
+  BusinessDivisionDescription;
+  @UI.hidden: true
+  BillingFrequencyDescription;
+}

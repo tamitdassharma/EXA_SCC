@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_ENHS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TOOL>BADI_DEF</TOOL>
+   <SHORTTEXT>File upload enhancement spot</SHORTTEXT>
+   <BADI_DATA>
+    <ENH_BADI_DATA>
+     <BADI_NAME>/ESRCC/FILE_UPLOAD_UTILITY</BADI_NAME>
+     <INTERFACE_NAME>/ESRCC/IF_FILE_UPLD_UTIL_BADI</INTERFACE_NAME>
+     <CONTEXT_MODE>N</CONTEXT_MODE>
+     <DEFAULT_CLASS>/ESRCC/CL_FILE_UPLD_UTIL_BADI</DEFAULT_CLASS>
+     <BADI_SHORTTEXT>BADI for Service Cross Charging file upload utility</BADI_SHORTTEXT>
+     <FILTERS>
+      <ENH_BADI_FILTER>
+       <FILTER_NAME>TABLE_NAME</FILTER_NAME>
+       <FILTER_TYPE>C</FILTER_TYPE>
+       <FILTERTEXT>Table Name</FILTERTEXT>
+       <CHECK_TYPE>TABNAME</CHECK_TYPE>
+      </ENH_BADI_FILTER>
+     </FILTERS>
+     <USE_FALLBACK_CLASS>X</USE_FALLBACK_CLASS>
+    </ENH_BADI_DATA>
+   </BADI_DATA>
+  </asx:values>
+ </asx:abap>
+</abapGit>

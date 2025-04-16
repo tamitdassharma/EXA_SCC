@@ -1,0 +1,64 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Group Configuration',
+    typeNamePlural: 'Group Configurations'
+  }
+}
+annotate view /ESRCC/C_GroupConfig with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION
+  },
+  {
+    id: '/ESRCC/I_GroupConfig',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    label: 'Admin Information',
+    targetQualifier: 'AdminGroup',
+    position: 1
+  } ]
+
+  @UI.hidden:true
+  Id;
+
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: 'I_CURRENCY', element: 'Currency' } }]
+  @UI.fieldGroup: [{ qualifier: 'ToParent', position: 1 }]
+  GroupCurrency;
+
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SIGN_FOR_VALUE', element: 'Sign' } }]
+  @UI.fieldGroup: [{ qualifier: 'ToParent', position: 2 }]
+  CostSign;
+
+  @UI.fieldGroup: [{ qualifier: 'ToParent', position: 3 }]
+  ConversionRateType;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+}

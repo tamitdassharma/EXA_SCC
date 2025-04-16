@@ -1,0 +1,6 @@
+@EndUserText.label: 'Acces Control for Open Task Costbase'
+@MappingRole: true
+define role /ESRCC/C_OPENTASKCOSTBASE {
+    grant select on /ESRCC/C_OPENTASKCOSTBASE
+     where inheriting conditions from entity /ESRCC/I_MANAGECOSTBASE;                        
+}

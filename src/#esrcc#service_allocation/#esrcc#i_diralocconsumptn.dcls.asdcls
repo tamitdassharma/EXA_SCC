@@ -1,0 +1,7 @@
+@EndUserText.label: 'Access Control for Consumption'
+@MappingRole: true
+define role /ESRCC/I_DIRALOCCONSUMPTN {
+    grant select on /ESRCC/I_DIRALOCCONSUMPTN
+      where (ProviderEntity) = aspect pfcg_auth('/ESRCC/LE',  ACTVT = '03', /ESRCC/LE) AND
+      (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');                
+}

@@ -1,0 +1,6 @@
+@MappingRole: true
+define role /ESRCC/I_CstObjct {
+  grant select on /ESRCC/I_CstObjct
+  where ( ) = ASPECT pfcg_auth ( 'S_TABU_NAM', ACTVT = '03', TABLE = '/ESRCC/I_CSTOBJCT' ) and
+        ( Costobject ) = ASPECT pfcg_auth( '/ESRCC/CO', /ESRCC/OBJ, ACTVT = '03' );
+}

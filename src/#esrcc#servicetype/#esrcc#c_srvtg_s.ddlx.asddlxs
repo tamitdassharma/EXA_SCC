@@ -1,0 +1,44 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Transaction Group'
+  }
+}
+annotate view /ESRCC/C_SrvTg_S with
+{
+  @UI.facet: [ {
+  //   id: 'Transport',
+  //    purpose: #STANDARD,
+  //    type: #IDENTIFICATION_REFERENCE,
+  //    label: 'Transport',
+  //    position: 1
+  //    hidden: #(HideTransport)
+  //  },
+  //  {
+    id: '/ESRCC/I_SrvTg',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Transaction Groups',
+    position: 2 ,
+    targetElement: '_TransactionGrp'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [
+  {
+    position: 2 ,
+    importance: #HIGH
+  //  },
+  //  {
+  //    type: #FOR_ACTION,
+  //    dataAction: 'SelectCustomizingTransptReq',
+  //    label: 'Select Transport'
+  } ]
+  TransportRequestID;
+}

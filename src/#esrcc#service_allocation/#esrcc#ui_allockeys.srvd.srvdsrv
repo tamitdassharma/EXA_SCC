@@ -1,0 +1,5 @@
+define service /ESRCC/UI_ALLOCKEYS {
+  expose /ESRCC/C_ALLOCATIONKEY_S as AllocationKeyAll;
+  expose /ESRCC/C_ALLOCATIONKEY as AllocationKey;
+  expose /ESRCC/C_ALLOCATIONKEYTEXT as AllocationKeyText;
+}

@@ -1,0 +1,103 @@
+managed with additional save implementation in class /ESRCC/BP_I_SYSINFO_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_SysInfo_S alias SystemInfoAll
+draft table /ESRCC/D_SYS_I_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _SystemInfo { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_SysInfo alias SystemInfo
+persistent table /ESRCC/SYS_INFO
+draft table /ESRCC/D_SYSINF
+etag master LocalLastChangedAt
+lock dependent by _SystemInfoAll
+authorization dependent by _SystemInfoAll
+
+{
+  field ( mandatory : create )
+   SystemId;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   SystemId;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/SYS_INFO
+  {
+    SystemId = SYSTEM_ID;
+    SourceRfcDestination = SOURCE_RFC_DESTINATION;
+    HostRfcDestination = HOST_RFC_DESTINATION;
+    SystemType = SYSTEM_TYPE;
+    SignForSales = SIGN_FOR_SALES;
+    SignForCogs = SIGN_FOR_COGS;
+    IsActive = IS_ACTIVE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _SystemInfoAll { with draft; }
+  association _SystemInfoText { create ( features : global ); with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_SysInfoText alias SystemInfoText
+persistent table /ESRCC/SYS_INFOT
+draft table /ESRCC/D_SYSINFT
+etag master LocalLastChangedAt
+lock dependent by _SystemInfoAll
+authorization dependent by _SystemInfoAll
+
+{
+  field ( mandatory : create )
+   Spras;
+
+  field ( readonly )
+   SingletonID,
+   SystemId;
+
+  field ( readonly : update )
+   Spras;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/SYS_INFOT
+  {
+    Spras = SPRAS;
+    SystemId = SYSTEM_ID;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _SystemInfoAll { with draft; }
+  association _SystemInfo { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

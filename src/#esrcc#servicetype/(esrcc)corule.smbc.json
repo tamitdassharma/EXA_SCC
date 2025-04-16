@@ -1,0 +1,54 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Standard Charge-out Rules",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_CORULE_O4",
+    "serviceName": "/ESRCC/UI_CORULE_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "RuleAll",
+    "name": "Standard Charge-out Rules",
+    "configurationGroup": "/ESRCC/BC_GROUP5",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "Rule"
+      },
+      {
+        "entitySet": "RuleText"
+      },
+      {
+        "entitySet": "Weightage"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "Rule",
+        "tableType": "gridTable",
+        "rowCountMode": "auto",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "RuleAll"
+      },
+      {
+        "entitySet": "RuleText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "Weightage",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

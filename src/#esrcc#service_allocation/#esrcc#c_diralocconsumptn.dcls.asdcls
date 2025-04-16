@@ -1,0 +1,11 @@
+@EndUserText.label: 'Access Control for Consumption'
+@MappingRole: true
+define role /ESRCC/C_DIRALOCCONSUMPTN {
+    grant
+        select
+            on
+                /ESRCC/C_DIRALOCCONSUMPTN
+                    where
+                        inheriting conditions from entity /ESRCC/I_DIRALOCCONSUMPTN;
+                        
+}

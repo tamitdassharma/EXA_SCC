@@ -1,0 +1,4 @@
+@EndUserText.label: 'Receivers Source Cost Object & Number'
+define service /ESRCC/UI_CosCen_Receiver_F4 {
+  expose /ESRCC/I_COSCEN_RECEIVER_F4 as ReceiverCostCenter;
+}

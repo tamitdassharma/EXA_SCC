@@ -1,0 +1,4 @@
+@EndUserText.label: 'Adhoc Service Mark-up'
+define service /ESRCC/UI_SERVICEMARKUP {
+  expose /ESRCC/I_SERVICEMARKUP as ServiceMarkup;
+}

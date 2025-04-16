@@ -1,0 +1,132 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product Mark-up',
+    typeNamePlural: 'Service Product Mark-ups',
+    title: {
+      type: #STANDARD,
+      value: 'Serviceproduct'
+    }
+  }
+}
+annotate view /ESRCC/C_SrvMkp with
+{
+  @UI.facet: [ {
+  id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: 'Intercompany',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'IntercompanyGroup',
+    label: 'Intercompany Mark-ups',
+    position: 10
+  },
+  {
+    id: 'Intracompany',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'IntracompanyGroup',
+    label: 'Intracompany Mark-ups',
+    position: 20
+  },
+  {
+    id: 'Validity',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ValidityGroup',
+    label: 'Validity',
+    position: 30
+  },
+  {
+    id: 'Workflow',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    label: 'Workflow Information',
+    targetQualifier: 'WorkflowGroup',
+    parentId: 'CE',
+    position: 40
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 50
+  } ]
+
+  @UI.lineItem: [{ position: 2 },
+                 { type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
+                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
+                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
+                                       useForValidation: true }]
+  Serviceproduct;
+
+  @UI.lineItem: [ { position: 5, cssDefault.width: '14.5rem' } ]
+  @UI.fieldGroup: [{ label: 'Value-add Cost (%)', qualifier: 'IntercompanyGroup', position: 10 }]
+  Origcost;
+
+  @UI.lineItem: [ { position: 6, cssDefault.width: '16rem' } ]
+  @UI.fieldGroup: [{ label: 'Pass Through Cost (%)', qualifier: 'IntercompanyGroup', position: 20 }]
+  Passcost;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '14.5rem' } ]
+  @UI.fieldGroup: [{ label: 'Value-add Cost (%)', qualifier: 'IntracompanyGroup', position: 10 }]
+  IntraOrigcost;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '16rem' } ]
+  @UI.fieldGroup: [{ label: 'Pass Through Cost (%)', qualifier: 'IntracompanyGroup', position: 20 }]
+  IntraPasscost;
+
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 1 }]
+  Validfrom;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 2 }]
+  Validto;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
+  WorkflowId;
+
+  @UI.lineItem: [ { position: 10, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
+  @UI.textArrangement: #TEXT_ONLY
+  @EndUserText.label: 'Workflow Status'
+  WorkflowStatus;
+  
+  @UI.lineItem: [{ hidden: true }]
+  CommentId;
+
+  @UI.lineItem: [{ hidden: true }]
+  @UI.multiLineText: true
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 30 }]
+  Comments;
+
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 13 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 14, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  ProductDescription;
+  @UI.hidden: true
+  WorkflowStatusCriticality;
+}

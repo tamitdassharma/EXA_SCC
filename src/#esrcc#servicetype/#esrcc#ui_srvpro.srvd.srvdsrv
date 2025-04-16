@@ -1,0 +1,5 @@
+define service /ESRCC/UI_SRVPRO {
+  expose /ESRCC/C_SRVPRO_S as ServiceProductAll;
+  expose /ESRCC/C_SRVPRO as ServiceProduct;
+  expose /ESRCC/C_SRVPROTEXT as ServiceProductText;
+}

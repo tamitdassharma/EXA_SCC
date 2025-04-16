@@ -1,0 +1,4 @@
+define service /ESRCC/UI_CHARGEOUT {
+  expose /ESRCC/C_CHARGEOUTBC_S as ChargeoutAll;
+  expose /ESRCC/C_CHARGEOUTBC as Chargeout;
+}

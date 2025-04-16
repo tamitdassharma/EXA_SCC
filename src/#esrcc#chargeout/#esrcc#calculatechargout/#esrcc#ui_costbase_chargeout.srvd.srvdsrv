@@ -1,0 +1,4 @@
+@EndUserText.label: 'Cost Base Chargeout'
+define service /ESRCC/UI_COSTBASE_CHARGEOUT {
+  expose /ESRCC/I_COSTBASE_CHARGEOUT as CostBaseChargeout;
+}

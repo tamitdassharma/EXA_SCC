@@ -1,0 +1,43 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product Mark-up'
+  }
+}
+annotate view /ESRCC/C_SrvMkp_S with
+{
+  @UI.facet: [ {
+  //    id: 'Transport',
+  //    purpose: #STANDARD,
+  //    type: #IDENTIFICATION_REFERENCE,
+  //    label: 'Transport',
+  //    position: 1 ,
+  //    hidden: #(HideTransport)
+  //  },
+  //  {
+    id: '/ESRCC/I_SrvMkp',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Service Product Mark-ups',
+    position: 2 ,
+    targetElement: '_ServiceMarkup'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  //  },
+  //  {
+  //    type: #FOR_ACTION,
+  //    dataAction: 'SelectCustomizingTransptReq',
+  //    label: 'Select Transport'
+  } ]
+  TransportRequestID;
+}

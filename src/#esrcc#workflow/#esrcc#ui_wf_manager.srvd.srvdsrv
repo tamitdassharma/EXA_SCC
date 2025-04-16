@@ -1,0 +1,4 @@
+@EndUserText.label: 'Workflow Manager'
+define service /ESRCC/UI_WF_MANAGER {
+  expose /ESRCC/C_WF_MANAGER as workflowmanager;
+}

@@ -1,0 +1,103 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'System Information',
+    typeNamePlural: 'System Information',
+    title: {
+      type: #STANDARD,
+      value: 'SystemId'
+    }
+  }
+}
+annotate view /ESRCC/C_SysInfo with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_SysInfo',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 2
+  },
+  {
+    id: '/ESRCC/I_SysInfoText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 3,
+    targetElement: '_SystemInfoText'
+  } ]
+
+  @UI.lineItem: [ { position: 1 } ]
+  SystemId;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  //  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RFC_DESTINATION_F4', element: 'Rfcdest' } }]
+  SourceRfcDestination;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  HostRfcDestination;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '11rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SYSTEM_TYPE', element: 'SystemType' } }]
+  SystemType;
+
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '9rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SIGN_FOR_VALUE', element: 'Sign' } }]
+  SignForSales;
+
+  @UI.identification: [ { position: 7 } ]
+  @UI.lineItem: [ { position: 7, cssDefault.width: '9rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SIGN_FOR_VALUE', element: 'Sign' } }]
+  SignForCogs;
+
+  @UI.identification: [ { position: 8 } ]
+  @UI.lineItem: [ { position: 8, cssDefault.width: '4rem' } ]
+  IsActive;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.hidden: true
+  SignForSalesDescription;
+  @UI.hidden: true
+  SignForCogsDescription;
+  @UI.hidden: true
+  SystemTypeDescription;
+}

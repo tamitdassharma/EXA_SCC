@@ -1,0 +1,4 @@
+define service /ESRCC/UI_WFSWITCH {
+  expose /ESRCC/C_WfSwitch_S as WorkflowSwitchAll;
+  expose /ESRCC/C_WfSwitch as WorkflowSwitch;
+}

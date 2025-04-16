@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_CostElmenetCharacte {
+  grant select on /ESRCC/C_CostElmenetCharacte
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_CostElmenetCharacte;
+}

@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_SRVPRO_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_SrvPro_S alias ServiceProductAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _ServiceProduct { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_SrvPro alias ServiceProduct
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _ServiceProductAll { with draft; }
+  use association _ServiceProductText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_SrvProText alias ServiceProductText
+
+{
+  use update;
+  use delete;
+
+  use association _ServiceProductAll { with draft; }
+  use association _ServiceProduct { with draft; }
+}

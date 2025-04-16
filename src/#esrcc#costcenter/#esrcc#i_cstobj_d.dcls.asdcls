@@ -1,0 +1,6 @@
+@EndUserText.label: 'Draft Query View'
+@MappingRole: true
+define role /ESRCC/I_CSTOBJ_D {
+    grant select on /ESRCC/I_CstObj_D
+    where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_CstObjct;
+}

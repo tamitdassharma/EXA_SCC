@@ -1,0 +1,4 @@
+define service /ESRCC/UI_SRVMKP {
+  expose /ESRCC/C_SRVMKP_S as ServiceMarkupAll;
+  expose /ESRCC/C_SRVMKP as ServiceMarkup;
+}

@@ -1,0 +1,18 @@
+unmanaged implementation in class /esrcc/bp_c_bpa_integration unique;
+strict ( 1 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for /ESRCC/C_BPA_INTEGRATION //alias <alias_name>
+//late numbering
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+
+  field ( readonly ) application, workflow_id;
+
+  static action update_workflowid parameter /ESRCC/C_WORKFLOW_DETAILS result [1] $self;
+  static action approve parameter /ESRCC/C_BPA_PARAMETERS;
+  static action reject parameter /ESRCC/C_BPA_PARAMETERS;
+  static action approvecomments parameter /ESRCC/C_BPA_PARAMETERS;
+  static action rejectcomments parameter /ESRCC/C_BPA_PARAMETERS;
+}

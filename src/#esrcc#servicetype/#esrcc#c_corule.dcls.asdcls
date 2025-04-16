@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_CoRule {
+  grant select on /ESRCC/C_CoRule
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_CoRule;
+}

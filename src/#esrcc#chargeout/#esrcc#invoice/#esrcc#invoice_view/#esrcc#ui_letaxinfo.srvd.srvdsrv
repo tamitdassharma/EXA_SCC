@@ -1,0 +1,4 @@
+define service /ESRCC/UI_LETAXINFO {
+  expose /ESRCC/C_LETAXINFO_S as TaxInformationAll;
+  expose /ESRCC/C_LETAXINFO as TaxInformation;
+}

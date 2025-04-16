@@ -1,0 +1,4 @@
+define service /ESRCC/UI_BILLINGFREQUENCY {
+  expose /ESRCC/C_BILLINGFREQUENCY_S as BillingFrequencyAll;
+  expose /ESRCC/C_BILLINGFREQUENCY as BillingFrequency;
+}

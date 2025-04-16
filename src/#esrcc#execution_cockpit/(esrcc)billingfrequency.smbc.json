@@ -1,0 +1,38 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Billing Frequencies",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_BILLINGFREQUENCY",
+    "serviceName": "/ESRCC/UI_BILLINGFREQUENCY",
+    "serviceVersion": "0001",
+    "rootEntitySet": "BillingFrequencyAll",
+    "name": "Billing Frequencies",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "BillingFrequency"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "BillingFrequency",
+        "tableType": "gridTable",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "BillingFrequencyAll",
+        "tableType": "gridTable"
+      }
+    ]
+  }
+}

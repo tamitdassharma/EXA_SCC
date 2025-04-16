@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Cost Elements",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_COSTELEMENTS_O4",
+    "serviceName": "/ESRCC/UI_COSTELEMENTS_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "CostElementsAll",
+    "name": "Cost Elements",
+    "configurationGroup": "/ESRCC/BC_GROUP2",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "CostElements"
+      },
+      {
+        "entitySet": "CostElementsText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "CostElements",
+        "tableType": "gridTable",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "CostElementsAll"
+      },
+      {
+        "entitySet": "CostElementsText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Chargeout'
+@MappingRole: true
+define role /ESRCC/I_COSTBASESTEWARDSHIP {
+    grant select on /ESRCC/I_CostBaseStewardship
+      where (Legalentity) = aspect pfcg_auth('/ESRCC/LE',  ACTVT = '03', /ESRCC/LE) AND
+      (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');    
+}

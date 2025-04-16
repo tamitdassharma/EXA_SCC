@@ -1,0 +1,60 @@
+managed with additional save implementation in class /ESRCC/BP_I_LETAXINFO_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LeTaxInfo_S alias TaxInformationAll
+draft table /esrcc/d_letax_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  association _TaxInformation { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_LeTaxInfo alias TaxInformation
+persistent table /esrcc/letaxinfo
+draft table /esrcc/d_letaxin
+etag master LocalLastChangedAt
+lock dependent by _TaxInformationAll
+authorization dependent by _TaxInformationAll
+
+{
+  field ( mandatory : create )
+  LegalEntity;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  LegalEntity;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/LETAXINFO
+  {
+    LegalEntity = LEGAL_ENTITY;
+    VatNumber = VAT_NUMBER;
+    TaxRegistationNumber = TAX_REGISTATION_NUMBER;
+    TaxPercentage = TAX_PERCENTAGE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _TaxInformationAll { with draft; }
+}

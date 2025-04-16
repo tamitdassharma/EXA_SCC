@@ -1,0 +1,169 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Standard Charge-out Rule',
+    typeNamePlural: 'Standard Charge-out Rules',
+    title: {
+      type: #STANDARD,
+      value: 'RuleId'
+    },
+    description: { value: 'Description' }
+  }
+}
+annotate view /ESRCC/C_CoRule with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_CoRule',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    parentId: 'CE',
+    position: 10
+  },
+  {
+    id: 'Workflow',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    label: 'Workflow Information',
+    targetQualifier: 'WorkflowGroup',
+    parentId: 'CE',
+    position: 20
+  },
+  {
+   type: #FIELDGROUP_REFERENCE,
+   purpose: #STANDARD,
+   label: 'Admin Information',
+   targetQualifier: 'AdminGroup',
+   parentId: 'CE',
+   position: 30
+  },
+  {
+    id: '/ESRCC/I_CoRuleText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 40,
+    targetElement: '_RuleText'
+  },
+  {
+    id: 'Weightage',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    hidden: #(HideWeightageTab),
+    position: 50,
+    targetElement: '_Weightage'
+  } ]
+  
+  @UI.lineItem: [{ position: 1 },
+                 { type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
+                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
+                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+  RuleId;
+
+  @UI.identification: [ { hidden: true, position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.lineItem: [ { position: 3, cssDefault.width: '10rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{entity: { name: '/ESRCC/I_CHGOUT', element: 'Chargeout' }, useForValidation: true }]
+  ChargeoutMethod;
+
+  @UI.identification: [ { position: 4, hidden: #(HideCostVersion) } ]
+  @UI.lineItem: [{ hidden: true }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_COST_VERSION', element: 'CostVersion' } } ]
+  CostVersion;
+
+  @UI.identification: [ { position: 5, hidden: #(HideCapacityVersion) } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '13rem', hidden: true } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_CAPACITY_VERSION', element: 'CapacityVersion' } } ]
+  CapacityVersion;
+
+  @UI.identification: [ { position: 6, hidden: #(HideConsumptionVersion) } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '11.5rem', hidden: true } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_CONSUMPTION_VERSION', element: 'ConsumptionVersion' } } ]
+  ConsumptionVersion;
+
+  @UI.identification: [ { position: 7, hidden: #(HideKeyVersion) } ]
+  @UI.lineItem: [ { position: 7, cssDefault.width: '11.5rem', hidden: true } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_KEY_VERSION', element: 'KeyVersion' } } ]
+  KeyVersion;
+
+  @UI.identification: [ { position: 9, hidden: #(HideAdhocAllocationKey) } ]
+  @UI.lineItem: [ { position: 9, hidden: true } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_ALLOCATION_KEY_F4', element: 'Allocationkey' } } ]
+  AdhocAllocationKey;
+
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
+  WorkflowId;
+
+  @UI.lineItem: [ { position: 11, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
+  @UI.textArrangement: #TEXT_ONLY
+  @EndUserText.label: 'Workflow Status'
+  WorkflowStatus;
+  
+  @UI.lineItem: [{ hidden: true }]
+  CommentId;
+
+  @UI.lineItem: [{ hidden: true }]
+  @UI.multiLineText: true
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 30 }]
+  Comments;
+
+  @UI.lineItem: [ { position: 13 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 14, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [{ position: 15 }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 16, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+
+  @UI.hidden
+  ChargeoutMethodDescription;
+  @UI.hidden
+  CapacityVersionDescription;
+  @UI.hidden
+  ConsumptionVersionDescription;
+  @UI.hidden
+  CostVersionDescription;
+  @UI.hidden
+  KeyVersionDescription;
+  @UI.hidden: true
+  AllocationKeyDescription;
+  @UI.hidden: true
+  WorkflowStatusDescription;
+  @UI.hidden: true
+  HideCostVersion;
+  @UI.hidden: true
+  HideCapacityVersion;
+  @UI.hidden: true
+  HideConsumptionVersion;
+  @UI.hidden: true
+  HideKeyVersion;
+  @UI.hidden: true
+  HideAdhocAllocationKey;
+  @UI.hidden: true
+  HideWeightageTab;
+  @UI.hidden: true
+  WorkflowStatusCriticality;
+}

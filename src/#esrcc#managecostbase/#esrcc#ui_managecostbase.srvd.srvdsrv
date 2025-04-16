@@ -1,0 +1,4 @@
+@EndUserText.label: 'Manage Cost Base Line Items'
+define service /ESRCC/UI_MANAGECOSTBASE {
+  expose /ESRCC/C_MANAGECOSTBASE as managecostbase;
+}

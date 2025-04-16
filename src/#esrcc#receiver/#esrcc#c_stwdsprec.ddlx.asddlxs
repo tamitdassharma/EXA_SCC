@@ -1,0 +1,171 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product Receiver',
+    typeNamePlural: 'Service Product Receivers',
+    title: {
+      type: #STANDARD,
+      value: 'LegalEntity'
+    }
+  },
+  presentationVariant: [{
+    qualifier: 'pVariant',
+    sortOrder: [{ by: 'ServiceProduct', direction: #ASC },
+                { by: 'Sysid', direction: #ASC },
+                { by: 'LegalEntity', direction: #ASC},
+                { by: 'CompanyCode', direction: #ASC },
+                { by: 'CostObject', direction: #ASC },
+                { by: 'CostCenter', direction: #ASC }],                
+    visualizations: [{type: #AS_LINEITEM }]
+  }]
+}
+
+annotate entity /ESRCC/C_StwdSpRec with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 10
+  },
+  {
+    id: 'IdRef',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 10
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 20
+  } ]
+
+  @UI.hidden: true
+  @EndUserText.label: 'Service Receiver UUID'
+  ServiceReceiverUuid;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Stewardship UUID'
+  StewardshipUuid;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Receiver Cost Object UUID'
+  CostObjectUuid;
+
+  @UI.identification: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
+                                        useForValidation: true } ]
+  ServiceProduct;
+
+  @UI.identification: [ { position: 20 } ]
+  @UI.lineItem: [ { position: 20 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'LegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'CostObject', element: 'Costobject' },
+                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  Sysid;
+
+  @UI.identification: [ { position: 30 } ]
+  @UI.lineItem: [ { position: 30 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'LegalEntity' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'CostObject', element: 'Costobject' },
+                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LegalEntity;
+
+  @UI.identification: [ { position: 40 } ]
+  @UI.lineItem: [ { position: 40 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'CompanyCode' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'LegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'CostObject', element: 'Costobject' },
+                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CompanyCode;
+
+  @UI.identification: [ { position: 50 } ]
+  @UI.lineItem: [ { position: 50, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costobject' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'LegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CostObject;
+
+  @UI.identification: [ { position: 60 } ]
+  @UI.lineItem: [ { position: 60 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'LegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'CostObject', element: 'Costobject' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CostCenter;
+  
+  @UI.identification: [ { position: 70 } ]
+  @UI.lineItem: [ { position: 70, cssDefault.width: '10rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Currency', element: 'Currency' }, useForValidation: true } ]
+  @EndUserText.label: 'Invoicing Currency'
+  InvoiceCurrency;
+
+  @UI.identification: [ { position: 80 } ]
+  @UI.lineItem: [ { position: 80, cssDefault.width: '4rem' } ]
+  Active;
+
+  @UI.lineItem: [ { position: 90 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 100, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [{ position: 110 }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 120, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  SysidDescription;
+  @UI.hidden: true
+  LegalEntityDescription;
+  @UI.hidden: true
+  CompanyCodeDescription;
+  @UI.hidden: true
+  CostObjectDescription;
+  @UI.hidden: true
+  CostCenterDescription;
+  @UI.hidden: true
+  ServiceProductDescription;
+}

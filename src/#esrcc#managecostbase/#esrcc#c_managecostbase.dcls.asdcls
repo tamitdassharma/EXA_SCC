@@ -1,0 +1,6 @@
+@EndUserText.label: 'Acces Control for Manage Costbase'
+@MappingRole: true
+define role /ESRCC/C_MANAGECOSTBASE {
+    grant select on /ESRCC/C_MANAGECOSTBASE
+     where inheriting conditions from entity /ESRCC/I_MANAGECOSTBASE;
+}

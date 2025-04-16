@@ -1,0 +1,142 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Service Capacity',
+    typeNamePlural: 'Service Capacities'
+  }
+}
+annotate view /ESRCC/C_DIRECTPLANNNING with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION,
+    label: 'Service Capacity'
+  },
+  {
+    id: 'DirPlanning',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    parentId: 'CE',
+    position: 10
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 20
+  } ]
+  @UI.lineItem: [ {
+    position: 20 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 20 ,
+    label: ''
+  } ]
+  @UI.selectionField: [{ position: 20 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' }}]
+  @UI.textArrangement: #TEXT_LAST
+  Serviceproduct;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 30 ,
+    label: ''
+  } ]
+  @UI.selectionField: [{ position: 30 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' }}]
+  Ryear;
+
+  @UI.lineItem: [ {
+    position: 40 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault.width: '10rem'
+  } ]
+  @UI.identification: [ {
+    position: 40 ,
+    label: ''
+  } ]
+  @UI.selectionField: [{ position: 40 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' } }]
+  @Consumption.filter.multipleSelections: true
+  @UI.textArrangement: #TEXT_ONLY
+  Poper;
+
+  @UI.lineItem: [ {
+    position: 10 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 10 ,
+    label: ''
+  } ]
+  @UI.selectionField: [{ position: 10 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CAPACITY_VERSION', element: 'CapacityVersion' }}]
+  @UI.textArrangement: #TEXT_ONLY
+  Fplv;
+
+//  @UI.lineItem: [ {
+//    position: 60 ,
+//    importance: #MEDIUM
+//  } ]
+//  @UI.identification: [ {
+//    position: 60
+//  } ]
+//  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_UnitOfMeasure', element: 'UnitOfMeasure' } } ]
+  @EndUserText.label: 'Unit of Measure'
+  @Consumption.filter.hidden: true
+  Uom;
+
+  @UI.lineItem: [ {
+    position: 50 ,
+    importance: #MEDIUM
+  } ]
+  @UI.identification: [ {
+    position: 50
+  } ]
+  @Consumption.filter.hidden: true
+  Planning;
+
+  @UI.lineItem: [ { position: 70 } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 80, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 90 } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 100, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  LastChangedAt;
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+  @UI.hidden: true
+  capacitydescription;
+  @UI.hidden: true
+  serviceproductdescription;
+  @UI.hidden: true
+  UnitOfMeasureName;
+  @UI.hidden: true
+  PoperDescription;
+}

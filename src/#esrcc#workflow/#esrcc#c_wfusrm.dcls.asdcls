@@ -1,0 +1,6 @@
+@EndUserText.label: 'Access Control for /ESRCC/C_WfUsrM'
+@MappingRole: true
+define role /ESRCC/C_WFUSRM {
+  grant select on /ESRCC/C_WfUsrM
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_WfUsrM;
+}

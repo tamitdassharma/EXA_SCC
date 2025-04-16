@@ -1,0 +1,80 @@
+@Metadata.layer: #CORE
+annotate view /ESRCC/C_ApplicationLogs with
+{
+  @UI.selectionField: [{ position: 10 }]
+  @UI.lineItem: [{ position: 10 }]
+  Application;
+  @UI.selectionField: [{ position: 20 }]
+  @UI.lineItem: [{ position: 20 }]
+  SubApplication;
+  @UI.selectionField: [{ position: 30 }]
+  @UI.lineItem: [{ position: 30 }]
+  RunNumber;
+  @UI.selectionField: [{ position: 40 }]
+  @UI.lineItem: [{ position: 40 }]
+  ReportingYear;
+  @UI.lineItem: [{ position: 50 }]
+  @UI.selectionField: [{ position: 50 }]
+  @EndUserText.label: 'From Period'
+  PeriodFrom;
+  @UI.lineItem: [{ position: 60 }]
+  @UI.selectionField: [{ position: 60 }]
+  @EndUserText.label: 'To Period'
+  PeriodTo;
+  @UI.lineItem: [{ position: 70 }]
+  @UI.selectionField: [{ position: 70 }]
+  PlanningVersion;
+  @UI.selectionField: [{ position: 80 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LegalEntityAll_F4',
+          element: 'Legalentity'
+      }
+  }]
+  @UI.lineItem: [{ position: 80 }]
+  LegalEntity;
+  @UI.selectionField: [{ position: 90 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+          element: 'Sysid'
+      },
+      useForValidation: true,
+      additionalBinding: [{
+          localElement: 'LegalEntity',
+          element: 'Legalentity',
+          usage: #FILTER_AND_RESULT
+      },
+      {
+          localElement: 'CompanyCode',
+          element: 'Ccode',
+          usage: #FILTER_AND_RESULT
+      }]
+  }]
+  @UI.lineItem: [{ position: 90 }]
+  SystemId;
+  @UI.selectionField: [{ position: 100 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+          element: 'Ccode'
+      },
+  //              distinctValues: true,
+      useForValidation: true,
+      additionalBinding: [{
+          localElement: 'LegalEntity',
+          element: 'Legalentity',
+          usage: #FILTER_AND_RESULT
+      },
+      {
+          localElement: 'SystemId',
+          element: 'Sysid',
+          usage: #FILTER_AND_RESULT
+      }]
+  }]
+  @UI.lineItem: [{ position: 100 }]
+  CompanyCode;
+  @UI.selectionField: [{ position: 110 }]
+  @UI.lineItem: [{ position: 110 }]
+  CreatedBy;
+}

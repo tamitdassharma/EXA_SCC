@@ -1,0 +1,16 @@
+unmanaged implementation in class /esrcc/bp_i_chginvoice unique;
+strict ( 1 );
+
+define behavior for /ESRCC/I_CHGINVOICE //alias <alias_name>
+//late numbering
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+//  create;
+//  update;
+//  delete;
+   action createInvoice parameter /ESRCC/C_INVOICEOPTIONS result [0..1] $self;
+   action finalizeInvoice result [0..1] $self;
+   action DiscardInvoice result [0..1] $self;
+}

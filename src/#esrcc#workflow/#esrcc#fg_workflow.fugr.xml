@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_FUGR" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <AREAT>Workflow</AREAT>
+   <INCLUDES>
+    <SOBJ_NAME>/ESRCC/LFG_WORKFLOWTOP</SOBJ_NAME>
+    <SOBJ_NAME>/ESRCC/SAPLFG_WORKFLOW</SOBJ_NAME>
+   </INCLUDES>
+   <FUNCTIONS>
+    <item>
+     <FUNCNAME>/ESRCC/FM_WF_START</FUNCNAME>
+     <SHORT_TEXT>Start Workflow On Premise</SHORT_TEXT>
+     <IMPORT>
+      <RSIMP>
+       <PARAMETER>IT_LEADING_OBJECT</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>/ESRCC/TT_WF_LEADINGOBJECT</TYP>
+      </RSIMP>
+      <RSIMP>
+       <PARAMETER>IV_APPTYPE</PARAMETER>
+       <REFERENCE>X</REFERENCE>
+       <TYP>/ESRCC/APPLICATION_TYPE_DE</TYP>
+      </RSIMP>
+     </IMPORT>
+     <DOCUMENTATION>
+      <RSFDO>
+       <PARAMETER>IT_LEADING_OBJECT</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+      <RSFDO>
+       <PARAMETER>IV_APPTYPE</PARAMETER>
+       <KIND>P</KIND>
+      </RSFDO>
+     </DOCUMENTATION>
+    </item>
+   </FUNCTIONS>
+  </asx:values>
+ </asx:abap>
+</abapGit>

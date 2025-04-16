@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SIA6" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <SIA6>
+    <MAIN_OBJECT>
+     <NAME>/ESRCC/IAM_EXECSTATUS_MBC</NAME>
+     <TYPE>SIA6</TYPE>
+     <DESCRIPTION>Maintain Execution Status Mapping</DESCRIPTION>
+     <RESPONSIBLE>CB9980000010</RESPONSIBLE>
+     <MASTER_LANGUAGE>EN</MASTER_LANGUAGE>
+     <MASTER_SYSTEM>SDC</MASTER_SYSTEM>
+     <PACKAGE_REF>
+      <PACKAGE_NAME>/ESRCC/EXECUTION_COCKPIT</PACKAGE_NAME>
+     </PACKAGE_REF>
+     <ABAP_LANGU_VERSION>5</ABAP_LANGU_VERSION>
+    </MAIN_OBJECT>
+    <APP_ID>/ESRCC/IAM_EXECSTATUS_MBC</APP_ID>
+    <APP_TYPE>MBC</APP_TYPE>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
+    <SERVICE>
+     <item>
+      <REL_NAME>/ESRCC/UI_EXECSTAT_O4</REL_NAME>
+      <REL_TYPE>G4BA</REL_TYPE>
+      <APP_ID>/ESRCC/IAM_EXECSTATUS_MBC</APP_ID>
+      <SRVC_NAME>FFEB2382DC38DE48F33306EE52DAAF</SRVC_NAME>
+      <SRVC_TYPE>HT</SRVC_TYPE>
+      <TEXT>Execution Cockpit Status - Maintain</TEXT>
+      <TYPE_TEXT>OData V4</TYPE_TEXT>
+     </item>
+    </SERVICE>
+    <AUTH>
+     <item>
+      <AUTH_OBJECT>S_TABU_NAM</AUTH_OBJECT>
+      <STATUS>U</STATUS>
+      <TEXT>Table Access by Generic Standard Tools</TEXT>
+      <AUTH_ITEM>
+       <item>
+        <UUID>Ir0XPsPEHu+Ert5nkD44CQ==</UUID>
+        <AUTH_OBJECT>S_TABU_NAM</AUTH_OBJECT>
+        <AUTH_OBJECT_INSTANCE>0001</AUTH_OBJECT_INSTANCE>
+        <TEXT>Table Access by Generic Standard Tools</TEXT>
+        <STATUS>U</STATUS>
+        <VALUES>
+         <item>
+          <FIELD>ACTVT</FIELD>
+          <VALUE>Change,Display change documents,Display</VALUE>
+          <VALUES>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD5YCQ==</UUID>
+            <LOW_VALUE>02</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD6YCQ==</UUID>
+            <LOW_VALUE>08</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD54CQ==</UUID>
+            <LOW_VALUE>03</LOW_VALUE>
+           </item>
+          </VALUES>
+          <TEXT>Activity</TEXT>
+          <STATUS>U</STATUS>
+          <IS_ACTVT>X</IS_ACTVT>
+         </item>
+         <item>
+          <FIELD>TABLE</FIELD>
+          <VALUE>/ESRCC/I_EXECUTIONSTATUS,/ESRCC/EXECST_T,/ESRCC/EXEC_ST,...</VALUE>
+          <VALUES>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD74CQ==</UUID>
+            <LOW_VALUE>/ESRCC/I_EXECUTIONSTATUS</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD7YCQ==</UUID>
+            <LOW_VALUE>/ESRCC/EXECST_T</LOW_VALUE>
+           </item>
+           <item>
+            <UUID>Ir0XPsPEHu+Ert5nkD64CQ==</UUID>
+            <LOW_VALUE>/ESRCC/EXEC_ST</LOW_VALUE>
+           </item>
+          </VALUES>
+          <TEXT>Table Name</TEXT>
+          <STATUS>U</STATUS>
+         </item>
+        </VALUES>
+       </item>
+      </AUTH_ITEM>
+     </item>
+    </AUTH>
+    <PUBLISH_STATUS>p</PUBLISH_STATUS>
+   </SIA6>
+  </asx:values>
+ </asx:abap>
+</abapGit>

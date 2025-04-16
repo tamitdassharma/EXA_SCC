@@ -1,0 +1,6 @@
+@EndUserText.label: 'Charge-Out by Service Provider'
+define service /ESRCC/UI_CALCULATE_COST {
+  expose /ESRCC/C_CostBaseStewardship as Costcentercost;
+  expose /ESRCC/C_ServiceProductShare as Servicemarkupcost;
+  expose /ESRCC/C_ReceiverChargeout as Receivercost;
+}

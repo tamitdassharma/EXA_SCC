@@ -1,0 +1,367 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product Cost & Receiver Share',
+    typeNamePlural: 'Service Product Cost & Receiver Share',
+    title: {
+      type: #STANDARD,
+      value: 'Serviceproduct'
+    },
+    description: {type: #STANDARD, value: 'Serviceproductdescription' }
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'Chargeout' }, 
+                                      { by: 'Serviceproduct' }] }]
+}
+annotate view /ESRCC/C_ServiceProductShare with
+{
+  @UI.facet: [
+  {
+  id: 'general',
+  type: #COLLECTION,
+  label: 'Service Cost Share & Markup',
+  purpose: #STANDARD,
+  position: 10
+  },
+  {
+    label: 'Service Details',
+    targetQualifier: 'OrgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Charge-Out Details',
+    targetQualifier: 'ChgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Admin Details',
+    targetQualifier: 'AdminData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+   {
+  id: '/ESRCC/I_ReceiverChargeOut',
+  type: #LINEITEM_REFERENCE,
+  //  label: 'Charge-Out to Receiver',
+  position: 20,
+  purpose: #STANDARD,
+  targetElement: '_ReceiverCost'
+  },
+  {type: #DATAPOINT_REFERENCE,
+  targetQualifier: 'shareofcostabs',
+   purpose: #HEADER
+  },
+  //  {type: #DATAPOINT_REFERENCE,
+  //  targetQualifier: 'markup',
+  //   purpose: #HEADER
+  //  },
+  //  {type: #DATAPOINT_REFERENCE,
+  //  targetQualifier: 'finalamount',
+  //   purpose: #HEADER
+  //  },
+  {type: #DATAPOINT_REFERENCE,
+   targetQualifier: 'status',
+    purpose: #HEADER
+  }
+  ]
+
+  @UI.lineItem: [{
+  position: 1 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '8em'}
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 5 ,
+   qualifier: 'ChgData'
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Chargeout;
+  @UI.lineItem: [ {
+  position: 10 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Serviceproduct;
+  @UI.lineItem: [ {
+  position: 20 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 80 ,
+    qualifier: 'OrgData'
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Servicetype;
+  @UI.lineItem: [ {
+  position: 30 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 90 ,
+   qualifier: 'OrgData'
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Transactiongroup;
+  @UI.lineItem: [ {
+  position: 35 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 95 ,
+   qualifier: 'OrgData'
+  } ]
+  ContractId;
+  @UI.lineItem: [ {
+  position: 40 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 40 ,
+    qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Share of Cost (%)'
+  Costshare;
+  @UI.lineItem: [ {
+  position: 50 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.dataPoint: { qualifier: 'shareofcostabs', title: 'Total Service Cost' }
+  @EndUserText.label: 'Total Service Cost'
+  Srvcostshare;
+  @UI.lineItem: [ {
+  position: 60 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 60 ,
+   qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Value-Add'
+  Valueaddshare;
+  @UI.lineItem: [ {
+  position: 70 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 70 ,
+   qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Pass-Through'
+  Passthroughshare;
+  @UI.lineItem: [ {
+  position: 71 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 71 ,
+   qualifier: 'ChgData'
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  CapacityVersion;
+  @UI.lineItem: [ {
+  position: 72 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 72 ,
+   qualifier: 'ChgData'
+  } ]
+  Planning;
+  @UI.lineItem: [ {
+  position: 599 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @EndUserText.label: 'Unit of Measure'
+  @UI.textArrangement: #TEXT_LAST
+  PlanningUom;
+  @UI.lineItem: [ {
+  position: 74 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 74 ,
+   qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Cost Base per unit'
+  Servicecostperunit;
+  @UI.lineItem: [ {
+  position: 75 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 75,
+   qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Value-Add per unit'
+  Valueaddcostperunit;
+  @UI.lineItem: [ {
+  position: 75 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 75 ,
+   qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Pass-Through per unit'
+  Passthrucostperunit;
+
+  @UI.textArrangement: #TEXT_ONLY
+  @UI.lineItem: [ {
+  position: 160 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.dataPoint: { qualifier: 'status', title: 'Service Cost Share & Mark-up Status' }
+  Status;
+  @UI.lineItem: [ {
+  position: 170 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+   importance: #HIGH,
+   position: 170 ,
+   qualifier: 'AdminData'
+  } ]
+  Workflowid;
+  @UI.lineItem: [ {
+    position: 250 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 10 ,
+    qualifier: 'AdminData'
+  } ]
+  CreatedBy;
+  @UI.lineItem: [ {
+    position: 260 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 20 ,
+    qualifier: 'AdminData'
+  } ]
+  CreatedAt;
+  @UI.lineItem: [ {
+    position: 270 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 30 ,
+    qualifier: 'AdminData'
+  } ]
+  LastChangedBy;
+  @UI.lineItem: [ {
+    position: 280 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 40 ,
+    qualifier: 'AdminData'
+  } ]
+  LastChangedAt;
+
+  @UI.lineItem: [
+   {  position: 598 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @EndUserText.label: 'Currency Type'
+  @UI.textArrangement: #TEXT_LAST
+  Currencytype;
+
+  @UI.hidden: true
+  Serviceproductdescription;
+  @UI.hidden: true
+  Servicetypedescription;
+  @UI.hidden: true
+  Transactiongroupdescription;
+  @UI.hidden: true
+  statusdescription;
+  @UI.hidden: true
+  chargeoutdescription;
+  @UI.hidden: true
+  unitname;
+  @UI.hidden
+  currencytypetext;
+  @UI.hidden: true
+  capacityversiontext;
+  @UI.lineItem: [
+   {  position: 999 ,
+    importance: #LOW,
+    label: 'ID'
+  } ]
+  UUID;
+  @UI.lineItem: [
+   {  position: 999 ,
+    importance: #LOW,
+    label: 'Parent ID'
+  } ]
+  ParentUUID;
+  @UI.lineItem: [
+   {  position: 999 ,
+    importance: #LOW
+  } ]
+  CommentId;
+
+}

@@ -1,0 +1,31 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Element Characteristics'
+  }
+}
+annotate view /ESRCC/C_CostElmenetCharacte_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_CostElmenetCharacte', 
+    purpose: #STANDARD, 
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    label: 'Maintain Cost Element Characteristics', 
+    position: 2,
+    targetQualifier: 'pVariant',
+    targetElement: '_CostElementChar'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+  @UI.identification: [ {
+    position: 2 , 
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

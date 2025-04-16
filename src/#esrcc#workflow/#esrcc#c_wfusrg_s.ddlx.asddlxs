@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Workflow User Group'
+  }
+}
+annotate view /ESRCC/C_WfUsrG_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_WfUsrG', 
+    purpose: #STANDARD, 
+    type: #LINEITEM_REFERENCE, 
+    label: 'Maintain Workflow User Groups', 
+    position: 2 , 
+    targetElement: '_UserGroup'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+  @UI.identification: [ {
+    position: 2 , 
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

@@ -1,0 +1,110 @@
+managed with additional save implementation in class /ESRCC/BP_I_EXECUTIONSTATUS unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_ExecutionStatus_S alias ExecutionStatusAll
+draft table /ESRCC/D_EXECS_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation ExecutionStatus~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _ExecutionStatus { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_ExecutionStatus alias ExecutionStatus
+persistent table /ESRCC/EXEC_ST
+draft table /ESRCC/D_EXECST
+etag master LocalLastChangedAt
+lock dependent by _ExecutionStatusAll
+authorization dependent by _ExecutionStatusAll
+
+{
+  field ( mandatory : create )
+   Application,
+   Status;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   Application,
+   Status;
+
+  field ( mandatory )
+   Color;
+
+
+  update( features : global, precheck );
+  delete( features : global );
+
+  mapping for /ESRCC/EXEC_ST
+  {
+    Application = APPLICATION;
+    Status = STATUS;
+    Color = COLOR;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ExecutionStatusAll { with draft; }
+  association _ExecutionStatusText { create ( features : global ); with draft; }
+
+  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_ExecutionStatusText alias ExecutionStatusText
+persistent table /ESRCC/EXECST_T
+draft table /ESRCC/D_EXECSTT
+etag master LocalLastChangedAt
+lock dependent by _ExecutionStatusAll
+authorization dependent by _ExecutionStatusAll
+
+{
+  field ( mandatory : create )
+   Spras;
+
+  field ( readonly )
+   SingletonID,
+   Application,
+   Status;
+
+  field ( readonly : update )
+   Spras;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/EXECST_T
+  {
+    Spras = SPRAS;
+    Application = APPLICATION;
+    Status = STATUS;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ExecutionStatusAll { with draft; }
+  association _ExecutionStatus { with draft; }
+
+  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

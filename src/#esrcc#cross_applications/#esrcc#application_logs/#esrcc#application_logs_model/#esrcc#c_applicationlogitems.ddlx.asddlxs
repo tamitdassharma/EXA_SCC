@@ -1,0 +1,29 @@
+@Metadata.layer: #CORE
+annotate view /ESRCC/C_ApplicationLogItems with
+{
+  @UI.lineItem: [{ position: 10 }]
+  MessageNumber;
+  @UI.lineItem: [{ position: 20, criticality: 'MessageTypeCriticality', criticalityRepresentation: #WITH_ICON }]
+  MessageType;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV1;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV2;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV3;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV4;
+  @EndUserText.label: 'Message Text'
+  @UI.lineItem: [{ position: 30 }]
+  MessageText;
+  @UI.selectionField: [{ position: 120 }]
+  @UI.lineItem: [{ position: 50 }]
+  CreatedAt;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  IsParent;
+}

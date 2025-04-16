@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service definition for/ESRCC/C_DIRALOCCONSUMPTN'
+define service /ESRCC/UI_DIRALOCCONSUMPTNDEF {
+  expose /ESRCC/C_DIRALOCCONSUMPTN as DirectAllocation;
+}

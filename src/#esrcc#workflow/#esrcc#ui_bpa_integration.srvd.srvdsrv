@@ -1,0 +1,4 @@
+@EndUserText.label: 'Workflow BPA Integration'
+define service /ESRCC/UI_BPA_INTEGRATION {
+  expose /ESRCC/C_BPA_INTEGRATION as bpaintegration;
+}

@@ -1,0 +1,49 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Workflow User Groups",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_WFUSRG",
+    "serviceName": "/ESRCC/UI_WFUSRG",
+    "serviceVersion": "0001",
+    "rootEntitySet": "UserGroupAll",
+    "name": "Workflow User Groups",
+    "configurationGroup": "/ESRCC/BC_GROUP8",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "UserGroup"
+      },
+      {
+        "entitySet": "UserMapping"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "UserGroup",
+        "tableType": "gridTable",
+        "selectionMode": "auto",
+        "rowCountMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "UserGroupAll",
+        "selectionMode": "auto"
+      },
+      {
+        "entitySet": "UserMapping",
+        "tableType": "gridTable",
+        "selectionMode": "auto",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}
