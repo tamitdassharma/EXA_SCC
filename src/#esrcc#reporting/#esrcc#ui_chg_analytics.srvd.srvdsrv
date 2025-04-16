@@ -1,0 +1,4 @@
+@EndUserText.label: 'ChargeOut Analytics'
+define service /ESRCC/UI_CHG_ANALYTICS {
+  expose /ESRCC/C_CHG_ANALYTICS as chargeoutanalytics;
+}

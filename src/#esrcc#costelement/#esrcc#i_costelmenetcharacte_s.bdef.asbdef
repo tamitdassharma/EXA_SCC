@@ -1,0 +1,78 @@
+managed with additional save implementation in class /ESRCC/BP_I_COSTELMENETCHARACT unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_CostElmenetCharacte_S alias CostElementCharAll
+draft table /esrcc/d_cstel_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation CostElementChar~ValidateData;
+  }
+
+  association _CostElementChar { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_CostElmenetCharacte alias CostElementChar
+persistent table /esrcc/cstelmtch
+draft table /esrcc/d_cstelmt
+etag master LocalLastChangedAt
+lock dependent by _CostElementCharAll
+authorization dependent by _CostElementCharAll
+
+{
+  field ( readonly )
+  SingletonID,
+  CstElmntCharUuid,
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy;
+
+  field ( numbering : managed )
+  CstElmntCharUuid;
+
+  field ( mandatory )
+  CostIndicator, ValidTo;
+
+  field ( mandatory : create, readonly : update )
+  Sysid, LegalEntity, CompanyCode, Costelement, ValidFrom;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  mapping for /ESRCC/CSTELMTCH
+  {
+    CstElmntCharUuid = CST_ELMNT_CHAR_UUID;
+    ValidFrom = VALID_FROM;
+    ValidTo = VALID_TO;
+    CostType = COST_TYPE;
+    PostingType = POSTING_TYPE;
+    CostIndicator = COST_INDICATOR;
+    UsageType = USAGE_TYPE;
+    ReasonId = REASON_ID;
+    ValueSource = VALUE_SOURCE;
+    CostElementUuid = COST_ELEMENT_UUID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _CostElementCharAll { with draft; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}

@@ -1,0 +1,47 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Transaction Groups (Level 1)",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_SRVTG_O4",
+    "serviceName": "/ESRCC/UI_SRVTG_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "TransactionGrpAll",
+    "name": "L1 - Transaction Groups",
+    "configurationGroup": "/ESRCC/BC_GROUP3",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "TransactionGrp"
+      },
+      {
+        "entitySet": "TransactionGrpText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "TransactionGrp",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "TransactionGrpAll",
+        "tableType": "gridTable"
+      },
+      {
+        "entitySet": "TransactionGrpText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

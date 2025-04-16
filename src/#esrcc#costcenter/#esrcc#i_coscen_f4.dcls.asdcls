@@ -1,0 +1,6 @@
+@EndUserText.label: 'Acces Control for Cost Number'
+@MappingRole: true
+define role /ESRCC/I_COSCEN_F4 {
+    grant select on /ESRCC/I_COSCEN_F4
+      where (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');                        
+}

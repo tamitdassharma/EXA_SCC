@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service definition for/ESRCC/C_INDIRECTALLOCKEYVALUE'
+define service /ESRCC/UI_INDALLOCKEYVALUES {
+  expose /ESRCC/C_INDIRECTALLOCKEYVALUE as IndirectAllocation;
+}

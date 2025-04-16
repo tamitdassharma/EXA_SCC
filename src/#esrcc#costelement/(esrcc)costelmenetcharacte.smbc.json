@@ -1,0 +1,37 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Cost Element Characteristics",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_COSTELMENETCHARA",
+    "serviceName": "/ESRCC/UI_COSTELMENETCHARA",
+    "serviceVersion": "0001",
+    "rootEntitySet": "CostElementCharAll",
+    "name": "Cost Element Characteristics",
+    "configurationGroup": "/ESRCC/BC_GROUP2",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "CostElementChar"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "CostElementChar",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "CostElementCharAll"
+      }
+    ]
+  }
+}

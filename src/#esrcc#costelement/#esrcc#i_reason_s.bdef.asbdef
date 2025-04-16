@@ -1,0 +1,99 @@
+managed with additional save implementation in class /ESRCC/BP_I_REASON unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Reason_S alias ReasonAll
+draft table /esrcc/d_reaso_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  //  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Reason { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Reason alias Reason
+persistent table /esrcc/reason
+draft table /esrcc/d_reason
+etag master LocalLastChangedAt
+lock dependent by _ReasonAll
+authorization dependent by _ReasonAll
+
+{
+  field ( mandatory : create )
+  Reasonid;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Reasonid;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/REASON
+  {
+    Reasonid = REASONID;
+    Calculationusage = CALCULATIONUSAGE;
+    Defaultflag = DEFAULTFLAG;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ReasonAll { with draft; }
+  association _ReasonText { create ( features : global ); with draft; }
+
+  //  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_ReasonText alias ReasonText
+persistent table /esrcc/reasont
+draft table /esrcc/d_reasont
+etag master LocalLastChangedAt
+lock dependent by _ReasonAll
+authorization dependent by _ReasonAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Reasonid;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/REASONT
+  {
+    Spras = SPRAS;
+    Reasonid = REASONID;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ReasonAll { with draft; }
+  association _Reason { with draft; }
+
+  //  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

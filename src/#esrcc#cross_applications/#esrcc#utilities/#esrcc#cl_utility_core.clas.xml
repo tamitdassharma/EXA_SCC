@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/ESRCC/CL_UTILITY_CORE</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Service Cross Charging core utility</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>5</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_LAST_DAY_OF_MONTH</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get the last day of the month</DESCRIPT>
+    </SEOCOMPOTX>
+    <SEOCOMPOTX>
+     <CMPNAME>GET_UTC_DATE_TIME_TS</CMPNAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Get UTC date and time from UTC time stamp</DESCRIPT>
+    </SEOCOMPOTX>
+   </DESCRIPTIONS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_LAST_DAY_OF_MONTH</CMPNAME>
+     <SCONAME>DATE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Input Date: YYYYMMDD</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_LAST_DAY_OF_MONTH</CMPNAME>
+     <SCONAME>END_DATE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>End Date</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_UTC_DATE_TIME_TS</CMPNAME>
+     <SCONAME>DATE</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>UTC Date</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_UTC_DATE_TIME_TS</CMPNAME>
+     <SCONAME>TIME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>UTC Time</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_UTC_DATE_TIME_TS</CMPNAME>
+     <SCONAME>TIME_STAMP</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>UTC Time Stamp</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

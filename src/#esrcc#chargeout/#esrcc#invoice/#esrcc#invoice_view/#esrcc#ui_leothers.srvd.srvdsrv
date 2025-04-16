@@ -1,0 +1,4 @@
+define service /ESRCC/UI_LEOTHERS {
+  expose /ESRCC/C_LEOTHERS_S as OtherInformationAll;
+  expose /ESRCC/C_LEOTHERS as OtherInformation;
+}

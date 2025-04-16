@@ -1,0 +1,5 @@
+define service /ESRCC/UI_REASON {
+  expose /ESRCC/C_REASON_S as ReasonAll;
+  expose /ESRCC/C_REASON as Reason;
+  expose /ESRCC/C_REASONTEXT as ReasonText;
+}

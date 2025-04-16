@@ -1,0 +1,39 @@
+projection implementation in class /ESRCC/BP_C_ALLOCATIONKEY_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_AllocationKey_S alias AllocationKeyAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _AllocationKey { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_AllocationKey alias AllocationKey
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _AllocationKeyAll { with draft; }
+  use association _AllocationKeyText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_AllocationKeyText alias AllocationKeyText
+
+{
+  use update;
+  use delete;
+
+  use association _AllocationKeyAll { with draft; }
+  use association _AllocationKey { with draft; }
+}

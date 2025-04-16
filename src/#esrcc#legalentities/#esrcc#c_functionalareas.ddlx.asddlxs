@@ -1,0 +1,59 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Functional Area',
+    typeNamePlural: 'Functional Areas',
+    title: {
+      type: #STANDARD,
+      value: 'FunctionalArea'
+    },
+    description: { value: 'Description' }
+  }
+}
+annotate view /ESRCC/C_FunctionalAreas with
+{
+  @UI.facet: [ {
+   id: 'CE',
+   type: #COLLECTION,
+   position: 1
+  },
+  {
+   id: 'Admin',
+   purpose: #STANDARD,
+   type: #FIELDGROUP_REFERENCE,
+   parentId: 'CE',
+   targetQualifier: 'AdminGroup',
+   label: 'Admin Information',
+   position: 10
+  },
+  {
+    id: '/ESRCC/I_FunctionalAreasText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 20,
+    targetElement: '_FunctionalAreasText'
+  } ]
+
+  @UI.identification: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 } ]
+  FunctionalArea;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 6  } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 7, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+}

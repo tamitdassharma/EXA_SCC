@@ -1,0 +1,11 @@
+@EndUserText.label: 'Indirect Allocation Key Value Access Control'
+@MappingRole: true
+define role /ESRCC/C_INDIRECTALLOCKEYVALUE {
+    grant
+        select
+            on
+                /ESRCC/C_INDIRECTALLOCKEYVALUE
+                    where
+                        inheriting conditions from entity /ESRCC/I_INDIRECTALLOCKEYVALUE;
+                        
+}

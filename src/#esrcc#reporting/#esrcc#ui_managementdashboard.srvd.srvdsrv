@@ -1,0 +1,4 @@
+@EndUserText.label: 'Management Dashboard'
+define service /ESRCC/UI_MANAGEMENTDASHBOARD {
+  expose /ESRCC/I_CHARGEOUT_CHARTS as managementdashboard;
+}

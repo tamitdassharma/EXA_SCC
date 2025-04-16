@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain & Assign Company Codes",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_LECCODE_O4",
+    "serviceName": "/ESRCC/UI_LECCODE_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "LeToCompanyCodeAll",
+    "name": "Company Codes",
+    "configurationGroup": "/ESRCC/BC_GROUP1",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "CompanyCodeText"
+      },
+      {
+        "entitySet": "LeToCompanyCode"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "CompanyCodeText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "LeToCompanyCode",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "LeToCompanyCodeAll"
+      }
+    ]
+  }
+}

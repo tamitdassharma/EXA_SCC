@@ -1,0 +1,25 @@
+projection;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_LeOthers_S alias OtherInformationAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _OtherInformation { create; with draft; }
+}
+
+define behavior for /ESRCC/C_LeOthers alias OtherInformation
+
+{
+  use update;
+  use delete;
+
+  use association _OtherInformationAll { with draft; }
+}

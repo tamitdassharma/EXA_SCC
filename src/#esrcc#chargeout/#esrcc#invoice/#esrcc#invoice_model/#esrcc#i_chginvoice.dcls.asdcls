@@ -1,0 +1,7 @@
+@EndUserText.label: 'ChargeOut Invoice'
+@MappingRole: true
+define role /ESRCC/I_CHGINVOICE {
+    grant select on /ESRCC/I_CHGINVOICE
+      where (Legalentity) = aspect pfcg_auth('/ESRCC/LE', /ESRCC/LE, ACTVT = '03') AND
+      (CostObject,CostCenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');        
+}

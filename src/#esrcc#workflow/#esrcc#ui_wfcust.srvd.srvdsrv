@@ -1,0 +1,4 @@
+define service /ESRCC/UI_WFCUST {
+  expose /ESRCC/C_WFCUST_S as RoleAssignmentAll;
+  expose /ESRCC/C_WFCUST as RoleAssignment;
+}

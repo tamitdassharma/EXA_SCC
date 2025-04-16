@@ -1,0 +1,108 @@
+@Metadata.layer: #CORE
+
+@UI: {
+  headerInfo: {
+    typeName: 'Data Upload',
+    typeNamePlural: 'Data Uploads'
+  }
+}
+annotate view /ESRCC/C_UploadStaging with
+{
+  @UI.facet:
+  [    {
+       label: 'General Information',
+          id: 'GeneralInfo',
+        type: #COLLECTION,
+        position: 10
+      },
+                  {
+                   id: 'ScenarioInfo',
+                   purpose: #STANDARD,
+                   type: #FIELDGROUP_REFERENCE,
+                   parentId: 'GeneralInfo',
+                   label: 'Data Upload Scenario',
+                   position: 10,
+                   targetQualifier: 'scenario'
+                 },
+                 {
+                   id: 'UploadInfo',
+                   purpose: #STANDARD,
+                   type: #FIELDGROUP_REFERENCE,
+                   parentId: 'GeneralInfo',
+                   label: 'Attachment Details',
+                   position: 20,
+                   targetQualifier: 'Upload'
+                 },
+                 {
+                   id: 'AdminInfo',
+                   purpose: #STANDARD,
+                   type: #FIELDGROUP_REFERENCE,
+                   parentId: 'GeneralInfo',
+                   label: 'Admin Details',
+                   position: 30,
+                   targetQualifier: 'admin'
+                 }]
+  @UI.hidden: true
+  UploadUUID;
+  @UI: {
+    lineItem: [{ position: 10, importance: #HIGH , label: 'Scenario'} ],
+    fieldGroup: [{ position: 10, qualifier: 'scenario' , label: 'Scenario'} ],
+    selectionField: [{position: 10}],
+    textArrangement: #TEXT_ONLY }
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_UPLOADSCENARIOS', element: 'SubApplication' }}]
+  @EndUserText.label: 'Scenario'
+  SubApplication;
+  @UI: {
+    lineItem: [{ hidden: true }],
+    fieldGroup: [{ position: 20, qualifier: 'Upload' , label: 'Upload File'}] }
+  DataStream;
+  @UI.hidden: true
+  MimeType;
+  @UI: { lineItem: [ { position: 15, importance: #HIGH } ] }
+  @EndUserText.label: 'File Name'
+  Filename;
+  @UI: {
+    lineItem: [{ hidden: true }],
+    fieldGroup: [ { position: 30, qualifier: 'scenario' , label: 'Download Template'} ]}
+  TemporaryDataStream;
+  @UI.hidden: true
+  TemporaryMimetype;
+  @UI.hidden: true
+  TemporaryFileName;
+  @UI: {
+    selectionField: [{position: 11}],
+    lineItem: [{ position: 11, importance: #HIGH , label: 'Table Name'}],
+    fieldGroup: [{ position: 11, qualifier: 'scenario' , label: 'Table Name'} ]}
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_UploadTables', element: 'tableName' }}]
+  @EndUserText.label: 'Table Name'
+  TableName;
+  @UI: {
+    textArrangement: #TEXT_ONLY,
+    selectionField: [{position: 20}],
+    lineItem: [{ position: 25, importance: #HIGH, criticality: 'statuscriticallity'} ],
+    fieldGroup: [{ position: 30, qualifier: 'scenario', criticality: 'statuscriticallity'} ]}
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_UPLOADSTATUSES', element: 'Status' } }]
+  Status;
+  @UI:{
+    lineItem: [{ position: 20, importance: #HIGH } ],
+    fieldGroup: [ { position: 10, qualifier: 'admin' } ]}
+  CreatedBy;
+  @UI: {
+    lineItem: [{ position: 30, importance: #HIGH } ],
+    fieldGroup: [ { position: 20, qualifier: 'admin' } ]}
+  CreatedAt;
+  @UI: {
+    lineItem: [{ position: 40, importance: #HIGH } ],
+    fieldGroup: [ { position: 30, qualifier: 'admin' } ]}
+  LastChangedBy;
+  @UI: {
+    lineItem: [{ position: 50, importance: #MEDIUM } ],
+    fieldGroup: [ { position: 40, qualifier: 'admin' } ]}
+  LastChangedAt;
+  @UI.hidden: true
+  StatusCriticallity;
+  @UI.hidden: true
+  ApplicationText;
+  @UI.hidden: true
+  UploadStatusText;
+}

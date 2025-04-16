@@ -1,0 +1,38 @@
+projection implementation in class /ESRCC/BP_C_FUNCTIONALAREAS_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_FunctionalAreas_S alias FunctionalAreasAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _FunctionalAreas { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_FunctionalAreas alias FunctionalAreas
+
+{
+  field ( modify )
+  Description;
+
+  use update ( augment );
+  use delete;
+
+  use association _FunctionalAreasAll { with draft; }
+  use association _FunctionalAreasText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_FunctionalAreasText alias FunctionalAreasText
+
+{
+  use update;
+  use delete;
+
+  use association _FunctionalAreasAll { with draft; }
+  use association _FunctionalAreas { with draft; }
+}

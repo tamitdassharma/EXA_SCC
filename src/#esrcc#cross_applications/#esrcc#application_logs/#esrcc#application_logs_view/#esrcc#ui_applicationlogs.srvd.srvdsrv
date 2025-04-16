@@ -1,0 +1,4 @@
+@EndUserText.label: 'Application Logs Service'
+define service /ESRCC/UI_ApplicationLogs {
+  expose /ESRCC/C_ApplicationLogs as ApplicationLogs;
+}

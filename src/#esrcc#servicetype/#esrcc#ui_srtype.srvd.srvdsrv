@@ -1,0 +1,5 @@
+define service /ESRCC/UI_SRTYPE {
+  expose /ESRCC/C_SRTYPE_S as ServiceTypeAll;
+  expose /ESRCC/C_SRTYPE as ServiceType;
+  expose /ESRCC/C_SRTYPETEXT as ServiceTypeText;
+}

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Comments'
+define service /ESRCC/UI_COMMENTS {
+  expose /ESRCC/C_COMMENTS as comments;
+}

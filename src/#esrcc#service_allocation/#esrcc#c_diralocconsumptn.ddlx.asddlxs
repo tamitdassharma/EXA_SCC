@@ -1,0 +1,281 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Service Consumption',
+    typeNamePlural: 'Service Consumptions'
+  }
+}
+annotate view /ESRCC/C_DIRALOCCONSUMPTN with
+{
+  @UI.facet: [ {
+   id: 'CE',
+   purpose: #STANDARD,
+   type: #COLLECTION,
+   label: 'Service Consumption'
+  },
+  {
+    id: 'Receiver',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ReceiverGroup',
+    label: 'Consumer Information',
+    position: 10
+  },
+  {
+    id: 'Provider',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ProviderGroup',
+    label: 'Provider Information',
+    position: 20
+  },
+  {
+    id: 'Consumption',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ConsumptionGroup',
+    label: 'Consumption Information',
+    position: 20
+  },
+  {
+   id: 'Admin',
+   purpose: #STANDARD,
+   type: #FIELDGROUP_REFERENCE,
+   parentId: 'CE',
+   targetQualifier: 'AdminGroup',
+   label: 'Admin Information',
+   position: 30
+  } ]
+
+  @UI.hidden: true
+  @EndUserText.label: 'UUID'
+  DirectAllocationUuid;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Cost Object UUID'
+  CostObjectUuid;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Provider Cost Object UUID'
+  ProviderCostObjectUuid;
+
+  @UI.lineItem: [ { position: 10, importance: #MEDIUM, cssDefault.width: '15rem' } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ReceiverGroup' }]
+  @UI.selectionField: [{ position: 10 }]
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'ReceivingEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ReceivingCompany', element: 'CompanyCode' },
+                                                           { localElement: 'Costobject', element: 'Costobject' },
+                                                           { localElement: 'Costcenter', element: 'Costcenter' },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  Sysid;
+
+  @UI.lineItem: [ { position: 20, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ReceiverGroup' }]
+  @UI.selectionField: [{ position: 20 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'LegalEntity' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'ReceivingCompany', element: 'CompanyCode' },
+                                                           { localElement: 'Costobject', element: 'Costobject' },
+                                                           { localElement: 'Costcenter', element: 'Costcenter' },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ReceivingEntity;
+
+  @UI.lineItem: [ { position: 30, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'ReceiverGroup' }]
+  @UI.selectionField: [{ position: 30 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'CompanyCode' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'ReceivingEntity', element: 'LegalEntity' },
+                                                           { localElement: 'Costobject', element: 'Costobject' },
+                                                           { localElement: 'Costcenter', element: 'Costcenter' },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ReceivingCompany;
+
+  @UI.lineItem: [ { position: 40, importance: #MEDIUM, cssDefault.width: '11.5rem' } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'ReceiverGroup' }]
+  @UI.selectionField: [{ position: 40 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costobject' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'ReceivingEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ReceivingCompany', element: 'CompanyCode' },
+                                                           { localElement: 'Costcenter', element: 'Costcenter' },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  Costobject;
+
+  @UI.lineItem: [ { position: 50, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 50, qualifier: 'ReceiverGroup' }]
+  @UI.selectionField: [{ position: 50 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+                                                           { localElement: 'ReceivingEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ReceivingCompany', element: 'CompanyCode' },
+                                                           { localElement: 'Costobject', element: 'Costobject' },
+                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  Costcenter;
+
+  @UI.lineItem: [ { position: 60, importance: #MEDIUM, cssDefault.width: '15rem' } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ProviderGroup' }]
+  @UI.selectionField: [{ position: 60 }]
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'ProviderEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ProviderCompany', element: 'CompanyCode' },
+                                                           { localElement: 'ProviderCostobject', element: 'Costobject' },
+                                                           { localElement: 'ProviderCostcenter', element: 'Costcenter' },
+                                                           { localElement: 'ProviderCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ProviderSysid;
+
+  @UI.lineItem: [ { position: 70, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ProviderGroup' }]
+  @UI.selectionField: [{ position: 70 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'LegalEntity' },
+                                       additionalBinding: [{ localElement: 'ProviderSysid', element: 'Sysid' },
+                                                           { localElement: 'ProviderCompany', element: 'CompanyCode' },
+                                                           { localElement: 'ProviderCostobject', element: 'Costobject' },
+                                                           { localElement: 'ProviderCostcenter', element: 'Costcenter' },
+                                                           { localElement: 'ProviderCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ProviderEntity;
+
+  @UI.lineItem: [ { position: 80, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'ProviderGroup' }]
+  @UI.selectionField: [{ position: 80 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'CompanyCode' },
+                                       additionalBinding: [{ localElement: 'ProviderSysid', element: 'Sysid' },
+                                                           { localElement: 'ProviderEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ProviderCostobject', element: 'Costobject' },
+                                                           { localElement: 'ProviderCostcenter', element: 'Costcenter' },
+                                                           { localElement: 'ProviderCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ProviderCompany;
+
+  @UI.lineItem: [ { position: 90, importance: #MEDIUM, cssDefault.width: '11.5rem' } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'ProviderGroup' }]
+  @UI.selectionField: [{ position: 90 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costobject' },
+                                       additionalBinding: [{ localElement: 'ProviderSysid', element: 'Sysid' },
+                                                           { localElement: 'ProviderEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ProviderCompany', element: 'CompanyCode' },
+                                                           { localElement: 'ProviderCostcenter', element: 'Costcenter' },
+                                                           { localElement: 'ProviderCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ProviderCostobject;
+
+  @UI.lineItem: [ { position: 100, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 50, qualifier: 'ProviderGroup' }]
+  @UI.selectionField: [{ position: 100 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ localElement: 'ProviderSysid', element: 'Sysid' },
+                                                           { localElement: 'ProviderEntity', element: 'LegalEntity' },
+                                                           { localElement: 'ProviderCompany', element: 'CompanyCode' },
+                                                           { localElement: 'ProviderCostobject', element: 'Costobject' },
+                                                           { localElement: 'ProviderCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  ProviderCostcenter;
+
+  @UI.lineItem: [ { position: 110, importance: #MEDIUM, cssDefault.width: '11.5rem' } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ConsumptionGroup' }]
+  @UI.selectionField: [{ position: 110 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CONSUMPTION_VERSION', element: 'ConsumptionVersion' },
+                                       useForValidation: true } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Fplv;
+
+  @UI.lineItem: [ { position: 120, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ConsumptionGroup' }]
+  @UI.selectionField: [{ position: 120 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' },
+                                       useForValidation: true }]
+  Ryear;
+
+  @UI.lineItem: [ { position: 130, importance: #MEDIUM, cssDefault.width: '4.5rem' } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'ConsumptionGroup' }]
+  @UI.selectionField: [{ position: 130 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' },
+                                       useForValidation: true }]
+  @Consumption.filter.multipleSelections: true
+  @UI.textArrangement: #TEXT_ONLY
+  Poper;
+
+  @UI.lineItem: [ { position: 140, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'ConsumptionGroup' }]
+  @UI.selectionField: [{ position: 140 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
+                                       useForValidation: true }]
+  @Consumption.filter.multipleSelections: true
+  @UI.textArrangement: #TEXT_LAST
+  ServiceProduct;
+
+  @UI.lineItem: [ { position: 150, importance: #MEDIUM } ]
+  @UI.fieldGroup: [{ position: 50, qualifier: 'ConsumptionGroup' }]
+  Consumption;
+
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_UnitOfMeasure', element: 'UnitOfMeasure' } } ]
+  @EndUserText.label: 'Unit of Measure'
+  @Consumption.filter.hidden: true
+  Uom;
+
+  @UI.lineItem: [ { position: 160, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 170 } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 180, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 190 } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'AdminGroup' }]
+  @Consumption.filter.hidden: true
+  LastChangedAt;
+
+  @UI.hidden: true
+  ServiceProductDescription;
+  @UI.hidden: true
+  SysidDescription;
+  @UI.hidden: true
+  ReceivingEntityDescription;
+  @UI.hidden: true
+  ReceivingCompanyDescription;
+  @UI.hidden: true
+  CostObjectDescription;
+  @UI.hidden: true
+  CostCenterDescription;
+  @UI.hidden: true
+  ProviderSysidDescription;
+  @UI.hidden: true
+  ProviderEntityDescription;
+  @UI.hidden: true
+  ProviderCompanyDescription;
+  @UI.hidden: true
+  ProviderCostObjectDescription;
+  @UI.hidden: true
+  ProviderCostCenterDescription;
+  @UI.hidden: true
+  PoperDescription;
+  @UI.hidden: true
+  FplvDescription;
+}

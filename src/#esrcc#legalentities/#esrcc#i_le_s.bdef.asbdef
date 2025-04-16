@@ -1,0 +1,109 @@
+managed with additional save implementation in class /ESRCC/BP_I_LE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LE_S alias LegalEntityAll
+draft table /ESRCC/D_LE_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation LegalEntity~ValidateData;
+  }
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _LegalEntity { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_LE alias LegalEntity
+persistent table /ESRCC/LE
+draft table /ESRCC/D_LE
+etag master LocalLastChangedAt
+lock dependent by _LegalEntityAll
+authorization dependent by _LegalEntityAll
+
+{
+  field ( mandatory : create )
+   Legalentity;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+   field ( mandatory )
+    LocalCurr, Entitytype, Region, Role;
+
+  field ( readonly : update )
+   Legalentity;
+
+
+  update( features : global, precheck );
+  delete( features : global );
+
+  mapping for /ESRCC/LE
+  {
+    Legalentity = LEGALENTITY;
+    Country = COUNTRY;
+    LocalCurr = LOCAL_CURR;
+    Entitytype = ENTITYTYPE;
+    Region = REGION;
+    Role = ROLE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _LegalEntityAll { with draft; }
+  association _LegalEntityText { create ( features : global ); with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_LEText alias LegalEntityText
+persistent table /ESRCC/LE_T
+draft table /ESRCC/D_LE_T
+etag master LocalLastChangedAt
+lock dependent by _LegalEntityAll
+authorization dependent by _LegalEntityAll
+
+{
+  field ( mandatory : create )
+   Spras;
+
+  field ( readonly )
+   SingletonID,
+   Legalentity;
+
+  field ( readonly : update )
+   Spras;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/LE_T
+  {
+    Spras = SPRAS;
+    Legalentity = LEGALENTITY;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _LegalEntityAll { with draft; }
+  association _LegalEntity { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

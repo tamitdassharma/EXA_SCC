@@ -1,0 +1,82 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Execution Cockpit Status',
+    typeNamePlural: 'Execution Cockpit Statuses',
+    title: {
+      type: #STANDARD,
+      value: 'Application'
+    }
+  }
+}
+annotate view /ESRCC/C_ExecutionStatus with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION
+  },
+  {
+    id: '/ESRCC/I_ExecutionStatus',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_ExecutionStatusText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 2 ,
+    targetElement: '_ExecutionStatusText'
+  } ]
+
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_APPLICATION_TYPE', element: 'ApplicationType' } }]
+  Application;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2, cssDefault.width: '7rem' } ]
+  Status;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4, cssDefault.width: '8.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COLORCODE_F4', element: 'ColorCode' } }]
+  Color;
+
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 6, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 3 } ]
+  Description;
+
+  @UI.hidden: true
+  ApplicationDescription;
+  @UI.hidden: true
+  ColorCodeDescription;
+}

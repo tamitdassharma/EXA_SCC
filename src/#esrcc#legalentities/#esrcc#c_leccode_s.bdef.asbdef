@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_LECCODE unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_LeCcode_S alias LeToCompanyCodeAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _LeToCompanyCode { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_LeCcode alias LeToCompanyCode
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _LeToCompanyCodeAll { with draft; }
+  use association _CompanyCodeText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_CcodeText alias CompanyCodeText
+
+{
+  use update;
+  use delete;
+
+  use association _LeToCompanyCodeAll { with draft; }
+  use association _LeToCompanyCode { with draft; }
+}

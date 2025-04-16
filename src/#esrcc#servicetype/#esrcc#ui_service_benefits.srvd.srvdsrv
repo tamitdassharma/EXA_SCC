@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service Product Benefits /Activities'
+define service /ESRCC/UI_SERVICE_BENEFITS {
+  expose /ESRCC/C_SRVPROTEXT_BENEFITS as ServiceProductText;
+}

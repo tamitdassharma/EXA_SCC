@@ -1,0 +1,25 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Object'
+  }
+}
+annotate view /ESRCC/C_CstObjct_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_CstObjct',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Cost Object Master Data & Frequency',
+    position: 2 ,
+    targetElement: '_CostObject'
+  } ]
+  @UI.lineItem: [ { position: 1 } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ { position: 2, importance: #HIGH } ]
+  TransportRequestID;
+}

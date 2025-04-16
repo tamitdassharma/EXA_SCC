@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Message Class for Manage Cost Base</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>No Authorization to perform action for legal entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Line item (Doc : &amp;1) is Finalized and cannot be changed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Line item (Doc : &amp;1) is in Approval Pending and cannot be changed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Only Line items (Doc : &amp;1) with status Draft are allowed for Submit</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Only Line items (Doc : &amp;1) with status Draft can be discarded</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Only Approved Items can be charged-out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>Charge-out completely successfully</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>Year, poper, dataset, entity &amp; cost object are not same for all items</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>Excluded items cannot be charged-out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Charge-out is already in Progress, Please review in Execution Cockpit</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Please add receivers for Charge-out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>No Authorization to Perform Ad-hoc Charge-out for legal entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>No Authorization to Discard Changes for Legal Entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>Please run simulation before submit</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>Receiver cannot be same as Provider</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -1,0 +1,5 @@
+define service /ESRCC/UI_BUSDIV {
+  expose /ESRCC/C_BUSDIV_S as BusinessDivisionAll;
+  expose /ESRCC/C_BUSDIV as BusinessDivision;
+  expose /ESRCC/C_BUSDIVTEXT as BusinessDivisioText;
+}

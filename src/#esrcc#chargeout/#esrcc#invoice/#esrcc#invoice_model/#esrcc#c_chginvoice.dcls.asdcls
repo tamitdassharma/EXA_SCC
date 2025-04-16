@@ -1,0 +1,7 @@
+@EndUserText.label: 'Access Control for /ESRCC/C_CHGINVOICE'
+@MappingRole: true
+define role /ESRCC/C_CHGINVOICE {
+    grant select on /ESRCC/C_CHGINVOICE
+    where inheriting conditions from entity /ESRCC/I_CHGINVOICE;
+                        
+}

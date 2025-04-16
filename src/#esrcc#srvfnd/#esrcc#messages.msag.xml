@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>/ESRCC/MESSAGES</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>SCC Messages</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>No Authorisation to delete Ad-hoc Charge-out for Legal Entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>No Authorisation to delete Ad-hoc Charge-out for Cost Object &amp;1 / &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>No Authorization to Create for Legal Entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>No Authorization to Create for Cost Object &amp;1 / &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>No Authorization to Update for Legal Entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>No Authorization to Update for Cost Object &amp;1 / &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>No Authorization to Delete for Legal Entity &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>No Authorization to Delete for Cost Object &amp;1 / &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MESSAGES</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>No Line items found for the selected Ad-hoc Charge-out</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

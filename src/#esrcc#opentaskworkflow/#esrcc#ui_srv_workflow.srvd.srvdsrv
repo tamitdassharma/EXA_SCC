@@ -1,0 +1,4 @@
+@EndUserText.label: 'Open Task Service Chargeout'
+define service /ESRCC/UI_SRV_WORKFLOW {
+  expose /ESRCC/C_SRV_WORKFLOW as opentaskserviceworkflow;
+}

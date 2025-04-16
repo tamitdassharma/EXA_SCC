@@ -1,0 +1,63 @@
+managed with additional save implementation in class /ESRCC/BP_I_GROUPCONFIG unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_GroupConfig_S alias GroupConfigAll
+draft table /esrcc/d_group_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _GroupConfig { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_GroupConfig alias GroupConfig
+persistent table /esrcc/group
+draft table /esrcc/d_group
+etag master LocalLastChangedAt
+lock dependent by _GroupConfigAll
+authorization dependent by _GroupConfigAll
+
+{
+  field ( mandatory : create )
+  Id;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Id;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/GROUP
+  {
+    Id = ID;
+    GroupCurrency = GROUP_CURRENCY;
+    CostSign = COST_SIGN;
+    ConversionRateType = CONVERSION_RATE_TYPE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _GroupConfigAll { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

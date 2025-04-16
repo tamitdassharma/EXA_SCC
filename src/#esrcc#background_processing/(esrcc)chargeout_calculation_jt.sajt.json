@@ -1,0 +1,29 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "SCC Chargeout Calculatoin Job Template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "/ESRCC/SCC_JOB_CATALOG"
+  },
+  "parameters": {
+    "valueRangesParameters": [
+      {
+        "name": "ACTION",
+        "valueRanges": [
+          {
+            "sign": "include",
+            "option": "equals",
+            "low": ""
+          }
+        ]
+      },
+      {
+        "name": "ID",
+        "valueRanges": []
+      }
+    ]
+  }
+}

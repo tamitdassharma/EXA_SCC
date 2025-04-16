@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/ESRCC/CL_ABAP_DICTIONARY</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>SCC ABAP Dictionary</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>5</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>READ_METAEXT_ENDUSER_LABEL</CMPNAME>
+     <SCONAME>IV_FIELD_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>XCO CDS: Field name</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>READ_METAEXT_FIELDGROUP_LABEL</CMPNAME>
+     <SCONAME>IV_FIELD_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>XCO CDS: Field name</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>READ_METAEXT_IDENT_LABEL</CMPNAME>
+     <SCONAME>IV_FIELD_NAME</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>XCO CDS: Field name</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

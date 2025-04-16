@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Execution Cockpit</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>Stewardship not maintained or configured as 0.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Service Markup&apos;s not maintained or configured as 0.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Charge-out rule for service not maintained</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Charge-out configuration for service not maintained</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Receivers for service not found</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>Data already exist with a different billing frequency &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>No Authorization to Calculate Cost Base &amp; Stewardship</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>No Authorization to Calculate Service Product Costing</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>No Authorization to Calculate Charge-out to Receivers</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Use sequential charge-out action to process</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>No Authorization to Finalize Cost Base &amp; Stewardship</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>No Authorization to Re-open Cost Base &amp; Stewardship</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>No Authorization to Finalize Service Product Costing</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>No Authorization to Re-open Service Product Costing</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>No Authorization to Finalize Charge-out to Receivers</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>No Authorization to Re-open Charge-out to Receivers</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>Please switch off workflow for all Charge-out processes</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>Legal entity not active for &amp;1. Please check configuration</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>018</MSGNR>
+     <TEXT>Checks for calculation period: &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>019</MSGNR>
+     <TEXT>Stewardship either not valid or not finalized or do not exist</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>020</MSGNR>
+     <TEXT>Cost base line Items not available</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>021</MSGNR>
+     <TEXT>Total initial cost is zero. Please check cost base line items</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>022</MSGNR>
+     <TEXT>&amp;1 &amp;2 &amp;3 &amp;4</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>Charge-out rule for service product &amp;1 is not finalized or not maintained</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>024</MSGNR>
+     <TEXT>No capacity found for service product &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>Zero capacity found for service product  &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>026</MSGNR>
+     <TEXT>Please review logs</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>027</MSGNR>
+     <TEXT>No consumption or Indirect key base values found for any receiver.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>028</MSGNR>
+     <TEXT>No consumption found for any receiver</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>029</MSGNR>
+     <TEXT>Indirect key base values not found for any receiver</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>030</MSGNR>
+     <TEXT>UoM between capacity and consumption of receivers is different</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

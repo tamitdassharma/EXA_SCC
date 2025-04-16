@@ -1,0 +1,171 @@
+managed with additional save implementation in class /ESRCC/BP_I_CORULE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_CoRule_S alias RuleAll
+draft table /esrcc/d_co_ru_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation Rule~ValidateData;
+    validation Weightage~ValidateData;
+  }
+
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Rule { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_CoRule alias Rule
+persistent table /esrcc/co_rule
+draft table /esrcc/d_co_rule
+etag master LocalLastChangedAt
+lock dependent by _RuleAll
+authorization dependent by _RuleAll
+
+{
+  field ( mandatory : create )
+  RuleId, ChargeoutMethod;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy,
+  WorkflowId, WorkflowStatus, Comments,
+  HideCostVersion, HideCapacityVersion, HideConsumptionVersion, HideKeyVersion,
+  HideAdhocAllocationKey, HideWeightageTab;
+
+  field ( mandatory )
+  CostVersion, CapacityVersion, ConsumptionVersion, KeyVersion, AdhocAllocationKey;
+
+  field ( readonly : update )
+  RuleId;
+
+  update ( features : instance, precheck );
+  delete ( features : instance );
+
+  mapping for /ESRCC/CO_RULE
+  {
+    RuleId = RULE_ID;
+    CostVersion = COST_VERSION;
+    ChargeoutMethod = CHARGEOUT_METHOD;
+    CapacityVersion = CAPACITY_VERSION;
+    ConsumptionVersion = CONSUMPTION_VERSION;
+    KeyVersion = KEY_VERSION;
+    AdhocAllocationKey = ADHOC_ALLOCATION_KEY;
+    WorkflowId = WORKFLOW_ID;
+    WorkflowStatus = WORKFLOW_STATUS;
+    CommentId = COMMENT_ID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _RuleAll { with draft; }
+  association _RuleText { create ( features : instance ); with draft; }
+  association _Weightage { create ( features : instance ); with draft; }
+
+  action ( features : instance ) Submit parameter /ESRCC/C_COMMENT result [1] $self;
+  action ( features : instance ) Finalize result [1] $self;
+  action ( features : instance ) Reopen result [1] $self;
+
+  determination UpdateInternalWorkflowStatus on modify { field ChargeoutMethod, CostVersion, ConsumptionVersion, CapacityVersion, KeyVersion, AdhocAllocationKey; }
+  determination UpdateWorkflowStatus on save { field WorkflowInternalStatus; }
+  determination UpdateComment on save { field Comments; }
+  determination TriggerWorkflow on save { field WorkflowStatus; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_CoRuleText alias RuleText
+persistent table /esrcc/co_rulet
+draft table /esrcc/d_co_rult
+etag master LocalLastChangedAt
+lock dependent by _RuleAll
+authorization dependent by _RuleAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  RuleId;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : instance );
+  delete ( features : instance );
+
+  mapping for /ESRCC/CO_RULET
+  {
+    Spras = SPRAS;
+    RuleId = RULE_ID;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _RuleAll { with draft; }
+  association _Rule { with draft; }
+
+  determination UpdateInternalWorkflowStatus on modify { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_AllocWeightage alias Weightage
+persistent table /esrcc/aloc_wgt
+draft table /esrcc/d_alocwgt
+etag master LocallastChangedAt
+lock dependent by _RuleAll
+authorization dependent by _RuleAll
+{
+  field ( mandatory : create )
+  AllocationKey;
+
+  field ( mandatory )
+  AllocationPeriod, Weightage;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  RuleId,
+  AllocationKey;
+
+  update ( features : instance, precheck );
+  delete ( features : instance );
+
+  mapping for /esrcc/aloc_wgt
+  {
+    RuleId = RULE_ID;
+    AllocationKey = ALLOCATION_KEY;
+    AllocationPeriod = ALLOCATION_PERIOD;
+    RefPeriod = REF_PERIOD;
+    Weightage = WEIGHTAGE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _RuleAll { with draft; }
+  association _Rule { with draft; }
+
+  determination UpdateInternalWorkflowStatus on modify { create; update; delete; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}

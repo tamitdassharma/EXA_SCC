@@ -1,0 +1,6 @@
+@EndUserText.label: 'Acces Control for Legal Entity'
+@MappingRole: true
+define role /ESRCC/I_LEGALENTITY_CCODE_F4 {
+    grant select on /ESRCC/I_LEGALENTITY_CCODE_F4
+      where (Legalentity) = aspect pfcg_auth('/ESRCC/LE', /ESRCC/LE, ACTVT = '03');
+}      

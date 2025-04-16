@@ -1,0 +1,4 @@
+@EndUserText.label: 'Application logs hierarchy service'
+define service /ESRCC/UI_ApplicationLogsHier {
+  expose /ESRCC/C_ApplicationLogsHier as ApplicationLogsHierarchy;
+}

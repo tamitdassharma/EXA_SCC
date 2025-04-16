@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Reason'
+  }
+}
+annotate view /ESRCC/C_Reason_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_Reason',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Reasons for Cost Inclusion/Exclusion',
+    position: 2 ,
+    targetElement: '_Reason'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

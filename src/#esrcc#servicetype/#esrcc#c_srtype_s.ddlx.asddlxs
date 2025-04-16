@@ -1,0 +1,41 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Type'
+  }
+}
+annotate view /ESRCC/C_SrType_S with
+{
+  @UI.facet: [ {
+  //    id: 'Transport',
+  //    purpose: #STANDARD,
+  //    type: #IDENTIFICATION_REFERENCE,
+  //    label: 'Transport',
+  //    position: 1
+  //  },
+  //  {
+    id: '/ESRCC/I_SrType',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Service Types',
+    position: 2 ,
+    targetElement: '_ServiceType'
+  } ]
+  @UI.lineItem: [ { position: 1 } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [
+  {
+    position: 2 ,
+    importance: #HIGH
+  //  },
+  //  {
+  //    type: #FOR_ACTION,
+  //    dataAction: 'SelectCustomizingTransptReq',
+  //    label: 'Select Transport'
+  } ]
+  TransportRequestID;
+}

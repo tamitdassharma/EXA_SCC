@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>SCC Data Upload Messages</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>000</MSGNR>
+     <TEXT>Data Upload for scenario &amp;1 in progress by user &amp;2</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>Attachment is missing, Please upload excel</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>Scenario is mandtory</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>Excel file is empty or not compatible with the table selected.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>&amp;1 record(s) from Excel file has been uploaded successfully for table &amp;2.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Excel Sheet processing start.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Excel Sheet processing end.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>Invalid value for &amp;1. Please check configuration or domain values.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>Amount in Local Currency is entered as 0.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>Record cannot be updated as status is not in Approved state.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>Cost Element Character details not maintained.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>021</MSGNR>
+     <TEXT>Currency is empty.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>UOM is empty.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/DATA_UPLOAD</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>Cost Object information details not maintained.</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

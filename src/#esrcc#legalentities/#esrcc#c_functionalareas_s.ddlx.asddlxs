@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Functional Area'
+  }
+}
+annotate view /ESRCC/C_FunctionalAreas_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_FunctionalAreas',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Functional Areas',
+    position: 2 ,
+    targetElement: '_FunctionalAreas'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

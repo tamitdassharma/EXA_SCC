@@ -1,0 +1,111 @@
+managed with additional save implementation in class /ESRCC/BP_I_SRVPRO_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_SrvPro_S alias ServiceProductAll
+draft table /esrcc/d_srvp_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation ServiceProduct~ValidateData;
+  }
+  //  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _ServiceProduct { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_SrvPro alias ServiceProduct
+persistent table /esrcc/srvpro
+draft table /esrcc/d_srvpro
+etag master LocalLastChangedAt
+lock dependent by _ServiceProductAll
+authorization dependent by _ServiceProductAll
+
+{
+  field ( mandatory : create )
+  Serviceproduct;
+
+  field ( mandatory )
+  Servicetype, OecdTpg;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Serviceproduct;
+
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  mapping for /ESRCC/SRVPRO
+  {
+    Serviceproduct = SERVICEPRODUCT;
+    Servicetype = SERVICETYPE;
+    Transactiongroup = TRANSACTIONGROUP;
+    OecdTpg = OECDTPG;
+    IpOwner = IP_OWNER;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ServiceProductAll { with draft; }
+  association _ServiceProductText { create ( features : global ); with draft; }
+
+  validation ValidateData on save { create; update; }
+
+  //  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_SrvProText alias ServiceProductText
+persistent table /esrcc/srvprot
+draft table /esrcc/d_srvprot
+etag master LocalLastChangedAt
+lock dependent by _ServiceProductAll
+authorization dependent by _ServiceProductAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Serviceproduct;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/SRVPROT
+  {
+    Spras = SPRAS;
+    Serviceproduct = SERVICEPRODUCT;
+    Description = DESCRIPTION;
+    Activities = ACTIVITIES;
+    Benefit = BENEFIT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _ServiceProductAll { with draft; }
+  association _ServiceProduct { with draft; }
+
+  //  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

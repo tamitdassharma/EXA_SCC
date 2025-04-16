@@ -1,0 +1,5 @@
+define service /ESRCC/UI_WFUSRG {
+  expose /ESRCC/C_WfUsrG_S as UserGroupAll;
+  expose /ESRCC/C_WfUsrG as UserGroup;
+  expose /ESRCC/C_WfUsrM as UserMapping;
+}

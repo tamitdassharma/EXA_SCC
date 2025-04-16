@@ -1,0 +1,7 @@
+abstract;
+//strict ( 2 );
+
+define behavior for /ESRCC/C_COMMENT
+{
+  field ( mandatory ) comments;
+}

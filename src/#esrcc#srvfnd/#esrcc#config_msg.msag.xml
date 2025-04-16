@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_MSAG" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <T100A>
+    <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+    <MASTERLANG>E</MASTERLANG>
+    <STEXT>Message class for Configuration</STEXT>
+   </T100A>
+   <T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>001</MSGNR>
+     <TEXT>&apos;&amp;1&apos; is mandatory</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>002</MSGNR>
+     <TEXT>&apos;Valid To&apos; should be greater than &apos;Valid From&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>003</MSGNR>
+     <TEXT>Overlapping dates not allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>004</MSGNR>
+     <TEXT>&apos;&amp;1&apos; should be between 001 and 012</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>005</MSGNR>
+     <TEXT>&apos;&amp;1&apos; should be between 0% and 100%</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>006</MSGNR>
+     <TEXT>&apos;&amp;1&apos; should always start with first day of month</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>007</MSGNR>
+     <TEXT>&apos;&amp;1&apos; should always end with last day of month</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>008</MSGNR>
+     <TEXT>&amp;1 &apos;&amp;2&apos; is not assigned to System ID &apos;&amp;3&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>009</MSGNR>
+     <TEXT>Sum of &apos;&amp;1&apos; should be 100%</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>010</MSGNR>
+     <TEXT>Reference Period(s) is not applicable for Key Base Data Computation &apos;&amp;1&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>011</MSGNR>
+     <TEXT>Weightage Distribution is mandatory for Indirect Charge-out Method</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>012</MSGNR>
+     <TEXT>Weightage Distribution is not applicable for Direct Charge-out Method</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>013</MSGNR>
+     <TEXT>Service Cost Shares validity is out of Cost Object Type validity range</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>014</MSGNR>
+     <TEXT>&apos;&amp;1&apos; is not applicable for Indirect Charge Out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>&apos;&amp;1&apos; is mandatory for Direct Charge Out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>016</MSGNR>
+     <TEXT>No authorization to create &apos;&amp;1&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>017</MSGNR>
+     <TEXT>No authorization to change &apos;&amp;1&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>018</MSGNR>
+     <TEXT>No authorization to delete &apos;&amp;1&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>019</MSGNR>
+     <TEXT>This table has restricted authorization to create, update and delete</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>020</MSGNR>
+     <TEXT>&apos;&amp;1&apos; is mandatory for Indirect Charge Out</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>021</MSGNR>
+     <TEXT>Deletion restricted as the &apos;&amp;1 &amp;2&apos; are defined for this entry</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>022</MSGNR>
+     <TEXT>Update restricted as the &apos;&amp;1 &amp;2&apos; are defined for this entry</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>023</MSGNR>
+     <TEXT>The key value is already in use. Please enter a different one.</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>024</MSGNR>
+     <TEXT>Overlapping &apos;&amp;1&apos; for same &apos;&amp;2&apos; &apos;&amp;3&apos; is not allowed</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>025</MSGNR>
+     <TEXT>Service Product is not assigned to this Stewardship</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>026</MSGNR>
+     <TEXT>Service Provider and Service Receiver cannot be same</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>027</MSGNR>
+     <TEXT>&amp;1 should be defined before &apos;Submit&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>028</MSGNR>
+     <TEXT>Click Save to confirm and complete the process</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>029</MSGNR>
+     <TEXT>Entry doesn&apos;t exists in &apos;Cost Object Maste Data &amp;&amp; Frequency&apos;</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>030</MSGNR>
+     <TEXT>One Cost Element allowed for Data Source &amp;1 of Legal Entity, Company Code</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>031</MSGNR>
+     <TEXT>At least one &apos;Service Product Receiver&apos; should be active</TEXT>
+    </T100>
+   </T100>
+  </asx:values>
+ </asx:abap>
+</abapGit>

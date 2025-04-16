@@ -1,0 +1,75 @@
+managed with additional save implementation in class /ESRCC/BP_I_WFCUST unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_WfCust_S alias RoleAssignmentAll
+draft table /esrcc/d_wfcus_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  association _RoleAssignment { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_WfCust alias RoleAssignment
+persistent table /esrcc/wfcust
+draft table /esrcc/d_wfcust
+etag master LocalLastChangedAt
+lock dependent by _RoleAssignmentAll
+authorization dependent by _RoleAssignmentAll
+
+{
+  field ( mandatory : create )
+  Application,
+  Approvallevel;
+  // Design Requirement: The below key fields are not mandatory
+//    Legalentity,
+//    Sysid,
+//    Costobject,
+//    Costcenter;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Application,
+  Approvallevel,
+  Legalentity,
+  Sysid,
+  Costobject,
+  Costcenter;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/WFCUST
+  {
+    Application = APPLICATION;
+    Approvallevel = APPROVALLEVEL;
+    Legalentity = LEGALENTITY;
+    Sysid = SYSID;
+    Costobject = COSTOBJECT;
+    Costcenter = COSTCENTER;
+    Usergroup = USERGROUP;
+    Pfcgrole = PFCGROLE;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _RoleAssignmentAll { with draft; }
+}

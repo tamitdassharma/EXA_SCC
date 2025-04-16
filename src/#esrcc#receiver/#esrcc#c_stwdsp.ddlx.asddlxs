@@ -1,0 +1,105 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product & Service Cost Share',
+    typeNamePlural: 'Service Products & Service Cost Share',
+    title: {
+      type: #STANDARD,
+      value: 'ServiceProduct'
+    }
+  },
+  presentationVariant: [{
+    qualifier: 'pVariant',
+    sortOrder: [{ by: 'ServiceProduct', direction: #ASC },
+                { by: 'ValidFrom', direction: #ASC}],                
+    visualizations: [{type: #AS_LINEITEM }]
+  }]
+}
+
+annotate view /ESRCC/C_StwdSp with
+{
+  @UI.facet: [ {
+     id: 'CE',
+     type: #COLLECTION,
+     position: 1
+   },
+   {
+     id: '/ESRCC/I_ServiceProductRecei',
+     purpose: #STANDARD,
+     type: #IDENTIFICATION_REFERENCE,
+     parentId: 'CE',
+     label: 'General Information',
+     position: 10
+   },
+   {
+     id: 'Validity',
+     purpose: #STANDARD,
+     type: #FIELDGROUP_REFERENCE,
+     parentId: 'CE',
+     targetQualifier: 'ValidityGroup',
+     label: 'Validity',
+     position: 20
+   },
+   {
+     id: 'Admin',
+     purpose: #STANDARD,
+     type: #FIELDGROUP_REFERENCE,
+     parentId: 'CE',
+     targetQualifier: 'AdminGroup',
+     label: 'Admin Information',
+     position: 30
+   } ]
+
+  @UI.hidden: true
+  @EndUserText.label: 'Service Product UUID'
+  ServiceProductUuid;
+
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.identification: [ { position: 10 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' }, useForValidation: true }]
+  ServiceProduct;
+
+  @UI.lineItem: [ { position: 20 } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ValidityGroup' }]
+  ValidFrom;
+
+  @UI.lineItem: [ { position: 30 } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ValidityGroup' }]
+  ValidTo;
+
+  @UI.identification: [ { position: 40 } ]
+  @UI.lineItem: [ { position: 40, cssDefault.width: '10rem' } ]
+  ShareOfCost;
+
+  @UI.identification: [ { position: 50 } ]
+  @UI.lineItem: [ { position: 50 } ]
+  ErpSalesOrder;
+
+  @UI.identification: [ { position: 60 } ]
+  @UI.lineItem: [ { position: 60 } ]
+  ContractId;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Stewardship UUID'
+  StewardshipUuid;
+
+  @UI.lineItem: [ { position: 70 } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 80, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 90 } ]
+  @UI.fieldGroup: [{ position: 30, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 100, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 40, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+  
+  @UI.hidden: true
+  ServiceProductDescription;
+}

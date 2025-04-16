@@ -1,0 +1,53 @@
+managed implementation in class /esrcc/bp_i_servicecapacity unique;
+strict ( 2 );
+
+define behavior for /ESRCC/I_ServiceCapacity alias ServiceCapacity
+persistent table /esrcc/srv_cpcty
+lock master
+authorization master ( global )
+{
+  field ( mandatory : create, readonly : update )
+  Serviceproduct,
+  Ryear,
+  Poper,
+  Fplv,
+  Sysid,
+  LegalEntity,
+  CompanyCode,
+  Costobject,
+  Costcenter;
+
+  field ( readonly : update )
+  CapacityUuid;
+
+  field ( readonly )
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  CapacityUuid;
+
+  create ( precheck );
+  update ( precheck );
+  delete ( precheck );
+
+  mapping for /esrcc/srv_cpcty
+  {
+    CapacityUuid = CAPACITY_UUID;
+    Ryear = RYEAR;
+    Poper = POPER;
+    Fplv = FPLV;
+    ServiceProduct = SERVICE_PRODUCT;
+    CostObjectUuid = COST_OBJECT_UUID;
+    Uom = UOM;
+    Planning = PLANNING;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+}

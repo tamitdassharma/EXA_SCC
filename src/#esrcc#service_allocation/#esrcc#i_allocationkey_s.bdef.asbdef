@@ -1,0 +1,91 @@
+managed with additional save implementation in class /ESRCC/BP_I_ALLOCATIONKEY_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_AllocationKey_S alias AllocationKeyAll
+draft table /esrcc/d_alloc_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  association _AllocationKey { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_AllocationKey alias AllocationKey
+persistent table /esrcc/allockeys
+draft table /esrcc/d_allock
+etag master LocalLastChangedAt
+lock dependent by _AllocationKeyAll
+authorization dependent by _AllocationKeyAll
+
+{
+  field ( mandatory : create )
+  Allocationkey;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Allocationkey;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/ALLOCKEYS
+  {
+    Allocationkey = ALLOCATIONKEY;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _AllocationKeyAll { with draft; }
+  association _AllocationKeyText { create ( features : global ); with draft; }
+}
+
+define behavior for /ESRCC/I_AllocationKeyText alias AllocationKeyText
+persistent table /esrcc/allockeyt
+draft table /esrcc/d_allockt
+etag master LocalLastChangedAt
+lock dependent by _AllocationKeyAll
+authorization dependent by _AllocationKeyAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Allocationkey;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/ALLOCKEYT
+  {
+    Spras = SPRAS;
+    Allocationkey = ALLOCATIONKEY;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _AllocationKeyAll { with draft; }
+  association _AllocationKey { with draft; }
+}

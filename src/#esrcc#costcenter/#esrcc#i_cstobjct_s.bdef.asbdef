@@ -1,0 +1,111 @@
+managed with additional save implementation in class /ESRCC/BP_I_CSTOBJCT unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_CstObjct_S alias CostObjectAll
+draft table /esrcc/d_cst_o_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit with additional implementation;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation CostObject~ValidateData;
+  }
+
+  association _CostObject { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_CstObjct alias CostObject
+persistent table /esrcc/cst_objct
+draft table /esrcc/d_cstobj query /ESRCC/I_CstObj_D
+etag master LocalLastChangedAt
+lock dependent by _CostObjectAll
+authorization dependent by _CostObjectAll
+
+{
+  field ( readonly )
+  SingletonID, CostObjectUuid, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt;
+
+  field ( numbering : managed )
+  CostObjectUuid;
+
+  field ( mandatory : create )
+  Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
+
+  field ( mandatory )
+  BillingFrequency;
+
+  field ( readonly : update )
+  Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
+
+  update ( features : instance, precheck );
+  delete ( features : instance, precheck );
+
+  mapping for /ESRCC/CST_OBJCT
+  {
+    CostObjectUuid = COST_OBJECT_UUID;
+    Sysid = SYSID;
+    LegalEntity = LEGAL_ENTITY;
+    CompanyCode = COMPANY_CODE;
+    CostObject = COST_OBJECT;
+    CostCenter = COST_CENTER;
+    FunctionalArea = FUNCTIONAL_AREA;
+    ProfitCenter = PROFIT_CENTER;
+    BusinessDivision = BUSINESS_DIVISION;
+    BillingFrequency = BILLING_FREQUENCY;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _CostObjectAll { with draft; }
+  association _CostObjectText { create ( features : instance ); with draft; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_CstObjctText alias CostObjectText
+persistent table /esrcc/cst_objtt
+draft table /esrcc/d_cstobjt
+etag master LocalLastChangedAt
+lock dependent by _CostObjectAll
+authorization dependent by _CostObjectAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  CostObjectUuid;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : instance );
+  delete ( features : instance );
+
+  mapping for /ESRCC/CST_OBJTT
+  {
+    Spras = SPRAS;
+    CostObjectUuid = COST_OBJECT_UUID;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _CostObjectAll { with draft; }
+  association _CostObject { with draft; }
+}

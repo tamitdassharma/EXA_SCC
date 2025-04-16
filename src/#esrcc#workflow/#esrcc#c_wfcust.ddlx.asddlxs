@@ -1,0 +1,110 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Workflow Approval Configuration',
+    typeNamePlural: 'Workflow Approval Configuration',
+    title: {
+      type: #STANDARD,
+      value: 'Application'
+    }
+  }
+}
+annotate view /ESRCC/C_WfCust with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_WfCust',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 2
+  } ]
+
+  @UI.lineItem: [ { position: 1, cssDefault.width: '14rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_APPLICATION_TYPE', element: 'ApplicationType'} }]
+  Application;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_APPROVAL_LEVEL', element: 'ApprovalLevel'} }]
+  Approvallevel;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity'}, useForValidation: true }]
+  Legalentity;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId'},
+                                       useForValidation: true }]
+  Sysid;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject'},
+                                       useForValidation: true }]
+  Costobject;
+
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_WF_COST_NUMBER_F4', element: 'CostCenter'},
+                                       useForValidation: true }]
+  Costcenter;
+
+  @UI.identification: [ { position: 7 } ]
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_UserGroup_F4', element: 'Usergroup'} }]
+  Usergroup;
+
+  @UI.identification: [ { position: 8 } ]
+  @UI.lineItem: [ { position: 8 } ]
+  Pfcgrole;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  ApplicationTypeDescription;
+  @UI.hidden: true
+  ApprovalLevelDescription;
+  @UI.hidden: true
+  LegalentityDescription;
+  @UI.hidden: true
+  SysidDescription;
+  @UI.hidden: true
+  CostobjectDescription;
+}

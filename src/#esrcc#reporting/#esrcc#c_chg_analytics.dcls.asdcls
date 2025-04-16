@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Chargeout Analytics'
+@MappingRole: true
+define role /ESRCC/C_CHG_ANALYTICS {
+    grant select on /ESRCC/C_CHG_ANALYTICS
+     where inheriting conditions from entity /ESRCC/I_CHG_ANALYTICS;
+                        
+}

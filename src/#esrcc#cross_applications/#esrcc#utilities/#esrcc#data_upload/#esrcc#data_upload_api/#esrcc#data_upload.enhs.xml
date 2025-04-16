@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_ENHS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TOOL>BADI_DEF</TOOL>
+   <SHORTTEXT>SCC Data Upload Enhancement Spot</SHORTTEXT>
+   <BADI_DATA>
+    <ENH_BADI_DATA>
+     <BADI_NAME>/ESRCC/BADI_DATA_UPLOAD</BADI_NAME>
+     <INTERFACE_NAME>/ESRCC/IF_DATA_UPLOAD_BADI</INTERFACE_NAME>
+     <CONTEXT_MODE>N</CONTEXT_MODE>
+     <BADI_SHORTTEXT>SCC Data Upload BAdI Definition</BADI_SHORTTEXT>
+     <BADI_SHORTTEXT_ID>ETR-7776D91206C42A9B</BADI_SHORTTEXT_ID>
+     <FILTERS>
+      <ENH_BADI_FILTER>
+       <FILTER_NAME>TABLE_NAME</FILTER_NAME>
+       <FILTER_TYPE>S</FILTER_TYPE>
+       <FILTERTEXT>Table Name</FILTERTEXT>
+       <FILTERTEXT_ID>ETR-EB52D99D21238F33</FILTERTEXT_ID>
+       <CHECK_TYPE>TABNAME</CHECK_TYPE>
+      </ENH_BADI_FILTER>
+     </FILTERS>
+    </ENH_BADI_DATA>
+   </BADI_DATA>
+  </asx:values>
+ </asx:abap>
+</abapGit>

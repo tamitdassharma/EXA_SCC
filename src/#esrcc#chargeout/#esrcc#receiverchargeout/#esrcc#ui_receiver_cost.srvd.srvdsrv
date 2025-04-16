@@ -1,0 +1,4 @@
+@EndUserText.label: 'Charge-Out for Receivers'
+define service /ESRCC/UI_RECEIVER_COST {
+  expose /ESRCC/C_CHARGEOUTRECEIVED as receieverchargeout;
+}

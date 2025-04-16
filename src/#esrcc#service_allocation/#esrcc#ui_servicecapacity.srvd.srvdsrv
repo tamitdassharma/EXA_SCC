@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service Capacity'
+define service /ESRCC/UI_SERVICECAPACITY {
+  expose /ESRCC/C_ServiceCapacity as DirectPlanning;
+}

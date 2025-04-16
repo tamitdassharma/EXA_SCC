@@ -1,0 +1,8 @@
+@EndUserText.label: 'Acces Control for Indirect Allocation'
+@MappingRole: true
+define role /ESRCC/I_INDIRECTALLOCKEYVALUE {
+    grant select on /ESRCC/I_INDIRECTALLOCKEYVALUE
+      where (LegalEntity) = aspect pfcg_auth('/ESRCC/LE',  ACTVT = '03', /ESRCC/LE) AND
+      (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');    
+                        
+}

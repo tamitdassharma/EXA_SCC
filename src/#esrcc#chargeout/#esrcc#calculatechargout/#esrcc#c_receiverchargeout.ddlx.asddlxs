@@ -1,0 +1,547 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Mark-up Allocation/Charge-Outs',
+    typeNamePlural: 'Mark-up Allocation/Charge-Outs',
+    title: {
+      type: #STANDARD,
+      label: 'Receiving Entity',
+      value: 'Receivingentity'
+    },
+    description.value: 'receivingentitydescription'
+  },
+  presentationVariant: [{ sortOrder: [{ by: 'ReceiverSysId' },
+                                      { by: 'Receivingentity' },
+                                      { by: 'ReceiverCompanyCode' },
+                                      { by: 'ReceiverCostObject' },
+                                      { by: 'ReceiverCostCenter' }] }]
+}
+annotate view /ESRCC/C_ReceiverChargeout with
+{
+
+  @UI.facet: [{
+  id: 'general',
+  type: #COLLECTION,
+  label: 'General Information',
+  purpose: #STANDARD,
+  position: 10
+  },
+  {
+    label: 'Receiver Details',
+    targetQualifier: 'OrgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  }
+  ,
+  {
+    label: 'Charge-Out Details',
+    targetQualifier: 'ChgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Invoice Details',
+    targetQualifier: 'InvoiceData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Admin Details',
+    targetQualifier: 'AdminData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {type: #DATAPOINT_REFERENCE,
+  targetQualifier: 'totalchargeout',
+   purpose: #HEADER
+  },
+  {type: #DATAPOINT_REFERENCE,
+  targetQualifier: 'totalmarkup',
+   purpose: #HEADER
+  }
+  ]
+  @UI.lineItem: [ {
+  position:  999,
+  importance: #MEDIUM,
+  label: 'Country',
+   cssDefault:{width: '4.5rem'}
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Country;
+
+  @UI.lineItem: [
+  {position: 10 ,
+  importance: #LOW,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 10 ,
+   qualifier: 'OrgData'
+    } ]
+//  @UI.identification: [ {
+//    position: 20 ,
+//    label: ''
+//  } ]
+  @UI.textArrangement: #TEXT_LAST
+  ReceiverSysId;
+
+  @UI.lineItem: [
+  {position: 12,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 20 ,
+   qualifier: 'OrgData'
+    } ]
+//  @UI.identification: [ {
+//    position: 20 ,
+//    label: ''
+//  } ]
+  @UI.textArrangement: #TEXT_LAST
+  ReceiverCompanyCode;
+
+  @UI.lineItem: [
+  {position: 11 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+//  @UI.fieldGroup: [
+//   {
+//   importance: #HIGH,
+//   position: 30 ,
+//   qualifier: 'OrgData'
+//    } ]
+//  @UI.identification: [ {
+//    position: 20 ,
+//    label: ''
+//  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Receivingentity;
+
+  @UI.lineItem: [
+  {position: 13 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 40 ,
+   qualifier: 'OrgData'
+    } ]
+//  @UI.identification: [ {
+//    position: 20 ,
+//    label: ''
+//  } ]
+  @UI.textArrangement: #TEXT_LAST
+  ReceiverCostObject;
+
+  @UI.lineItem: [
+  {position: 14 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 50 ,
+   qualifier: 'OrgData'
+    } ]
+//    @UI.identification: [ {
+//    position: 20 ,
+//    label: ''
+//  } ]
+  @UI.textArrangement: #TEXT_LAST
+  ReceiverCostCenter;
+
+  @UI.lineItem: [ {
+  position: 47 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 47 ,
+   qualifier: 'ChgData'
+    } ]
+  @UI.textArrangement: #TEXT_ONLY
+  ConsumptionVersion;
+
+  @UI.lineItem: [ {
+  position: 40 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 20 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Transfer Price per unit'
+  TransferPrice;
+  
+  @UI.lineItem: [ {
+  position: 45 ,
+  importance: #LOW,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 30 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Thereof Value-Add per unit'
+  TpValueaddmarkupCostperunit;
+
+  @UI.lineItem: [ {
+  position: 46 ,
+  importance: #LOW,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 40 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Thereof Pass-Through per unit'
+  TpPassthrumarkupCostperunit;
+
+  @UI.lineItem: [ {
+  position: 50 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 50 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Consumption'
+  Reckpi;
+  @UI.lineItem: [ {
+  position: 999,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 60 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Unit of Measure'
+  @UI.textArrangement: #TEXT_LAST
+  ConsumptionUom;
+  @UI.lineItem: [ {
+  position: 56 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 70 ,
+   qualifier: 'ChgData'
+    } ]
+  @UI.textArrangement: #TEXT_ONLY
+  KeyVersion;
+  @UI.lineItem: [ {
+  position: 60 ,
+  importance: #HIGH,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 80 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Key Share (%)'
+  Reckpishare;
+  @UI.lineItem: [ {
+  position: 70 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.dataPoint: { qualifier: 'totalchargeout', title: 'Total Charge Out Amount' }
+  @EndUserText.label: 'Total Charge Out Amount'
+  TotalChargeout;
+  @UI.lineItem: [ {
+  position: 80 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 100 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Total Cost Share'
+  RecCostShare;
+  @UI.lineItem: [ {
+  position: 90 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 110 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Value Added Cost Share'
+  RecValueadded;
+  @UI.lineItem: [ {
+  position: 100 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 120 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Pass Through Cost Share'
+  RecPassthrough;
+  @UI.lineItem: [ {
+  position: 110 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '10rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 130 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Mark-up on Value-Add (%)'
+  Valueaddmarkup;
+  @UI.lineItem: [ {
+  position: 120 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '10rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 130 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Mark-up on Pass-Through (%)'
+  Passthrumarkup;
+  @UI.lineItem: [ {
+  position: 130 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.dataPoint: { qualifier: 'totalmarkup', title: 'Total Mark-up' }
+  @EndUserText.label: 'Total Mark-up'
+  TotalRecMarkup;
+  @UI.lineItem: [ {
+  position: 140 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 150 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Total Mark-up on Value-Add'
+  RecValueaddMarkup;
+  @UI.lineItem: [ {
+  position: 150 ,
+  importance: #HIGH,
+  label: '',
+  cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 160 ,
+   qualifier: 'ChgData'
+    } ]
+  @EndUserText.label: 'Total Mark-up on Pass-Through'
+  RecPassthroughMarkup;
+  @UI.lineItem: [ {
+  position: 160 ,
+  importance: #MEDIUM,
+  label: '',
+  cssDefault:{width: '8rem'}
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 10 ,
+   qualifier: 'AdminData'
+    } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Status;
+  @UI.lineItem: [ {
+  position: 170 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 20 ,
+   qualifier: 'AdminData'
+    } ]
+  Workflowid;
+  @UI.lineItem: [ {
+  position: 180 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 30 ,
+   qualifier: 'InvoiceData'
+    } ]
+  InvoiceNumber;
+  @UI.lineItem: [ {
+  position: 190 ,
+  importance: #MEDIUM,
+  label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 40 ,
+   qualifier: 'InvoiceData'
+    } ]
+  @UI.textArrangement: #TEXT_ONLY
+  InvoiceStatus;
+  @UI.lineItem: [ {
+    position: 250 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 50 ,
+   qualifier: 'AdminData'
+    } ]
+  CreatedBy;
+  @UI.lineItem: [ {
+    position: 260 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 60 ,
+   qualifier: 'AdminData'
+    } ]
+  CreatedAt;
+  @UI.lineItem: [ {
+    position: 270 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 70 ,
+   qualifier: 'AdminData'
+    } ]
+  LastChangedBy;
+  @UI.lineItem: [ {
+    position: 280 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+   {
+   importance: #HIGH,
+   position: 80 ,
+   qualifier: 'AdminData'
+    } ]
+  LastChangedAt;
+  @UI.lineItem: [ {
+    position: 999 ,
+    importance: #MEDIUM,
+    label: 'ID'
+  } ]
+  UUID;
+  @UI.lineItem: [ {
+    position: 999 ,
+    importance: #MEDIUM,
+    label: 'Parent ID'
+  } ]
+  ParentUUID;
+  @UI.lineItem: [ {
+    position: 999 ,
+    importance: #MEDIUM,
+    label: 'Root ID'
+  } ]
+  RootUUID;
+  //   hidden fields
+  @UI.hidden: true
+  receivingentitydescription;
+  @UI.hidden: true
+  ccodedescription;
+  @UI.hidden: true
+  costobjectdescription;
+  @UI.hidden: true
+  costcenterdescription;
+  @UI.hidden: true
+  statusdescription;
+  @UI.hidden: true
+  receivingcountryname;
+  @UI.hidden: true
+  unitname;
+  @UI.hidden: true
+  consumptionversiontext;
+  @UI.hidden: true
+  Currencytype;
+  @UI.hidden: true
+  keyversiontext;
+  @UI.hidden: true
+  invoicestatusdescription;
+//  @UI.hidden: true
+//  UUID;
+//  @UI.hidden: true
+//  ParentUUID;
+//  @UI.hidden: true
+//  RootUUID;
+  @UI.lineItem: [
+   {  position: 999 ,
+    importance: #LOW
+  } ]
+  CommentId;
+}

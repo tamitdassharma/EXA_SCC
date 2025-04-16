@@ -1,0 +1,4 @@
+@EndUserText.label: 'Invoice Chargeout'
+define service /ESRCC/UI_CHGINVOICE {
+  expose /ESRCC/C_CHGINVOICE as ChargeoutInvoice;
+}

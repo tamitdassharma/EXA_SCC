@@ -1,0 +1,47 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Description',
+    typeNamePlural: 'Descriptions',
+    title: {
+      type: #STANDARD,
+      value: 'Spras'
+    }
+  }
+}
+annotate view /ESRCC/C_SrvProText with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_SrvProText',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 1
+  } ]
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  Spras;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3, hidden: true } ]
+  @UI.multiLineText: true
+  @UI.identification: [{cssDefault.width: '1500rem'}]
+  @EndUserText.label: 'Service Product Activities'
+  Activities;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4, hidden: true } ]
+  @UI.multiLineText: true
+  @UI.identification: [{cssDefault.width: '1500rem'}]
+  @EndUserText.label: 'Service Product Benefits'
+  Benefit;
+
+  @UI.hidden: true
+  LanguageName;
+  @UI.hidden: true
+  Serviceproduct;
+}

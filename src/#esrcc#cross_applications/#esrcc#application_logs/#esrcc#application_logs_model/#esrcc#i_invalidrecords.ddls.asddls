@@ -1,0 +1,40 @@
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'File Upload Invalid Records'
+define view entity /ESRCC/I_InvalidRecords
+  as select from /esrcc/inv_rcrds
+{
+  key log_header_uuid       as LogHeaderUuid,
+  key log_uuid              as LogUuid,
+  key ryear                 as Ryear,
+  key poper                 as Poper,
+  key fplv                  as Fplv,
+  key sysid                 as Sysid,
+  key legalentity           as Legalentity,
+  key ccode                 as Ccode,
+  key belnr                 as Belnr,
+  key buzei                 as Buzei,
+  key costobject            as Costobject,
+  key costcenter            as Costcenter,
+  key costelement           as Costelement,
+      businessdivision      as Businessdivision,
+      profitcenter          as Profitcenter,
+      hsl                   as Hsl,
+      localcurr             as Localcurr,
+      ksl                   as Ksl,
+      groupcurr             as Groupcurr,
+      vendor                as Vendor,
+      postingtype           as Postingtype,
+      costind               as Costind,
+      usagecal              as Usagecal,
+      status                as Status,
+      workflowid            as Workflowid,
+      oldcostind            as Oldcostind,
+      oldusagecal           as Oldusagecal,
+      oldcostdataset        as Oldcostdataset,
+      comments              as Comments,
+      created_by            as CreatedBy,
+      created_at            as CreatedAt,
+      last_changed_by       as LastChangedBy,
+      last_changed_at       as LastChangedAt,
+      local_last_changed_at as LocalLastChangedAt
+}

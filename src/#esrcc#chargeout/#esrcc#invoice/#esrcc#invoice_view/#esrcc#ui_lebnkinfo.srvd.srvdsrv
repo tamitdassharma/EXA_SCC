@@ -1,0 +1,4 @@
+define service /ESRCC/UI_LEBNKINFO {
+  expose /ESRCC/C_LEBNKINFO_S as BankInformationAll;
+  expose /ESRCC/C_LEBNKINFO as BankInformation;
+}

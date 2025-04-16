@@ -1,0 +1,80 @@
+managed with additional save implementation in class /ESRCC/BP_I_LEOTHERS_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LeOthers_S alias OtherInformationAll
+draft table /ESRCC/D_LE_OT_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _OtherInformation { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_LeOthers alias OtherInformation
+persistent table /ESRCC/LE_OTHERS
+draft table /ESRCC/D_LE_OTHE
+etag master LocalLastChangedAt
+lock dependent by _OtherInformationAll
+authorization dependent by _OtherInformationAll
+
+{
+  field ( mandatory : create )
+   LegalEntity,
+   Role,
+   Sysid,
+   CompanyCode,
+   CostObject,
+   BusinessDivision,
+   TransactionGroup;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   LegalEntity,
+   Role,
+   Sysid,
+   CompanyCode,
+   CostObject,
+   BusinessDivision,
+   TransactionGroup;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/LE_OTHERS
+  {
+    LegalEntity = LEGAL_ENTITY;
+    Role = ROLE;
+    Sysid = SYSID;
+    CompanyCode = COMPANY_CODE;
+    CostObject = COST_OBJECT;
+    BusinessDivision = BUSINESS_DIVISION;
+    TransactionGroup = TRANSACTION_GROUP;
+    Account = ACCOUNT;
+    BusinessPartnerNumber = BUSINESS_PARTNER_NUMBER;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _OtherInformationAll { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

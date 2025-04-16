@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Reasons for Cost Inclusion/Exclusion",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_REASON",
+    "serviceName": "/ESRCC/UI_REASON",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ReasonAll",
+    "name": "Reason for Cost Inclusion/Exclusion",
+    "configurationGroup": "/ESRCC/BC_GROUP2",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "Reason"
+      },
+      {
+        "entitySet": "ReasonText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "Reason",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ReasonAll"
+      },
+      {
+        "entitySet": "ReasonText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,80 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Reason for Cost Include/Exclusion',
+    typeNamePlural: 'Reasons for Cost Include/Exclusion',
+    title: {
+      type: #STANDARD,
+      value: 'Reasonid'
+    }
+  }
+}
+annotate view /ESRCC/C_Reason with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    purpose: #STANDARD,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_Reason',
+    purpose: #STANDARD,
+    parentId: 'CE',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 2
+  },
+  {
+    id: '/ESRCC/I_ReasonText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 3,
+    targetElement: '_ReasonText'
+  } ]
+
+  @UI.lineItem: [ { position: 1, cssDefault.width: '5.5rem' } ]
+  Reasonid;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_USAGECALCULATION', element: 'usagecal' },
+                                       useForValidation: true }]
+  Calculationusage;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4, cssDefault.width: '4.5rem' } ]
+  Defaultflag;
+
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 6, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
+  LastChangedAt;
+
+  @UI.identification: [ { position: 2, hidden: true } ]
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.hidden: true
+  CalculationUsageDescription;
+}

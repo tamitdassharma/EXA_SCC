@@ -1,0 +1,5 @@
+define service /ESRCC/UI_LE {
+  expose /ESRCC/C_LE_S as LegalEntityAll;
+  expose /ESRCC/C_LE as LegalEntity;
+  expose /ESRCC/C_LETEXT as LegalEntityText;
+}

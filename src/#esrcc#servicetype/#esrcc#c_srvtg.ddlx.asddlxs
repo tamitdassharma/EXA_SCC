@@ -1,0 +1,59 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Transaction Group',
+    typeNamePlural: 'Transaction Groups',
+    title: {
+      type: #STANDARD,
+      label: 'Service Transaction Group',
+      value: 'Transactiongroup'
+    },
+     description:{ value: 'Description'}
+  }
+}
+annotate view /ESRCC/C_SrvTg with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_SrvTg',
+    position: 1,
+    type: #COLLECTION
+  },
+  {
+   parentId: '/ESRCC/I_SrvTg',
+   type: #FIELDGROUP_REFERENCE,
+   purpose: #STANDARD,
+   label: 'Admin Information',
+   targetQualifier: 'AdminGroup',
+   position: 20
+   },
+
+  {
+    id: '/ESRCC/I_SrvTgText',
+    type: #LINEITEM_REFERENCE,
+    position: 30 ,
+    targetElement: '_TransactionGrpText',
+    parentId: '/ESRCC/I_SrvTg'
+  } ]
+
+  @UI.lineItem: [ { position: 1 } ]
+  Transactiongroup;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ {  position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [ {  position: 6 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+}

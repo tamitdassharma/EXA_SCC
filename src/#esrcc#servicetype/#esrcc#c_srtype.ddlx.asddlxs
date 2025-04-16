@@ -1,0 +1,59 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Type',
+    typeNamePlural: 'Service Types',
+    title: {
+      type: #STANDARD,
+      label: 'Service Type',
+      value: 'Srvtype'
+    },
+     description: { value: 'Description' }
+  }
+}
+annotate view /ESRCC/C_SrType with
+{
+
+  @UI.facet: [ {
+   id: '/ESRCC/I_SrType',
+   position: 1,
+   type: #COLLECTION
+  },
+  {
+   parentId: '/ESRCC/I_SrType',
+   type: #FIELDGROUP_REFERENCE,
+   purpose: #STANDARD,
+   label: 'Admin Information',
+   targetQualifier: 'AdminGroup',
+   position: 20
+  },
+  {
+    id: '/ESRCC/I_SrTypeText',
+    type: #LINEITEM_REFERENCE,
+    position: 30 ,
+    targetElement: '_ServiceTypeText',
+    parentId: '/ESRCC/I_SrType'
+  } ]
+
+  @UI.lineItem: [ { position: 1 } ]
+  Srvtype;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ {  position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [ {  position: 6 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ {  position: 2 } ]
+  Description;
+
+  @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+}

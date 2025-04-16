@@ -1,0 +1,37 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Service Product Mark-ups",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_SRVMKP_O4",
+    "serviceName": "/ESRCC/UI_SRVMKP_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ServiceMarkupAll",
+    "name": "Service Product Mark-ups",
+    "configurationGroup": "/ESRCC/BC_GROUP4",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "ServiceMarkup"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "ServiceMarkup",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ServiceMarkupAll"
+      }
+    ]
+  }
+}

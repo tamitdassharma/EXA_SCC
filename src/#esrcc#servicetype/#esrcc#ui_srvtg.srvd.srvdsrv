@@ -1,0 +1,5 @@
+define service /ESRCC/UI_SRVTG {
+  expose /ESRCC/C_SRVTG_S as TransactionGrpAll;
+  expose /ESRCC/C_SRVTG as TransactionGrp;
+  expose /ESRCC/C_SRVTGTEXT as TransactionGrpText;
+}

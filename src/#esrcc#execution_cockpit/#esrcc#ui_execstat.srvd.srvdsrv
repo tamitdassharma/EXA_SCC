@@ -1,0 +1,5 @@
+define service /ESRCC/UI_EXECSTAT {
+  expose /ESRCC/C_EXECUTIONSTATUS_S as ExecutionStatusAll;
+  expose /ESRCC/C_EXECUTIONSTATUS as ExecutionStatus;
+  expose /ESRCC/C_EXECUTIONSTATUSTEXT as ExecutionStatusText;
+}

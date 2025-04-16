@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Management Dashboard'
+@MappingRole: true
+define role /ESRCC/I_CHARGEOUT_CHARTS {
+    grant select on /ESRCC/I_CHARGEOUT_CHARTS
+     where inheriting conditions from entity /ESRCC/I_CHG_ANALYTICS;
+                        
+}

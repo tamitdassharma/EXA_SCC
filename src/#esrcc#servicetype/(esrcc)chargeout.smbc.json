@@ -1,0 +1,38 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Service Product Charge-out Rules",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_CHARGEOUT_O4",
+    "serviceName": "/ESRCC/UI_CHARGEOUT_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ChargeoutAll",
+    "name": "Service Product Charge-out Rule",
+    "configurationGroup": "/ESRCC/BC_GROUP5",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "Chargeout"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "Chargeout",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ChargeoutAll",
+        "tableType": "gridTable"
+      }
+    ]
+  }
+}

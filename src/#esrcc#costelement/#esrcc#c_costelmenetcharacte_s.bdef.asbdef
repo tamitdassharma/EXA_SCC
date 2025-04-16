@@ -1,0 +1,24 @@
+projection;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_CostElmenetCharacte_S alias CostElementCharAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+
+  use association _CostElementChar { create; with draft; }
+}
+
+define behavior for /ESRCC/C_CostElmenetCharacte alias CostElementChar
+
+{
+  use update;
+  use delete;
+
+  use association _CostElementCharAll { with draft; }
+}

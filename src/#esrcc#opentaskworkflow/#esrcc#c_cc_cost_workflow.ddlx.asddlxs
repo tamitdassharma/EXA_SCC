@@ -1,0 +1,484 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Base & Stewardship',
+    typeNamePlural: 'Cost Base & Stewardships',
+    title: {
+      type: #STANDARD,
+      value: 'Costcenter'
+    },
+    description : {type: #STANDARD, value: 'costcenterdescription' }
+  }
+}
+
+//@UI.presentationVariant: [{ groupBy: [ 'Billingperiod' ] }]
+
+annotate view /ESRCC/C_CC_COST_WORKFLOW with
+{
+  @UI.facet: [
+  {
+   id: 'general',
+   type: #COLLECTION,
+   label: 'Cost Base & Stewardship',
+   purpose: #STANDARD,
+   position: 10
+  },
+  {
+    label: 'Posting Details',
+    targetQualifier: 'OrgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Charge-Out Details',
+    targetQualifier: 'ChgData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {
+    label: 'Admin Details',
+    targetQualifier: 'AdminData',
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    parentId: 'general'
+  },
+  {type: #DATAPOINT_REFERENCE,
+   targetQualifier: 'entity',
+    purpose: #HEADER
+  },
+  {type: #DATAPOINT_REFERENCE,
+   targetQualifier: 'initialcost',
+    purpose: #HEADER
+  },
+  {type: #DATAPOINT_REFERENCE,
+   targetQualifier: 'remainingcogs',
+    purpose: #HEADER
+  },
+  {type: #DATAPOINT_REFERENCE,
+   targetQualifier: 'status',
+    purpose: #HEADER
+  }
+  ]
+
+  @UI.lineItem: [
+   {  position: 5 ,
+    importance: #MEDIUM,
+    label: '',
+    iconUrl: 'xe19c',
+    cssDefault:{width: '5rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 5 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' },
+                                        additionalBinding: [{ element: 'costdataset', localElement: 'Fplv' }] }]
+  @UI.textArrangement: #TEXT_ONLY
+  Fplv;
+
+  @UI.lineItem: [
+   {  position: 10 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '5rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 10 ,
+    qualifier: 'OrgData'
+  } ]
+//  @UI.selectionField: [{ position: 10 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' } }]
+  Ryear;
+  @UI.lineItem: [ {
+    position:   15 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '5rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 15 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
+//  @UI.selectionField: [{ position: 15 }]
+  @UI.textArrangement: #TEXT_ONLY
+  Billingfrequqncy;
+  @UI.lineItem: [ {
+    position: 16 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '5rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 16 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQUENCY_F4', element: 'Billingperiod' },
+                                          additionalBinding: [{ element: 'Billingfreq', localElement: 'Billingfrequqncy' }] }]
+//  @UI.selectionField: [{ position: 16 }]
+  @UI.textArrangement: #TEXT_ONLY
+  Billingperiod;
+
+  @UI.lineItem: [ {
+    position: 20 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '5rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 20 ,
+    qualifier: 'OrgData'
+  } ]
+//  @UI.selectionField: [{ position: 20 }]
+  @Consumption.filter.selectionType: #INTERVAL
+  Poper;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' } }]
+  Sysid;
+
+  @UI.lineItem: [ {
+    position: 40 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '20rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntity_F4', element: 'Legalentity' } }]
+  @UI.dataPoint: { qualifier: 'entity' }
+//  @UI.selectionField: [{ position: 30 }]
+  @UI.textArrangement: #TEXT_LAST
+  Legalentity;
+  
+  @UI.lineItem: [ {
+    position: 999 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Country', element: 'Country' } } ]
+  @EndUserText.label: 'Legal Entity Country'
+  @EndUserText.quickInfo: 'Legal Entity Country'
+  @UI.textArrangement: #TEXT_LAST
+  Country;
+
+  @UI.lineItem: [ {
+    position: 50 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CompanyCodes_F4', element: 'Ccode' },
+                                      additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
+//  @UI.selectionField: [{ position: 40 }]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 40 ,
+    qualifier: 'OrgData'
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Ccode;
+
+  @UI.lineItem: [ {
+    position: 60 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
+//  @UI.selectionField: [{ position: 50 }]
+  @UI.textArrangement: #TEXT_ONLY
+  @UI.connectedFields: [{ qualifier: 'title' }]
+  Costobject;
+
+  @UI.lineItem: [ {
+    position: 70 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
+//  @UI.selectionField: [{ position: 60 }]
+  @UI.textArrangement: #TEXT_LAST
+  @UI.connectedFields: [{ qualifier: 'title' }]
+  Costcenter;
+
+  @UI.selectionField: [{ position: 110 }]
+  @Consumption.filter.mandatory: true
+  @Consumption.filter.selectionType: #SINGLE
+  @EndUserText.label: 'Currency Type'
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CURR', element: 'Currencytype' }}]
+  @Consumption.filter.defaultValue: 'L'
+  Currencytype;
+  @UI.lineItem: [ {
+    position: 75 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 75,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }}]
+  @UI.textArrangement: #TEXT_LAST
+  FunctionalArea;
+  @UI.lineItem: [ {
+    position: 80 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 80,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }}]
+  @UI.textArrangement: #TEXT_LAST
+  Businessdivision;
+
+  @UI.lineItem: [ {
+    position: 90 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 90,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }}]
+  @UI.textArrangement: #TEXT_LAST
+  Profitcenter;
+  @UI.lineItem: [ {
+    position: 91 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  ProcessType;
+
+  @UI.lineItem: [ {
+    position: 120 ,
+    importance: #MEDIUM,
+    label: 'Total Cost (Initial)'
+  } ]
+  @UI.dataPoint: { qualifier: 'initialcost', title: 'Total Cost (Initial)' }
+  Totalcost;
+
+  @UI.lineItem: [ {
+    position: 140 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 140,
+    qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Excluded Cost'
+  Excludedtotalcost;
+
+  @UI.lineItem: [ {
+    position: 160 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 160,
+    qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Total Cost Included'
+  Includetotalcost;
+
+  @UI.lineItem: [ {
+    position: 180 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 180,
+    qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Value-Add'
+  Origtotalcost;
+
+  @UI.lineItem: [ {
+    position: 200 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 200,
+    qualifier: 'ChgData'
+  } ]
+  @EndUserText.label: 'Thereof Pass-Through'
+  Passtotalcost;
+
+  @UI.lineItem: [ {
+    position: 220 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 220,
+    qualifier: 'ChgData'
+  } ]
+  Stewardship;
+
+  @UI.lineItem: [ {
+    position: 230 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.dataPoint: { qualifier: 'remainingcogs', title: 'Total Cost Base Remaining' }
+  @EndUserText.label: 'Total Cost Base Remaining'
+  Remainingcostbase;
+
+  @UI.lineItem: [ {
+    position: 240 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+//  @UI.selectionField: [{ position: 100 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_STATUS', element: 'Status' }}]
+  @UI.dataPoint: { qualifier: 'status', title: 'Status' }
+  @UI.textArrangement: #TEXT_ONLY
+  Status;
+
+  @UI.lineItem: [ {
+    position: 245 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 50,
+    qualifier: 'AdminData'
+  } ]
+  @UI.selectionField: [{ position: 10 }]
+  @Consumption.filter.mandatory: true
+  @Consumption.filter.hidden: true
+  Workflowid;
+
+  @UI.lineItem: [ {
+    position: 250 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 10 ,
+    qualifier: 'AdminData'
+  } ]
+  CreatedBy;
+
+  @UI.lineItem: [ {
+    position: 260 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 20 ,
+    qualifier: 'AdminData'
+  } ]
+  CreatedAt;
+  @UI.lineItem: [ {
+    position: 270 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 30 ,
+    qualifier: 'AdminData'
+  } ]
+  LastChangedBy;
+  @UI.lineItem: [ {
+    position: 280 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 40 ,
+    qualifier: 'AdminData'
+  } ]
+  LastChangedAt;
+
+  // hidden fields
+  @UI.hidden: true
+  ccodedescription;
+  @UI.hidden: true
+  legalentitydescription;
+  @UI.hidden: true
+  costobjectdescription;
+  @UI.hidden: true
+  costcenterdescription;
+  @UI.hidden: true
+  costdatasetdescription;
+  @UI.hidden: true
+  businessdescription;
+  @UI.hidden: true
+  profitcenterdescription;
+  @UI.hidden: true
+  billingfrequencydescription;
+  @UI.hidden: true
+  billingperioddescription;
+  @UI.hidden: true
+  statusdescription;
+  @UI.hidden: true
+  Controllingarea;
+  @EndUserText.label: 'Currency'
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Currency', element: 'Currency' }} ]
+  @UI.hidden: true
+  Currency;
+  @UI.hidden: true
+  countryname;
+  @UI.hidden: true
+  UUID;
+  @UI.hidden: true
+  functionalareadescription;
+  @UI.hidden: true
+  ProcessTypedescription;
+
+}

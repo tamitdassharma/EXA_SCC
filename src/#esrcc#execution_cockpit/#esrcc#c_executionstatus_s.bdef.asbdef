@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_EXECUTIONSTATUS unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_ExecutionStatus_S alias ExecutionStatusAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _ExecutionStatus { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_ExecutionStatus alias ExecutionStatus
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _ExecutionStatusAll { with draft; }
+  use association _ExecutionStatusText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_ExecutionStatusText alias ExecutionStatusText
+
+{
+  use update;
+  use delete;
+
+  use association _ExecutionStatusAll { with draft; }
+  use association _ExecutionStatus { with draft; }
+}

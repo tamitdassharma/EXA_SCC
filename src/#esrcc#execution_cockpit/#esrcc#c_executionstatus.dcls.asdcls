@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_ExecutionStatus {
+  grant select on /ESRCC/C_ExecutionStatus
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_ExecutionStatus;
+}

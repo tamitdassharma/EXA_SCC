@@ -1,0 +1,47 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Profit Centers",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_PFC_O4",
+    "serviceName": "/ESRCC/UI_PFC_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ProfitCenterAll",
+    "name": "Profit Centers",
+    "configurationGroup": "/ESRCC/BC_GROUP1",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "PfcText"
+      },
+      {
+        "entitySet": "ProfitCenter"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "PfcText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "ProfitCenter",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ProfitCenterAll",
+        "tableType": "gridTable"
+      }
+    ]
+  }
+}

@@ -1,0 +1,225 @@
+@Metadata.layer: #CORE
+@UI.presentationVariant: [
+  {
+    qualifier: 'Default',
+    sortOrder: [
+                {by: 'Application', direction: #ASC },
+                {by: 'SubApplication', direction: #ASC },
+                {by: 'RunNumber', direction: #DESC }
+//                {by: 'CreatedAt', direction: #DESC }
+              ]
+  }
+ ]
+annotate view /ESRCC/C_ApplicationLogsHier with
+{
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  Hid;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  ParentHid;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  HierarchyLevel;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  DrilldownState;
+  @UI.selectionField: [{ position: 10 }]
+  @UI.lineItem: [{ position: 10 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_APPLICATION', element: 'Application' }, useForValidation: true }]
+  Application;
+  @UI.selectionField: [{ position: 20 }]
+  @UI.lineItem: [{ position: 20 }]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_SUB_APPLICATION', element: 'SubApplication' }, useForValidation: true }]
+  SubApplication;
+  @UI.selectionField: [{ position: 30 }]
+  @UI.lineItem: [{ position: 30 }]
+  @EndUserText: {
+      label: 'Run Number',
+      quickInfo: 'Run Number'
+  }
+  RunNumber;
+  @UI.selectionField: [{ position: 40 }]
+  @UI.lineItem: [{ position: 40 }]
+  ReportingYear;
+  @UI.lineItem: [{ position: 50 }]
+  @UI.selectionField: [{ position: 50 }]
+  @EndUserText.label: 'From Period'
+  PeriodFrom;
+  @UI.lineItem: [{ position: 60 }]
+  @UI.selectionField: [{ position: 60 }]
+  @EndUserText.label: 'To Period'
+  PeriodTo;
+  @UI.lineItem: [{ position: 70 }]
+  @UI.selectionField: [{ position: 70 }]
+  PlanningVersion;
+  @UI.selectionField: [{ position: 80 }]
+  @UI.lineItem: [{ position: 80 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LegalEntityAll_F4',
+          element: 'Legalentity'
+      }
+  }]
+  LegalEntity;
+  @UI.selectionField: [{ position: 90 }]
+  @UI.lineItem: [{ position: 90 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+          element: 'Sysid'
+      },
+      useForValidation: true,
+      additionalBinding: [{
+          localElement: 'LegalEntity',
+          element: 'Legalentity',
+          usage: #FILTER_AND_RESULT
+      },
+      {
+          localElement: 'CompanyCode',
+          element: 'Ccode',
+          usage: #FILTER_AND_RESULT
+      }]
+  }]
+  SystemId;
+  @UI.selectionField: [{ position: 100 }]
+  @UI.lineItem: [{ position: 100 }]
+  @Consumption.valueHelpDefinition: [{
+      entity: {
+          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+          element: 'Ccode'
+      },
+  //              distinctValues: true,
+      useForValidation: true,
+      additionalBinding: [{
+          localElement: 'LegalEntity',
+          element: 'Legalentity',
+          usage: #FILTER_AND_RESULT
+      },
+      {
+          localElement: 'SystemId',
+          element: 'Sysid',
+          usage: #FILTER_AND_RESULT
+      }]
+  }]
+  CompanyCode;
+  @UI.selectionField: [{ position: 110 }]
+  @UI.lineItem: [{ position: 110 }]
+  @EndUserText.label: 'Created By'
+  CreatedBy;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  @EndUserText.label: 'Message Class'
+  MessageId;
+  @UI.lineItem: [{ position: 10 }]
+  @Consumption.filter.hidden: true
+  @EndUserText.label: 'Message Number'
+  MessageNumber;
+  @UI.lineItem: [{ position: 20, criticality: 'MessageTypeCriticality', criticalityRepresentation: #WITH_ICON }]
+  @Consumption.filter.hidden: true
+  MessageType;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageTypeCriticality;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV1;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV2;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV3;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  MessageV4;
+  @EndUserText.label: 'Message Text'
+  @UI.lineItem: [{ position: 30 }]
+  @Consumption.filter.hidden: true
+  MessageText;
+  @UI.selectionField: [{ position: 120 }]
+  @UI.lineItem: [{ position: 50 }]
+  @EndUserText.label: 'Created On'
+  CreatedAt;
+  @UI.lineItem: [{ hidden: true }]
+  @UI.hidden: true
+  @Consumption.filter.hidden: true
+  LogHeaderUuid;
+  @UI.lineItem: [{ position: 120 }]
+  @Consumption.filter.hidden: true
+  Ryear;
+  @UI.lineItem: [{ position: 130 }]
+  @Consumption.filter.hidden: true
+  Poper;
+  @UI.lineItem: [{ position: 140 }]
+  @Consumption.filter.hidden: true
+  Fplv;
+  @UI.lineItem: [{ position: 150 }]
+  @Consumption.filter.hidden: true
+  Sysid;
+  @UI.lineItem: [{ position: 160 }]
+  @Consumption.filter.hidden: true
+  InvalidRecordLegalentity;
+  @UI.lineItem: [{ position: 170 }]
+  @Consumption.filter.hidden: true
+  Ccode;
+  @UI.lineItem: [{ position: 180 }]
+  @Consumption.filter.hidden: true
+  Belnr;
+  @UI.lineItem: [{ position: 190 }]
+  @Consumption.filter.hidden: true
+  Buzei;
+  @UI.lineItem: [{ position: 200 }]
+  @Consumption.filter.hidden: true
+  Costobject;
+  @UI.lineItem: [{ position: 210 }]
+  @Consumption.filter.hidden: true
+  Costcenter;
+  @UI.lineItem: [{ position: 220 }]
+  @Consumption.filter.hidden: true
+  Costelement;
+  @UI.lineItem: [{ position: 230 }]
+  @Consumption.filter.hidden: true
+  Businessdivision;
+  @UI.lineItem: [{ position: 240 }]
+  @Consumption.filter.hidden: true
+  Profitcenter;
+  @UI.lineItem: [{ position: 250 }]
+  @Consumption.filter.hidden: true
+  Hsl;
+  @UI.lineItem: [{ position: 260 }]
+  @Consumption.filter.hidden: true
+  Localcurr;
+  @UI.lineItem: [{ position: 270 }]
+  @Consumption.filter.hidden: true
+  Ksl;
+  @UI.lineItem: [{ position: 280 }]
+  @Consumption.filter.hidden: true
+  Groupcurr;
+  @UI.lineItem: [{ position: 290 }]
+  @Consumption.filter.hidden: true
+  Vendor;
+  @UI.lineItem: [{ position: 300 }]
+  @Consumption.filter.hidden: true
+  Postingtype;
+  @UI.lineItem: [{ position: 310 }]
+  @Consumption.filter.hidden: true
+  Costind;
+  @UI.lineItem: [{ position: 320 }]
+  @Consumption.filter.hidden: true
+  Usagecal;
+  @UI.hidden: true
+  rootuuid;
+  @UI.hidden: true
+  ApplicationDescription;
+  @UI.hidden: true
+  SubApplicationDescription;
+  @UI.hidden: true
+  SystemIdDescription;
+  @UI.hidden: true
+  CompanyCodeDescription;
+  @UI.hidden: true
+  LegalEntityDescription;
+}

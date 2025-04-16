@@ -1,0 +1,54 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Stewardship, Service Products & Receivers",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_STEWRDSHP_O4",
+    "serviceName": "/ESRCC/UI_STEWRDSHP_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "StewardshipAll",
+    "name": "Stewardship, Service Products & Receivers",
+    "configurationGroup": "/ESRCC/BC_GROUP6",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "ServiceProduct"
+      },
+      {
+        "entitySet": "ServiceReceiver"
+      },
+      {
+        "entitySet": "Stewardship"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "ServiceProduct",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "ServiceReceiver",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      },
+      {
+        "entitySet": "Stewardship",
+        "tableType": "gridTable",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "StewardshipAll"
+      }
+    ]
+  }
+}

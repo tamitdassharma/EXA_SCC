@@ -1,0 +1,5 @@
+define service /ESRCC/UI_SYSINFO {
+  expose /ESRCC/C_SYSINFO_S as SystemInfoAll;
+  expose /ESRCC/C_SYSINFO as SystemInfo;
+  expose /ESRCC/C_SYSINFOTEXT as SystemInfoText;
+}

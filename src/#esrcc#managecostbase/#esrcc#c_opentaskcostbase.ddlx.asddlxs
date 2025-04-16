@@ -1,0 +1,478 @@
+@Metadata.layer: #CORE
+
+@UI.presentationVariant: [
+  {
+    qualifier: 'Default',
+    sortOrder: [
+                {by: 'LocalLastChangedAt', direction: #DESC }
+              ],
+    visualizations: [{
+        type: #AS_LINEITEM,
+        qualifier: 'Simplified'
+    }]
+  }
+]
+
+
+
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Base Line Item',
+    typeNamePlural: 'Cost Base Line Items',
+    title.value: 'costelementdescription',
+    description.value: 'Costelement'
+  }
+
+
+}
+annotate view /ESRCC/C_OPENTASKCOSTBASE with
+{
+  @UI.facet: [
+
+  {
+    id: 'adminheader',
+    purpose: #HEADER,
+    type: #DATAPOINT_REFERENCE,
+    targetQualifier: 'admin',
+    position: 30
+  },
+  {
+    id: 'statusheader',
+    purpose: #HEADER,
+    type: #DATAPOINT_REFERENCE,
+    targetQualifier: 'adminstatus',
+    position: 40
+  },
+  {
+    id: 'costindheader',
+    purpose: #HEADER,
+    type: #DATAPOINT_REFERENCE,
+    targetQualifier: 'costind',
+    position: 10
+  },
+  {
+    id: 'usageheader',
+    purpose: #HEADER,
+    type: #DATAPOINT_REFERENCE,
+    targetQualifier: 'usage',
+    position: 20
+  },
+  //  {
+  //    id: 'idIdentification',
+  //    type: #COLLECTION,
+  //    label: 'General Information'
+  //  },
+   {
+    id: 'general',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    purpose: #STANDARD,
+  //    parentId: 'idIdentification',
+    position: 20
+  }]
+
+  @UI.lineItem: [
+  {
+    position: 20 ,
+    importance: #MEDIUM,
+    label: ''
+  }]
+
+  @UI.identification: [ {
+    position: 20 ,
+    label: ''
+  } ]
+  Ryear;
+
+  @UI.lineItem: [ {
+    position: 30 ,
+    importance: #MEDIUM,
+    label: ''
+  //    qualifier: 'Simplified'
+  } ]
+  @UI.identification: [ {
+    position: 30 ,
+    label: ''
+  } ]
+  Poper;
+
+  @UI.lineItem: [ {
+    position: 10 ,
+    importance: #MEDIUM,
+    label: ''
+  //    qualifier: 'Simplified'
+  } ]
+  @UI.identification: [ {
+    position: 10 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Fplv;
+
+  @UI.lineItem: [ {
+    position: 40 ,
+    importance: #MEDIUM,
+    label: ''
+  //    qualifier: 'Simplified'
+  } ]
+  @UI.identification: [ {
+    position: 40 ,
+    label: ''
+  } ]
+  SysID;
+
+  @UI.lineItem: [ {
+    position: 50 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  //    qualifier: 'Simplified'
+  } ]
+  @UI.identification: [ {
+    position: 50 ,
+    label: ''
+  } ]
+  // @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntity_F4', element: 'Legalentity' } }]
+  //@UI.selectionField: [{position: 10}]
+  @UI.textArrangement: #TEXT_LAST
+  Legalentity;
+
+  @UI.lineItem: [ {
+    position: 60 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.identification: [ {
+    position: 60 ,
+    label: ''
+  } ]
+  //@Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CompanyCodes_F4', element: 'Ccode' }}]
+  // @UI.selectionField: [{position: 20}]
+  @UI.textArrangement: #TEXT_LAST
+  Ccode;
+
+  @UI.lineItem: [ {
+    position: 65 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 65 ,
+    label: ''
+  } ]
+  Belnr;
+
+  @UI.lineItem: [ {
+    position: 70 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 70 ,
+    label: ''
+  } ]
+  Buzei;
+
+  @UI.lineItem: [ {
+    position: 80 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @UI.identification: [ {
+    position: 80 ,
+    label: ''
+  } ]
+  // @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
+  // @UI.selectionField: [{position: 40}]
+  @UI.textArrangement: #TEXT_ONLY
+  Costobject;
+
+  @UI.lineItem: [ {
+    position: 90 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.identification: [ {
+    position: 90 ,
+    label: ''
+  } ]
+  // @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTCENTER_F4', element: 'Costcenter' }}]
+  // @UI.selectionField: [{position: 50}]
+  @UI.textArrangement: #TEXT_LAST
+  Costcenter;
+
+  @UI.lineItem: [ {
+    position: 100 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.identification: [ {
+    position: 100 ,
+    label: ''
+  } ]
+
+  @UI.textArrangement: #TEXT_LAST
+  Costelement;
+
+  @UI.lineItem: [ {
+    position: 110 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 110 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Businessdivision;
+
+  @UI.lineItem: [ {
+    position: 120 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 120 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Profitcenter;
+  
+  @UI.lineItem: [ {
+    position: 125 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 125 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Functionalarea;
+
+  @UI.lineItem: [ {
+    position: 130 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 130 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Costtype;
+
+  @UI.lineItem: [ {
+    position: 140 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 140 ,
+    label: ''
+  } ]
+  @UI.dataPoint: { qualifier: 'admin', title: 'Total Cost (LC)'}
+  Hsl;
+
+  @UI.lineItem: [ {
+    position: 160 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 160 ,
+    label: ''
+  } ]
+  Ksl;
+
+  @UI.lineItem: [ {
+    position: 180 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 180 ,
+    label: ''
+  } ]
+  Vendor;
+
+  @UI.lineItem: [ {
+    position: 190 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 190 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+  Postingtype;
+
+  @UI.lineItem: [ {
+    position: 200 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+
+  @UI.dataPoint: { qualifier: 'costind', title: 'Cost Indicator'}
+  @UI.textArrangement: #TEXT_ONLY
+  Costind;
+
+  @UI.lineItem: [ {
+    position: 210 ,
+    importance: #MEDIUM,
+    label: '',
+    criticality: 'usagecriticallity'
+  } ]
+
+  @UI.textArrangement: #TEXT_ONLY
+  @UI.dataPoint: { qualifier: 'usage', title: 'Usage in Calculation', criticality: 'usagecriticallity', criticalityRepresentation: #WITH_ICON }
+  Usagecal;
+  
+  @UI.lineItem: [ {
+    position: 211 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_ONLY
+//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_REASON_F4', element: 'Reasonid' }}]
+//  @UI.dataPoint: { qualifier: 'usage', title: 'Usage in Calculation', criticality: 'usagecriticallity', criticalityRepresentation: #WITH_ICON }
+  ReasonId;
+
+  @UI.lineItem: [ {
+    position: 230 ,
+    importance: #MEDIUM,
+    label: 'Status',
+    criticality: 'statuscriticallity',
+    criticalityRepresentation: #WITHOUT_ICON
+  } ]
+  //  @UI.identification: [ {
+  //    position: 230 ,
+  //    label: 'Status',
+  //    criticality: 'Status',
+  //    criticalityRepresentation: #WITHOUT_ICON
+  //  } ]
+  //@Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_STATUS', element: 'Status' } }]
+  //@UI.selectionField: [{position: 70}]
+  @UI.textArrangement: #TEXT_ONLY
+  @UI.dataPoint: { qualifier: 'adminstatus', title: 'Status', criticality: 'statuscriticallity', criticalityRepresentation: #WITH_ICON }
+  Status;
+
+  @UI.lineItem: [ {
+    position: 235 ,
+    importance: #HIGH
+  } ]
+
+  @UI.identification: [ {
+  position: 235 ,
+  importance: #HIGH
+
+  } ]
+
+  @UI.selectionField: [{position: 10}]
+  @Consumption.filter.mandatory: true
+  @Consumption.filter.hidden: true
+  Workflowid;
+
+  @UI.lineItem: [ {
+    position: 240 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 240 ,
+    label: ''
+  } ]
+  CreatedBy;
+
+  @UI.lineItem: [ {
+    position: 250 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 250 ,
+    label: ''
+  } ]
+  CreatedAt;
+
+  @UI.lineItem: [ {
+    position: 260 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 260 ,
+    label: ''
+  } ]
+  LastChangedBy;
+
+  @UI.lineItem: [ {
+    position: 270 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 270 ,
+    label: ''
+  } ]
+  LastChangedAt;
+  @UI.lineItem: [ {
+      position: 999 ,
+      importance: #LOW,
+      label: ''
+    } ]
+  @EndUserText.label: 'Legal Entity Country' 
+  @EndUserText.quickInfo: 'Legal Entity Country'  
+  @UI.textArrangement: #TEXT_LAST
+  country;
+
+  @UI.hidden: true
+  LocalLastChangedAt;
+
+  // hidden fields
+  @UI.hidden: true
+  ccodedescription;
+  @UI.hidden: true
+  legalentitydescription;
+  @UI.hidden: true
+  costobjectdescription;
+  @UI.hidden: true
+  costcenterdescription;
+  @UI.hidden: true
+  costelementdescription;
+  @UI.hidden: true
+  costtypedescription;
+  @UI.hidden: true
+  costinddescription;
+  @UI.hidden: true
+  postingtypedescription;
+  @UI.hidden: true
+  costdatasetdescription;
+  @UI.hidden: true
+  usagecaldescription;
+  @UI.hidden: true
+  statusdescription;
+  @UI.hidden: true
+  usagecriticallity;
+  @UI.hidden: true
+  statuscriticallity;
+  @UI.hidden: true
+  Groupcurr;
+  @UI.hidden: true
+  Localcurr;
+  @UI.hidden: true
+  businessdivdescription;
+  @UI.hidden: true
+  ProfitCenterDescription;
+  @UI.hidden: true
+  legalentitycountryname;
+  @UI.hidden: true
+  reasondescription;
+  @UI.hidden: true
+  FunctionalAreaDescription;
+}

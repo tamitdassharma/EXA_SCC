@@ -1,0 +1,40 @@
+projection implementation in class /ESRCC/BP_C_SRVTG unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_SrvTg_S alias TransactionGrpAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+//  use action SelectCustomizingTransptReq;
+
+  use association _TransactionGrp { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_SrvTg alias TransactionGrp
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use association _TransactionGrpAll { with draft; }
+  use association _TransactionGrpText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_SrvTgText alias TransactionGrpText
+
+{
+  use update;
+  use delete;
+
+  use association _TransactionGrpAll { with draft; }
+  use association _TransactionGrp { with draft; }
+}

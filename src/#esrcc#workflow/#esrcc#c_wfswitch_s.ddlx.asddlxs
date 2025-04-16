@@ -1,0 +1,35 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Workflow Activation'
+  }
+}
+annotate view /ESRCC/C_WfSwitch_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_WfSwitch',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    position: 2 ,
+    label: 'Maintain Workflow Activation per Application',
+    targetElement: '_WorkflowSwitch'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
+  } ]
+  TransportRequestID;
+}

@@ -1,0 +1,7 @@
+@MappingRole: true
+define role /ESRCC/I_CstObjctText {
+  grant select on /ESRCC/I_CstObjctText
+  //  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_CstObjct;
+  where ( ) = ASPECT pfcg_auth ( 'S_TABU_NAM', ACTVT = '03', TABLE = '/ESRCC/I_CSTOBJCT' );
+
+}

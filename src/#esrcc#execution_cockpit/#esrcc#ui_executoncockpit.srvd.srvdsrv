@@ -1,0 +1,4 @@
+@EndUserText.label: 'Execution Cockpit'
+define service /ESRCC/UI_EXECUTONCOCKPIT {
+  expose /ESRCC/C_EXECUTION_COCKPIT as executioncockpit;
+}

@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Additional Information'
+  }
+}
+annotate view /ESRCC/C_LeOthers_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_LeOthers',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Additional Information',
+    position: 2 ,
+    targetElement: '_OtherInformation'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

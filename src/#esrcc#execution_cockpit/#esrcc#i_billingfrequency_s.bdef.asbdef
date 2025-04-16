@@ -1,0 +1,66 @@
+managed with additional save implementation in class /ESRCC/BP_I_BILLINGFREQUENCY unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_BillingFrequency_S alias BillingFrequencyAll
+draft table /esrcc/d_billf_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _BillingFrequency { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_BillingFrequency alias BillingFrequency
+persistent table /esrcc/billfreq
+draft table /esrcc/d_billfre
+etag master LocalLastChangedAt
+lock dependent by _BillingFrequencyAll
+authorization dependent by _BillingFrequencyAll
+
+{
+  field ( mandatory : create )
+  Billingfreq,
+  Billingvalue,
+  Poper;
+
+  field ( readonly )
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+  Billingfreq,
+  Billingvalue,
+  Poper;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/BILLFREQ
+  {
+    Billingfreq = BILLINGFREQ;
+    Billingvalue = BILLINGVALUE;
+    Poper = POPER;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _BillingFrequencyAll { with draft; }
+
+  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

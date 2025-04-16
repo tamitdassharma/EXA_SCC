@@ -1,0 +1,4 @@
+@EndUserText.label: 'Cost Center Chargeout'
+define service /ESRCC/UI_CC_COST_WORKFLOW {
+  expose /ESRCC/C_CC_COST_WORKFLOW as costcenterworkflow;
+}

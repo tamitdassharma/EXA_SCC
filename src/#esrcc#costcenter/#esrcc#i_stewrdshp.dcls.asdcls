@@ -1,0 +1,7 @@
+@MappingRole: true
+define role /ESRCC/I_Stewrdshp {
+  grant select on /ESRCC/I_Stewrdshp
+  where ( ) = ASPECT pfcg_auth ( 'S_TABU_NAM', ACTVT = '03', TABLE = '/ESRCC/I_STEWRDSHP' ) AND
+        (Legalentity) = aspect pfcg_auth('/ESRCC/LE', /ESRCC/LE, ACTVT = '03') AND
+        (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');
+}

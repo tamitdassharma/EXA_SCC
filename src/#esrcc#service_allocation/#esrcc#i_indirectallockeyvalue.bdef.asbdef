@@ -1,0 +1,54 @@
+managed implementation in class /ESRCC/BP_I_IndrctAllocKeyValu unique;
+strict ( 2 );
+
+define behavior for /ESRCC/I_INDIRECTALLOCKEYVALUE alias IndirectAllocationKeyValues
+persistent table /esrcc/indtalloc
+lock master
+authorization master ( global )
+
+{
+  field ( mandatory : create, readonly : update )
+  Sysid,
+  LegalEntity,
+  CompanyCode,
+  CostObject,
+  CostCenter,
+  Ryear,
+  Poper,
+  AllocationKey,
+  Fplv;
+
+  field ( numbering : managed )
+  IndirectAllocationUUID;
+
+  field ( readonly )
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
+
+
+  create ( precheck );
+  update ( precheck );
+  delete ( precheck );
+
+  mapping for /ESRCC/INDTALLOC
+  {
+    IndirectAllocationUUID = INDIRECT_ALLOCATION_UUID;
+    Ryear = RYEAR;
+    Poper = POPER;
+    AllocationKey = ALLOCATION_KEY;
+    Fplv = FPLV;
+    Value = VALUE;
+    Currency = CURRENCY;
+    CostObjectUUID = COST_OBJECT_UUID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  validation ValidateData on save { create; update; }
+}

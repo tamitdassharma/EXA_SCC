@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Receiver Chargout'
+@MappingRole: true
+define role /ESRCC/C_CHARGEOUTRECEIVED {
+    grant select on /ESRCC/C_ChargeOutReceived
+     where inheriting conditions from entity /ESRCC/I_ChargeoutReceived;   
+                        
+}

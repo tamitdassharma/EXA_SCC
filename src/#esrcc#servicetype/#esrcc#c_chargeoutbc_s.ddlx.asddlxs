@@ -1,0 +1,31 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product Charge-out'
+  }
+}
+annotate view /ESRCC/C_ChargeoutBc_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_ChargeoutBc', 
+    purpose: #STANDARD, 
+    type: #PRESENTATIONVARIANT_REFERENCE, 
+    label: 'Maintain Service Product Charge-out Rules', 
+    position: 1,
+    targetQualifier: 'pVariant',
+    targetElement: '_Chargeout'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+  @UI.identification: [ {
+    position: 2 , 
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

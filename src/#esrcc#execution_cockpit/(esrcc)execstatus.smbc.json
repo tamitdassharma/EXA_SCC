@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Execution Cockpit Statuses",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_EXECSTAT_O4",
+    "serviceName": "/ESRCC/UI_EXECSTAT_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ExecutionStatusAll",
+    "name": "Execution Cockpit Statuses",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "ExecutionStatus"
+      },
+      {
+        "entitySet": "ExecutionStatusText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "ExecutionStatus",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ExecutionStatusAll"
+      },
+      {
+        "entitySet": "ExecutionStatusText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

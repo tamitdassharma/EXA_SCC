@@ -1,0 +1,7 @@
+@EndUserText.label: 'Acces Control for Allocation'
+@MappingRole: true
+define role /ESRCC/C_ALLOCATIONSHARE {
+    grant select on /ESRCC/C_ALLOCATIONSHARE
+     where inheriting conditions from entity /ESRCC/I_ALLOCATIONSHARE; 
+                        
+}

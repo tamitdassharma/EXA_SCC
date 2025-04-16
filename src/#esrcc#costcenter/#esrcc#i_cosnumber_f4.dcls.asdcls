@@ -1,0 +1,6 @@
+@EndUserText.label: 'Access Control for /ESRCC/I_COSNUMBER_F4'
+@MappingRole: true
+define role /ESRCC/I_COSNUMBER_F4 {
+    grant select on /ESRCC/I_COSNUMBER_F4
+    where (Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/CN, ACTVT = '03');
+}

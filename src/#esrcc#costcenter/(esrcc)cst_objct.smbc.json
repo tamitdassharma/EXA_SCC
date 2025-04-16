@@ -1,0 +1,46 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Cost Object Master Data & Frequency",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_CST_OBJCT_V4",
+    "serviceName": "/ESRCC/UI_CST_OBJCT_V4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "CostObjectAll",
+    "name": "Cost Objects Master Data & Frequency",
+    "configurationGroup": "/ESRCC/BC_GROUP6",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "CostObject"
+      },
+      {
+        "entitySet": "CostObjectText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "CostObject",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "CostObjectAll"
+      },
+      {
+        "entitySet": "CostObjectText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

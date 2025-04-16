@@ -1,0 +1,59 @@
+managed implementation in class /ESRCC/BP_I_DirAlocConsumptn unique;
+strict ( 2 );
+
+define behavior for /ESRCC/I_DIRALOCCONSUMPTN alias DirectAllocationConsumption
+persistent table /esrcc/consumptn
+lock master
+authorization master ( global )
+
+{
+  field ( mandatory : create, readonly : update )
+  Sysid,
+  ReceivingEntity,
+  ReceivingCompany,
+  CostObject,
+  CostCenter,
+
+  ProviderSysid,
+  ProviderEntity,
+  ProviderCompany,
+  ProviderCostObject,
+  ProviderCostCenter,
+
+  Ryear,
+  Poper,
+  ServiceProduct,
+  Fplv;
+
+  field ( readonly )
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  DirectAllocationUUID;
+
+  create ( precheck );
+  update ( precheck );
+  delete ( precheck );
+
+  mapping for /ESRCC/CONSUMPTN
+  {
+    DirectAllocationUUID = DIRECT_ALLOCATION_UUID;
+    ServiceProduct = SERVICE_PRODUCT;
+    Ryear = RYEAR;
+    Poper = POPER;
+    Fplv = FPLV;
+    Consumption = CONSUMPTION;
+    Uom = UOM;
+    CostObjectUuid = COST_OBJECT_UUID;
+    ProviderCostObjectUuid = PROVIDER_COST_OBJECT_UUID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+}

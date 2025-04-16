@@ -1,0 +1,47 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Service Types (Level 2)",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_SRTYPE_O4",
+    "serviceName": "/ESRCC/UI_SRTYPE_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ServiceTypeAll",
+    "name": "L2 - Service Types",
+    "configurationGroup": "/ESRCC/BC_GROUP3",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "ServiceType"
+      },
+      {
+        "entitySet": "ServiceTypeText"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "ServiceType",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      },
+      {
+        "entitySet": "ServiceTypeAll",
+        "tableType": "gridTable"
+      },
+      {
+        "entitySet": "ServiceTypeText",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true
+      }
+    ]
+  }
+}

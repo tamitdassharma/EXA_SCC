@@ -1,0 +1,56 @@
+managed implementation in class /esrcc/bp_i_uploadstaging unique;
+strict ( 1 );
+with draft;
+
+define behavior for /ESRCC/I_UploadStaging alias UploadStaging
+persistent table /esrcc/upld_stg
+draft table /esrcc/d_upld
+lock master
+total etag LocalLastChangedAt
+authorization master ( instance )
+etag master LastChangedAt
+{
+  field ( mandatory : create ) SubApplication, TableName;
+  field ( numbering : managed ) UploadUUID;
+//  field (features : instance ) TableName;
+  field ( readonly ) Application, Status, UploadUUID, LastChangedAt, LastChangedBy, LocalLastChangedAt, CreatedBy, CreatedAt;
+  field ( readonly : update ) SubApplication, TableName;
+
+  create;
+  update;
+  delete;
+
+  side effects { field SubApplication affects field TemporaryFileName; }
+
+  validation validate_create on save { field Filename; create; update; }
+
+  // Logic to trigger action uploadExcelData
+  determination uploadfields on save { create; field Filename; }
+  determination setfilename on modify { create; update; field SubApplication, Filename; }
+
+  draft action Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation ( always ) validate_create;
+  }
+
+  mapping for /esrcc/upld_stg
+    {
+      UploadUUID         = upload_uuid;
+      DataStream         = data_stream;
+      MimeType           = mime_type;
+      Application        = application;
+      SubApplication     = sub_application;
+      Filename           = filename;
+      TableName          = table_name;
+      Status             = status;
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+      LocalLastChangedAt = local_last_changed_at;
+      LastChangedBy      = last_changed_by;
+      LastChangedAt      = last_changed_at;
+    }
+}

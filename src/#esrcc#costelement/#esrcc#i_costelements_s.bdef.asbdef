@@ -1,0 +1,110 @@
+managed with additional save implementation in class /ESRCC/BP_I_COSTELEMENTS_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_CostElements_S alias CostElementsAll
+draft table /esrcc/d_cst_e_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation CostElement~ValidateData;
+  }
+
+  association _CostElements { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_CostElements alias CostElement
+persistent table /esrcc/cst_elmnt
+draft table /esrcc/d_cst_elm
+etag master LocalLastChangedAt
+lock dependent by _CostElementsAll
+authorization dependent by _CostElementsAll
+
+{
+  field ( readonly )
+  SingletonID,
+  CostElementUuid,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt;
+
+  field ( mandatory: create, readonly : update )
+  Sysid,
+  CompanyCode,
+  LegalEntity,
+  CostElement;
+
+  field ( numbering : managed )
+  CostElementUuid;
+
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  mapping for /ESRCC/CST_ELMNT
+  {
+    CostElementUuid = COST_ELEMENT_UUID;
+    Sysid = SYSID;
+    LegalEntity = LEGAL_ENTITY;
+    CompanyCode = COMPANY_CODE;
+    CostElement = COST_ELEMENT;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _CostElementsAll { with draft; }
+  association _CostElementsText { create ( features : global ); with draft; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_CostElementsText alias CostElementsText
+persistent table /esrcc/cst_elmtt
+draft table /esrcc/d_cstelmc
+etag master LocalLastChangedAt
+lock dependent by _CostElementsAll
+authorization dependent by _CostElementsAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  CostElementUuid;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /ESRCC/CST_ELMTT
+  {
+    Spras = SPRAS;
+    CostElementUuid = COST_ELEMENT_UUID;
+    Description = DESCRIPTION;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _CostElementsAll { with draft; }
+  association _CostElements { with draft; }
+
+}

@@ -1,0 +1,231 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Stewardship',
+    typeNamePlural: 'Stewardships',
+    title: {
+      type: #STANDARD,
+      value: 'LegalEntity'
+    }
+  },
+  presentationVariant: [{
+    qualifier: 'pVariant',
+    sortOrder: [{ by: 'Sysid', direction: #ASC },
+                { by: 'LegalEntity', direction: #ASC},
+                { by: 'CompanyCode', direction: #ASC },
+                { by: 'CostObject', direction: #ASC },
+                { by: 'CostCenter', direction: #ASC },
+                { by: 'ValidFrom', direction: #ASC }],
+    visualizations: [{type: #AS_LINEITEM }]
+  }]
+}
+annotate view /ESRCC/C_Stewrdshp with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_Stewrdshp',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 10
+  },
+  {
+    id: 'Validity',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ValidityGroup',
+    label: 'Validity',
+    position: 20
+  },
+  {
+    id: 'Workflow',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    label: 'Workflow Information',
+    targetQualifier: 'WorkflowGroup',
+    parentId: 'CE',
+    position: 30
+  },
+  {
+    id: 'Admin',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 40
+  },
+  {
+    id: 'ServiceProduct',
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    targetElement: '_ServiceProduct',
+    parentId: 'CE',
+    targetQualifier: 'pVariant',
+    position: 50
+  },
+  {
+    id: 'ServiceReceiver',
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    targetElement: '_ServiceReceiver',
+    parentId: 'CE',
+    targetQualifier: 'pVariant',
+    position: 60
+  } ]
+
+  @UI.lineItem: [{ type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
+                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
+                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+  @UI.hidden: true
+  @EndUserText.label: 'Stewardship UUID'
+  StewardshipUuid;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Sysid' },
+//   Due to SAP Framework issue, the additional Binding is removed ( SCC-205 ), to be enabled if its addressed or if it works in other higher versions
+//                                       additionalBinding: [{ localElement: 'LegalEntity', element: 'LegalEntity' },
+//                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+//                                                           { localElement: 'CostObject', element: 'Costobject' },
+//                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+//                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       additionalBinding: [{ localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true
+                                       }]
+  Sysid;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'LegalEntity' },
+//   Due to SAP Framework issue, the additional Binding is removed ( SCC-205 ), to be enabled if its addressed or if it works in other higher versions
+//                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+//                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+//                                                           { localElement: 'CostObject', element: 'Costobject' },
+//                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+//                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       additionalBinding: [{ localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true
+                                       }]
+  LegalEntity;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'CompanyCode' },
+//   Due to SAP Framework issue, the additional Binding is removed ( SCC-205 ), to be enabled if its addressed or if it works in other higher versions
+//                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+//                                                           { localElement: 'LegalEntity', element: 'LegalEntity' },
+//                                                           { localElement: 'CostObject', element: 'Costobject' },
+//                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+//                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       additionalBinding: [{ localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CompanyCode;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costobject' },
+//   Due to SAP Framework issue, the additional Binding is removed ( SCC-205 ), to be enabled if its addressed or if it works in other higher versions
+//                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
+//                                                           { localElement: 'LegalEntity', element: 'LegalEntity' },
+//                                                           { localElement: 'CompanyCode', element: 'CompanyCode' },
+//                                                           { localElement: 'CostCenter', element: 'Costcenter' },
+//                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       additionalBinding: [{ localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CostObject;
+
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
+//   Due to SAP Framework issue, the additional Binding is removed ( SCC-205 ), to be enabled if its addressed or if it works in other higher versions
+//                                       additionalBinding: [{ localElement: 'Sysid', element: 'Sysid', usage: #FILTER },
+//                                                           { localElement: 'LegalEntity', element: 'LegalEntity', usage: #FILTER },
+//                                                           { localElement: 'CompanyCode', element: 'CompanyCode', usage: #FILTER },
+//                                                           { localElement: 'CostObject', element: 'Costobject', usage: #FILTER },
+//                                                           { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       additionalBinding: [{ localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  CostCenter;
+
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ValidityGroup' }]
+  ValidFrom;
+
+  @UI.lineItem: [ { position: 8 } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ValidityGroup' }]
+  Validto;
+
+  @UI.identification: [ { position: 9 } ]
+  @UI.lineItem: [ { position: 9 } ]
+  Stewardship;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Cost Object UUID'
+  CostObjectUuid;
+
+  @UI.identification: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10 } ]
+  ChainId;
+
+  @UI.identification: [ { position: 11 } ]
+  @UI.lineItem: [ { position: 11 } ]
+  ChainSequence;
+
+  @UI.lineItem: [ { position: 12 } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
+  WorkflowId;
+
+  @UI.lineItem: [ { position: 13, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
+  @UI.textArrangement: #TEXT_ONLY
+  @EndUserText.label: 'Workflow Status'
+  WorkflowStatus;
+
+  @UI.lineItem: [{ hidden: true }]
+  CommentId;
+
+  @UI.lineItem: [{ hidden: true }]
+  @UI.multiLineText: true
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 30 }]
+  Comments;
+
+  @UI.lineItem: [ { position: 15 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 16, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 17 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 18, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  SysidDescription;
+  @UI.hidden: true
+  LegalEntityDescription;
+  @UI.hidden: true
+  CompanyCodeDescription;
+  @UI.hidden: true
+  CostObjectDescription;
+  @UI.hidden: true
+  CostCenterDescription;
+  @UI.hidden: true
+  WorkflowStatusCriticality;
+  @UI.hidden: true
+  WorkflowStatusDescription;
+}

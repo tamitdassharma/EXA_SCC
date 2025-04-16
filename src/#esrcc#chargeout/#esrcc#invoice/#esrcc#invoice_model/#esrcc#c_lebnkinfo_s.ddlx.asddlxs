@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Bank Account & Terms Information'
+  }
+}
+annotate view /ESRCC/C_LeBnkInfo_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_LeBnkInfo',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Bank Account & Payment Terms Information',
+    position: 2 ,
+    targetElement: '_BankInformation'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

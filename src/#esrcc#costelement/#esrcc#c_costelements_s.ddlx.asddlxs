@@ -1,0 +1,31 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Cost Element'
+  }
+}
+annotate view /ESRCC/C_CostElements_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_CostElements',
+    purpose: #STANDARD,
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    label: 'Maintain Cost Elements',
+    position: 2 ,
+    targetQualifier: 'pVariant',
+    targetElement: '_CostElements'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

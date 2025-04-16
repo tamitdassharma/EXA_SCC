@@ -1,0 +1,66 @@
+managed with additional save implementation in class /ESRCC/BP_I_LEBNKINFO_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LeBnkInfo_S alias BankInformationAll
+draft table /ESRCC/D_LEBNK_S
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master( global )
+
+{
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _BankInformation { create ( features : instance ); with draft; }
+}
+
+define behavior for /ESRCC/I_LeBnkInfo alias BankInformation
+persistent table /ESRCC/LEBNKINFO
+draft table /ESRCC/D_LEBNKIN
+etag master LocalLastChangedAt
+lock dependent by _BankInformationAll
+authorization dependent by _BankInformationAll
+
+{
+  field ( mandatory : create )
+   LegalEntity;
+
+  field ( readonly )
+   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( readonly : update )
+   LegalEntity;
+
+
+  update( features : global );
+  delete( features : global );
+
+  mapping for /ESRCC/LEBNKINFO
+  {
+    LegalEntity = LEGAL_ENTITY;
+    BankAccountNumber = BANK_ACCOUNT_NUMBER;
+    BicCode = BIC_CODE;
+    PaymentTerms = PAYMENT_TERMS;
+    FreeText = FREE_TEXT;
+    ContactPerson = CONTACT_PERSON;
+    AgreementId = AGREEMENT_ID;
+    CreatedBy = CREATED_BY;
+    CreatedAt = CREATED_AT;
+    LastChangedBy = LAST_CHANGED_BY;
+    LastChangedAt = LAST_CHANGED_AT;
+    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+  }
+
+  association _BankInformationAll { with draft; }
+
+//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

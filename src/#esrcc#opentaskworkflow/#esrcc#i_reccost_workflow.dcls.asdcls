@@ -1,0 +1,7 @@
+@EndUserText.label: 'Access Control for Receiver Chargout'
+@MappingRole: true
+define role /ESRCC/I_RECCOST_WORKFLOW {
+    grant select on /ESRCC/I_RECCOST_WORKFLOW
+      where (Receivingentity) = aspect pfcg_auth('/ESRCC/LE',  ACTVT = '03', /ESRCC/LE);    
+                        
+}

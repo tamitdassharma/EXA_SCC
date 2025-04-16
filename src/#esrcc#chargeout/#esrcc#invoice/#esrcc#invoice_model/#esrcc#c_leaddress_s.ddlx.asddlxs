@@ -1,0 +1,30 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Billing Address'
+  }
+}
+annotate view /ESRCC/C_LeAddress_S with
+{
+  @UI.facet: [ {
+    id: '/ESRCC/I_LeAddress', 
+    purpose: #STANDARD, 
+    type: #LINEITEM_REFERENCE, 
+    label: 'Maintain Legal Entity Billing Address', 
+    position: 2 , 
+    targetElement: '_LeAddress'
+  } ]
+  @UI.lineItem: [ {
+    position: 1 
+  } ]
+  SingletonID;
+  
+  @UI.hidden: true
+  HideTransport;
+  
+  @UI.identification: [ {
+    position: 2 , 
+    importance: #HIGH
+  } ]
+  TransportRequestID;
+}

@@ -1,0 +1,109 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Legal Entity',
+    typeNamePlural: 'Legal Entities',
+    title: {
+      type: #STANDARD,
+      label: 'Legal Entity',
+      value: 'Legalentity'
+    },
+    description: { value: 'Description' }
+  }
+}
+annotate view /ESRCC/C_LE with
+{
+  @UI.facet: [ {
+      id: 'CE',
+      type: #COLLECTION,
+      position: 1
+    },
+    {
+      id: '/ESRCC/I_LE',
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE,
+      parentId: 'CE',
+      label: 'General Information',
+      position: 10
+    },
+    {
+      id: 'Admin',
+      purpose: #STANDARD,
+      type: #FIELDGROUP_REFERENCE,
+      parentId: 'CE',
+      label: 'Admin Information',
+      position: 20,
+      targetQualifier: 'AdminGroup'
+    },
+    {
+      id: '/ESRCC/I_LEText',
+      type: #LINEITEM_REFERENCE,
+      parentId: 'CE',
+      position: 30,
+      targetElement: '_LegalEntityText'
+    } ]
+
+  @UI.lineItem: [ { position: 1 } ]
+  Legalentity;
+
+  @UI.identification: [ { position: 5, label: 'Country' } ]
+  @UI.lineItem: [ { position: 7, label: 'Country' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Country', element: 'Country' }, useForValidation: true } ]
+  Country;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Currency', element: 'Currency' }, useForValidation: true } ]
+  LocalCurr;
+
+  @UI.identification: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 3, cssDefault.width: '14rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_ENTITYTYPE', element: 'Entitytype' } } ]
+  Entitytype;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '10rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_REGION', element: 'Region' } } ]
+  Region;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 4, cssDefault.width: '13rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_Role', element: 'Role' } } ]
+  @Consumption.filter.selectionType: #SINGLE
+  Role;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.hidden: true
+  RegionDesc;
+  @UI.hidden: true
+  RoleDesc;
+  @UI.hidden: true
+  EntitytypeDesc;
+  @UI.hidden: true
+  CountryDesc;
+  @UI.hidden: true
+  LocalCurrDesc;
+}

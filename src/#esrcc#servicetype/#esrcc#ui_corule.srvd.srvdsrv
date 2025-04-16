@@ -1,0 +1,6 @@
+define service /ESRCC/UI_CORULE {
+  expose /ESRCC/C_CoRule_S as RuleAll;
+  expose /ESRCC/C_CoRule as Rule;
+  expose /ESRCC/C_CoRuleText as RuleText;
+  expose /ESRCC/C_AllocWeightage as Weightage;
+}
