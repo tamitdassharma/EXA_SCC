@@ -35,7 +35,8 @@ annotate view /ESRCC/C_BillingFrequency with
   }
   ]
 
-  @UI.lineItem: [ { position: 1, cssDefault.width: '8.5rem' } ]
+  @UI.lineItem: [ { position: 1, cssDefault.width: '8.5rem' },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10, hidden: true } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq'} }]
   Billingfreq;
@@ -65,7 +66,7 @@ annotate view /ESRCC/C_BillingFrequency with
   @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
   LastChangedAt;
-  
+
   @UI.hidden: true
   BillingFrequencyDescription;
   @UI.hidden: true

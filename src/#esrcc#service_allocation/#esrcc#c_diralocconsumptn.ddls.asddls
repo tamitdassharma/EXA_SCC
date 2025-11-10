@@ -35,7 +35,7 @@ define root view entity /ESRCC/C_DIRALOCCONSUMPTN
       ProviderCostcenter,
 
       Ryear,
-      @ObjectModel.text.element: [ 'PoperDescription' ]
+//      @ObjectModel.text.element: [ 'PoperDescription' ]
       Poper,
       @ObjectModel.text.element: [ 'FplvDescription' ]
       Fplv,
@@ -62,8 +62,8 @@ define root view entity /ESRCC/C_DIRALOCCONSUMPTN
       _CostCenter.CostObjectDescription,
       @Semantics.text: true
       _CostCenter.Description                    as CostCenterDescription,
-      @Semantics.text: true
-      _PoperText.text                            as PoperDescription,
+//      @Semantics.text: true
+//      _PoperText.text                            as PoperDescription,
       @Semantics.text: true
       _ConsumptionText.text                      as FplvDescription,
       @Semantics.text: true

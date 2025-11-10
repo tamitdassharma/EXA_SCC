@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_CstObjct_S alias CostObjectAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _CostObject { create ( augment ); with draft; }
 }
@@ -20,9 +21,9 @@ define behavior for /ESRCC/C_CstObjct alias CostObject
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _CostObjectAll { with draft; }
   use association _CostObjectText { create; with draft; }

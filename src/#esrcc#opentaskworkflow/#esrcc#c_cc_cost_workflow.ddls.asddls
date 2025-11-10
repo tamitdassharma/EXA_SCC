@@ -22,8 +22,8 @@ as projection on /ESRCC/I_CostBaseStewardship
     @ObjectModel.text.element: [ 'costcenterdescription' ]
     Costcenter,
     
-    @ObjectModel.text.element: [ 'billingfrequencydescription' ]
-    Billingfrequqncy,
+//    @ObjectModel.text.element: [ 'billingfrequencydescription' ]
+//    Billingfrequqncy,
     @ObjectModel.text.element: [ 'functionalareadescription' ]
     FunctionalArea,
     @ObjectModel.text.element: [ 'businessdescription' ]
@@ -34,8 +34,8 @@ as projection on /ESRCC/I_CostBaseStewardship
     
     Controllingarea, 
 //       
-    @ObjectModel.text.element: [ 'billingperioddescription' ]
-    Billingperiod,
+//    @ObjectModel.text.element: [ 'billingperioddescription' ]
+//    Billingperiod,
     @ObjectModel.text.element: [ 'ProcessTypedescription' ]
     ProcessType,
     @Semantics.currencyCode: true
@@ -81,10 +81,10 @@ as projection on /ESRCC/I_CostBaseStewardship
     businessdescription,
     @Semantics.text: true 
     profitcenterdescription,
-    @Semantics.text: true 
-    billingfrequencydescription,
-    @Semantics.text: true 
-    billingperioddescription,
+//    @Semantics.text: true 
+//    billingfrequencydescription,
+//    @Semantics.text: true 
+//    billingperioddescription,
     @Semantics.text: true 
     statusdescription,
     @Semantics.text: true 

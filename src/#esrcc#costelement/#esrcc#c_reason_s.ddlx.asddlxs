@@ -7,6 +7,14 @@
 annotate view /ESRCC/C_Reason_S with
 {
   @UI.facet: [ {
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1,
+    hidden: #(HideTransport)
+  },
+  {
     id: '/ESRCC/I_Reason',
     purpose: #STANDARD,
     type: #LINEITEM_REFERENCE,
@@ -25,6 +33,11 @@ annotate view /ESRCC/C_Reason_S with
   @UI.identification: [ {
     position: 2 ,
     importance: #HIGH
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
   } ]
   TransportRequestID;
 }

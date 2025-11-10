@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_SrvTg_S alias TransactionGrpAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _TransactionGrp { create ( augment ); with draft; }
 }
@@ -21,9 +21,9 @@ define behavior for /ESRCC/C_SrvTg alias TransactionGrp
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _TransactionGrpAll { with draft; }
   use association _TransactionGrpText { create; with draft; }

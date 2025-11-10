@@ -13,6 +13,9 @@ define view entity /ESRCC/I_LE
                                                                 and _Country.Language = $session.system_language
   association [0..1] to I_CurrencyText       as _Currency       on  _Currency.Currency = $projection.LocalCurr
                                                                 and _Currency.Language = $session.system_language
+  
+  association [0..1] to /ESRCC/I_TpProfText  as _TPprofileText  on  _TPprofileText.Tpprofile = $projection.TpProfile
+                                                                and _TPprofileText.Spras = $session.system_language
 {
   key legalentity           as Legalentity,
       country               as Country,
@@ -20,6 +23,7 @@ define view entity /ESRCC/I_LE
       entitytype            as Entitytype,
       region                as Region,
       role                  as Role,
+      tpprofile             as TpProfile,
       @Semantics.user.createdBy: true
       created_by            as CreatedBy,
       @Semantics.systemDateTime.createdAt: true
@@ -33,6 +37,7 @@ define view entity /ESRCC/I_LE
       1                     as SingletonID,
       _LegalEntityAll,
       _LegalEntityText,
+      _TPprofileText,
       _Region,
       _Role,
       _EntityType,

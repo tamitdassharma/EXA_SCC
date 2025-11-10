@@ -1,0 +1,114 @@
+managed with additional save implementation in class /ESRCC/BP_I_HIERDEF_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_HierDef_S alias HierDefAll
+draft table /esrcc/d_hier__s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation HierDef~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _HierDef { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_HierDef alias HierDef
+persistent table /esrcc/hier_def
+draft table /esrcc/d_hier_de
+etag master LocalLastChangedAt
+lock dependent by _HierDefAll
+authorization dependent by _HierDefAll
+
+{
+  field ( mandatory : create )
+  Hierarchy1,
+//  Hierarchy2,
+//  Hierarchy3,
+//  Hierarchy4,
+  ValidFrom;
+
+  field ( readonly )
+  SingletonID,
+  WorkflowId,
+  WorkflowStatus,
+  Comments,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Hierarchy1,
+  Hierarchy2,
+  Hierarchy3,
+  Hierarchy4,
+  ValidFrom;
+
+  field ( mandatory )
+  ValidTo;
+
+  update ( features : instance, precheck );
+  delete ( features : instance );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyHierDefP [1];
+
+  mapping for /esrcc/hier_def
+    {
+      Hierarchy1             = HIERARCHY1;
+      Hierarchy2             = HIERARCHY2;
+      Hierarchy3             = HIERARCHY3;
+      Hierarchy4             = HIERARCHY4;
+      ValidFrom              = VALID_FROM;
+      ValidTo                = VALID_TO;
+      SrvPrdDef              = SRV_PRD_DEF;
+      SrvRecDef              = SRV_REC_DEF;
+      Stewardship            = STEWARDSHIP;
+      ChainId                = CHAIN_ID;
+      RuleId                 = RULE_ID;
+      IsHub                  = IS_HUB;
+      CurrencyDerivationType = CURRENCY_DERIVATION_TYPE;
+      WorkflowId             = WORKFLOW_ID;
+      WorkflowStatus         = WORKFLOW_STATUS;
+      CommentId              = COMMENT_ID;
+      CreatedBy              = CREATED_BY;
+      CreatedAt              = CREATED_AT;
+      LastChangedBy          = LAST_CHANGED_BY;
+      LastChangedAt          = LAST_CHANGED_AT;
+      LocalLastChangedAt     = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _HierDefAll { with draft; }
+
+  action ( features : instance ) Submit parameter /ESRCC/C_COMMENT result [1] $self;
+  action ( features : instance ) Finalize result [1] $self;
+  action ( features : instance ) Reopen result [1] $self;
+  action ( features : instance, authorization : global ) Sync;
+  action ( features : instance, authorization : global ) AutoGenerate parameter /ESRCC/D_MassCreateHierP;
+
+  determination UpdateInternalWorkflowStatus on modify { field Hierarchy1, Hierarchy2, Hierarchy3, Hierarchy4, RuleId, ValidFrom, ValidTo, SrvPrdDef, SrvrecDef, Stewardship, ChainId, IsHub, CurrencyDerivationType; }
+  determination UpdateWorkflowStatus on save { field WorkflowInternalStatus; }
+  determination UpdateComment on save { field Comments; }
+  determination TriggerWorkflow on save { field WorkflowStatus; }
+  determination ScheduleJob on save { field WorkflowStatus; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

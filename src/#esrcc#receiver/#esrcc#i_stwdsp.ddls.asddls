@@ -7,6 +7,7 @@ define view entity /ESRCC/I_StwdSp
   association [1..1] to /ESRCC/I_Stewrdshp_S       as _StewardshipAll     on _StewardshipAll.SingletonID = $projection.SingletonID
   association        to parent /ESRCC/I_Stewrdshp  as _Stewardship        on _Stewardship.StewardshipUuid = $projection.StewardshipUuid
   association [0..1] to /ESRCC/I_SERVICEPRODUCT_F4 as _ServiceProductText on _ServiceProductText.ServiceProduct = $projection.ServiceProduct
+  composition [0..*] of /ESRCC/I_StwdSpRec          as _ServiceReceiver
 {
   key service_product_uuid  as ServiceProductUuid,
       service_product       as ServiceProduct,
@@ -29,5 +30,6 @@ define view entity /ESRCC/I_StwdSp
       1                     as SingletonID,
       _StewardshipAll,
       _Stewardship,
+      _ServiceReceiver,
       _ServiceProductText
 }

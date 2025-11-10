@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_INTF" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOINTERF>
+    <CLSNAME>/ESRCC/IF_WORKFLOW_ENH</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>Service Cross Charging: Workflow</DESCRIPT>
+    <EXPOSURE>2</EXPOSURE>
+    <STATE>1</STATE>
+    <UNICODE>5</UNICODE>
+   </VSEOINTERF>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_AGENTS</CMPNAME>
+     <SCONAME>ET_AGENTS</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Agents for workflow</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_AGENTS</CMPNAME>
+     <SCONAME>IV_APPROVAL_LEVEL</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Workflow Approval level</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>GET_AGENTS</CMPNAME>
+     <SCONAME>IV_WF_ID</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Work item ID</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_WF_TASK_DESCRIPTION</CMPNAME>
+     <SCONAME>ET_TASK_DESC</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>table type for ST</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_WF_TASK_DESCRIPTION</CMPNAME>
+     <SCONAME>IT_LEADING_OBJECT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Leading Object for Workflow</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SET_WF_TASK_TITLE</CMPNAME>
+     <SCONAME>IT_LEADING_OBJECT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Leading Object for Workflow</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SPLIT_AND_CREATE_WF_DATA</CMPNAME>
+     <SCONAME>ET_WF_SPLIT_DATA</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Workflow Split</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>SPLIT_AND_CREATE_WF_DATA</CMPNAME>
+     <SCONAME>IT_LEADING_OBJECT</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Leading Object for Workflow</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service Relation Configuration'
+define service /ESRCC/UI_SERVICERELATION {
+  expose /ESRCC/I_SERVICERELATIONCONFIG as ServiceRelation;
+}

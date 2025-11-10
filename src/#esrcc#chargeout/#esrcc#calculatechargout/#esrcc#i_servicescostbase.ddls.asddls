@@ -25,7 +25,6 @@ association [0..*] to /esrcc/srv_share as services
     costbase.costobject as Costobject,
     costbase.costcenter as Costcenter,
     services.serviceproduct as ServiceProduct,
-    services.contractid as ContractId,
     services.consumption_version,
     services.key_version,
     services.planninguom as PlanningUoM,

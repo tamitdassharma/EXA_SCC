@@ -11,70 +11,80 @@
     <VALEXI>X</VALEXI>
     <DDTEXT>Sub Application</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
    <DD07V_TAB>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>ECS</DOMVALUE_L>
-     <DDTEXT>Extraction Cost Object</DDTEXT>
+     <DDTEXT>Cost Objects</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>ECE</DOMVALUE_L>
-     <DDTEXT>Extraction Cost Element</DDTEXT>
+     <DDTEXT>Cost Elements</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>FLI</DOMVALUE_L>
      <DDTEXT>Cost Base Line Items</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>FPD</DOMVALUE_L>
      <DDTEXT>Service Capacity Data (for Direct Charging)</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>FAB</DOMVALUE_L>
      <DDTEXT>Allocation Base Key Data (for Indirect Charging)</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>FCD</DOMVALUE_L>
      <DDTEXT>Service Consumption Data (for Direct Charging)</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>CBS</DOMVALUE_L>
-     <DDTEXT>Cost Base &amp; Stewardship</DDTEXT>
+     <DOMVALUE_L>ELI</DOMVALUE_L>
+     <DDTEXT>Cost Base Line Items</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0008</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>SCM</DOMVALUE_L>
-     <DDTEXT>Service Product Costing</DDTEXT>
+     <DOMVALUE_L>FRB</DOMVALUE_L>
+     <DDTEXT>Royal Base Values</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/SUB_APPLICATION</DOMNAME>
      <VALPOS>0009</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>CHR</DOMVALUE_L>
-     <DDTEXT>Mark-up &amp; Final Allocation / Charge-out</DDTEXT>
+     <DOMVALUE_L>STD</DOMVALUE_L>
+     <DDTEXT>Standard Charge-out</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0010</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>TRU</DOMVALUE_L>
+     <DDTEXT>True-up Recalculation</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0011</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>ROY</DOMVALUE_L>
+     <DDTEXT>License &amp; Royalty</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0012</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>FBC</DOMVALUE_L>
+     <DDTEXT>Business Configuration</DDTEXT>
     </DD07V>
    </DD07V_TAB>
    <I18N_LANGS>
@@ -91,13 +101,13 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>ECS</DOMVALUE_L>
-     <DDTEXT>Extraktion Kostenträger</DDTEXT>
+     <DDTEXT>Kostenträger</DDTEXT>
     </item>
     <item>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>ECE</DOMVALUE_L>
-     <DDTEXT>Extraktion Kostenart</DDTEXT>
+     <DDTEXT>Kostenarten</DDTEXT>
     </item>
     <item>
      <VALPOS>0003</VALPOS>
@@ -126,20 +136,38 @@
     <item>
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>CBS</DOMVALUE_L>
-     <DDTEXT>Kostenbasis &amp; Gesellschafteraufwand</DDTEXT>
+     <DOMVALUE_L>ELI</DOMVALUE_L>
+     <DDTEXT>Kostenbasis Einzelbelege</DDTEXT>
     </item>
     <item>
      <VALPOS>0008</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>SCM</DOMVALUE_L>
-     <DDTEXT>Kalkulation Serviceprodukt</DDTEXT>
+     <DOMVALUE_L>FRB</DOMVALUE_L>
+     <DDTEXT>Lizenzgebührenbasiswerte</DDTEXT>
     </item>
     <item>
      <VALPOS>0009</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>CHR</DOMVALUE_L>
-     <DDTEXT>Aufschlag &amp; finale Allokation / Verrechnung</DDTEXT>
+     <DOMVALUE_L>STD</DOMVALUE_L>
+     <DDTEXT>Standard-Verrechnung</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0010</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>TRU</DOMVALUE_L>
+     <DDTEXT>Neuberechnung True-up</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0011</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>ROY</DOMVALUE_L>
+     <DDTEXT>Lizenz- und Lizenzgebühren</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0012</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>FBC</DOMVALUE_L>
+     <DDTEXT>Businesskonfiguration</DDTEXT>
     </item>
    </DD07_TEXTS>
   </asx:values>

@@ -7,9 +7,9 @@
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Group 1: Organizational Configurations</DDTEXT>
-    <REPTEXT>Group 1: Organizational Configurations</REPTEXT>
-    <SCRTEXT_L>Group 1: Organizational Configurations</SCRTEXT_L>
+    <DDTEXT>Group 01: Organizational Configurations</DDTEXT>
+    <REPTEXT>Group 01: Organizational Configurations</REPTEXT>
+    <SCRTEXT_L>Group 01: Organizational Configurations</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -22,9 +22,9 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 1: Organisationskonfigurationen</DDTEXT>
-     <REPTEXT>Gruppe 1: Organisationskonfigurationen</REPTEXT>
-     <SCRTEXT_L>Gruppe 1: Organisationskonfigurationen</SCRTEXT_L>
+     <DDTEXT>Gruppe 01: Organisationskonfigurationen</DDTEXT>
+     <REPTEXT>Gruppe 01: Organisationskonfigurationen</REPTEXT>
+     <SCRTEXT_L>Gruppe 01: Organisationskonfigurationen</SCRTEXT_L>
     </item>
    </DD04_TEXTS>
   </asx:values>

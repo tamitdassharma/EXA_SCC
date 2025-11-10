@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_SysInfo_S alias SystemInfoAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _SystemInfo { create ( augment ); with draft; }
 }
@@ -19,11 +19,12 @@ define behavior for /ESRCC/C_SysInfo alias SystemInfo
 
 {
   field ( modify )
-   Description;
+  Description;
 
-
-  use update( augment );
+  use update ( augment );
   use delete;
+
+  use action Copy;
 
   use association _SystemInfoAll { with draft; }
   use association _SystemInfoText { create; with draft; }

@@ -7,8 +7,8 @@
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Group 6: Service Relationship Configurations</DDTEXT>
-    <REPTEXT>Group 6: Service Relationship Configurations</REPTEXT>
+    <DDTEXT>Group 06: Service Relationship Configurations</DDTEXT>
+    <REPTEXT>Group 06: Service Relationship Configurations</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -21,8 +21,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 6: Konfiguration Servicebeziehungen</DDTEXT>
-     <REPTEXT>Gruppe 6: Konfiguration Servicebeziehungen</REPTEXT>
+     <DDTEXT>Gruppe 06: Konfiguration Servicebeziehungen</DDTEXT>
+     <REPTEXT>Gruppe 06: Konfiguration Servicebeziehungen</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

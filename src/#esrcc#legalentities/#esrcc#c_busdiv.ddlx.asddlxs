@@ -14,28 +14,29 @@
 annotate view /ESRCC/C_BusDiv with
 {
   @UI.facet: [ {
-  id: 'CE',
-   type: #COLLECTION,
-   position: 1
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
   },
   {
-   id: 'Admin',
-   purpose: #STANDARD,
-   type: #FIELDGROUP_REFERENCE,
-   parentId: 'CE',
-   targetQualifier: 'AdminGroup',
-   label: 'Admin Information',
-   position: 10
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 10
   },
   {
-   id: '/EXAOTP/I_BusDivText',
-   type: #LINEITEM_REFERENCE,
-   parentId: 'CE',
-   position: 20,
-   targetElement: '_BusinessDivisioText'
+    id: '/EXAOTP/I_BusDivText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 20,
+    targetElement: '_BusinessDivisioText'
   } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   BusinessDivision;
 
   @UI.lineItem: [ { position: 4 } ]

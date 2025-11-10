@@ -12,6 +12,7 @@
     <MAINFLAG>X</MAINFLAG>
     <CONTFLAG>C</CONTFLAG>
     <EXCLASS>4</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/WFCUST</TABNAME>
@@ -75,8 +76,6 @@
      <ROLLNAME>/ESRCC/COSTOBJECT_DE</ROLLNAME>
      <ADMINFIELD>0</ADMINFIELD>
      <NOTNULL>X</NOTNULL>
-     <VALEXI>X</VALEXI>
-     <SHLPORIGIN>F</SHLPORIGIN>
      <COMPTYPE>E</COMPTYPE>
     </DD03P>
     <DD03P>
@@ -139,12 +138,6 @@
      <DDTEXT>Workflow Konfiguration Rollen und Genehmigungen</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/WFCUST</TABNAME>
-     <CCLASS>CUS_DEV_SUP_RO</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

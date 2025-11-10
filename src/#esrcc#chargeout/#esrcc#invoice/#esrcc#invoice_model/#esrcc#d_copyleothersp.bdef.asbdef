@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyLeOthersP
+{
+  field ( mandatory ) LegalEntity, Role, Sysid, CompanyCode, CostObject, BusinessDivision, TransactionGroup;
+}

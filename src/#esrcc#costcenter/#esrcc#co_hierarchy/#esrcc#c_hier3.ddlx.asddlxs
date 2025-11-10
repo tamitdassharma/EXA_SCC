@@ -1,0 +1,59 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Organization',
+    typeNamePlural: 'Organizations',
+    title: {
+      type: #STANDARD,
+      value: 'Hierarchy'
+    }
+  }
+}
+annotate view /ESRCC/C_Hier3 with
+{
+
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 10
+  },
+  {
+    id: '/ESRCC/I_Hier3Text',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 20,
+    targetElement: '_HierarchyText'
+  } ]
+
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
+  Hierarchy;
+
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 5, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 6  } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 7, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+}

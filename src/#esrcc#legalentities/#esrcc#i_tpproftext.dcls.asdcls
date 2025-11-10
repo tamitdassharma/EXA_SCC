@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/I_TpProfText {
+  grant select on /ESRCC/I_TpProfText
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_TpProf;
+}

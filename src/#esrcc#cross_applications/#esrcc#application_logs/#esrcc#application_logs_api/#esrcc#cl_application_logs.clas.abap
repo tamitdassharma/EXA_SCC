@@ -36,6 +36,10 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
 
   METHOD /esrcc/if_application_logs~add_message.
     /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+    SELECT FROM /esrcc/log_item AS item
+      FIELDS MAX( serial_number ) AS max_serial_number
+      WHERE log_header_uuid = @_logs-header-log_header_uuid
+      INTO @FINAL(max_serial_number).
     TRY.
         ASSIGN _logs-items[ message_id     = log_message-message_id
                             message_number = log_message-message_number
@@ -51,6 +55,9 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
                                                               THEN cl_system_uuid=>create_uuid_c32_static( )
                                                               ELSE log_message-log_uuid )
                                     log_header_uuid = _logs-header-log_header_uuid
+                                    serial_number   = COND #( WHEN max_serial_number IS INITIAL
+                                                              THEN 1
+                                                              ELSE max_serial_number + 1 )
                                     created_at      = COND #( WHEN log_message-created_at IS INITIAL
                                                               THEN timestamp
                                                               ELSE log_message-created_at )  ).
@@ -78,13 +85,20 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
 
   METHOD /esrcc/if_application_logs~add_messages.
     /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+    SELECT FROM /esrcc/log_item AS item
+      FIELDS MAX( serial_number ) AS max_serial_number
+      WHERE log_header_uuid = @_logs-header-log_header_uuid
+      INTO @FINAL(max_serial_number).
     TRY.
         APPEND LINES OF VALUE _log_model_type-items(
             FOR <msg> IN log_messages
             ( VALUE #(
                   BASE CORRESPONDING #( <msg> EXCEPT log_header_uuid )
-                  log_uuid        = COND #( WHEN <msg>-log_uuid IS INITIAL THEN cl_system_uuid=>create_uuid_c32_static( ) ELSE <msg>-log_uuid )
+                  log_uuid        = COND #( WHEN <msg>-log_uuid IS INITIAL
+                                            THEN cl_system_uuid=>create_uuid_c32_static( )
+                                            ELSE <msg>-log_uuid )
                   log_header_uuid = _logs-header-log_header_uuid
+                  serial_number   = COND #( WHEN max_serial_number IS INITIAL THEN 1 ELSE max_serial_number + 1 )
                   created_at      = COND #( WHEN <msg>-created_at IS INITIAL THEN timestamp ELSE <msg>-created_at ) ) ) ) TO _logs-items.
       CATCH cx_uuid_error.
         " handle exception
@@ -117,10 +131,12 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
                                         created_at      = timestamp ) TO _logs-items.
         ELSE.
           " Long Text
-*          CALL FUNCTION '/ESRCC/STRING_TO_TABLE'
-*            EXPORTING long_text           = log_message_text
-*                      length_of_each_line = 38
-*            TABLES    table_of_texts      = texts.
+          CALL FUNCTION '/ESRCC/STRING_TO_TABLE'
+            EXPORTING
+              long_text           = log_message_text
+              length_of_each_line = 38
+            TABLES
+              table_of_texts      = texts.
           FINAL(number_of_lines) = lines( texts ).
           LOOP AT texts ASSIGNING FIELD-SYMBOL(<text>).
             FINAL(table_index) = sy-tabix.
@@ -157,6 +173,96 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
         " handle exception
     ENDTRY.
     " New Code
+  ENDMETHOD.
+
+
+  METHOD /esrcc/if_application_logs~clear_header.
+    SELECT FROM /esrcc/log_item AS message
+      FIELDS *
+      WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
+      INTO TABLE @FINAL(messages).
+    IF sy-subrc = 0.
+      SELECT FROM /esrcc/inv_rcrds AS records
+        FIELDS *
+        WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
+        INTO TABLE @FINAL(invalid_records).
+    ENDIF.
+
+    IF messages IS NOT INITIAL.
+      DELETE /esrcc/log_item FROM TABLE @messages.
+      IF sy-subrc = 0.
+
+        DATA(message_deleted) = abap_true.
+      ENDIF.
+    ENDIF.
+
+    IF invalid_records IS NOT INITIAL.
+      DELETE /esrcc/inv_rcrds FROM TABLE @invalid_records.
+      IF sy-subrc = 0.
+
+        message_deleted = abap_true.
+      ENDIF.
+    ENDIF.
+
+    DELETE /esrcc/log_hdr FROM @_logs-header.
+    IF sy-subrc = 0.
+
+      message_deleted = abap_true.
+    ENDIF.
+
+    IF message_deleted = abap_true.
+      IF _logs-header-db_commit = abap_true.
+        COMMIT WORK.
+      ENDIF.
+    ENDIF.
+    CLEAR: _logger->_logs-items,
+           _logs-items.
+    CLEAR: _logger->_logs-invalid_records,
+           _logs-invalid_records.
+    CLEAR : _logger->_logs-header,
+            _logs-header,
+            _logger.
+  ENDMETHOD.
+
+
+  METHOD /esrcc/if_application_logs~clear_messages.
+    SELECT FROM /esrcc/log_item AS message
+      FIELDS *
+      WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
+      INTO TABLE @FINAL(messages).
+    IF sy-subrc = 0.
+      SELECT FROM /esrcc/inv_rcrds AS records
+        FIELDS *
+        WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
+        INTO TABLE @FINAL(invalid_records).
+    ENDIF.
+
+    IF messages IS NOT INITIAL.
+      DELETE /esrcc/log_item FROM TABLE @messages.
+      IF sy-subrc = 0.
+
+        DATA(message_deleted) = abap_true.
+      ENDIF.
+    ENDIF.
+
+    IF invalid_records IS NOT INITIAL.
+      DELETE /esrcc/inv_rcrds FROM TABLE @invalid_records.
+      IF sy-subrc = 0.
+
+        message_deleted = abap_true.
+      ENDIF.
+    ENDIF.
+
+    IF message_deleted = abap_true.
+      IF _logs-header-db_commit = abap_true.
+        COMMIT WORK.
+      ENDIF.
+    ENDIF.
+
+    CLEAR: _logger->_logs-items,
+           _logs-items.
+    CLEAR: _logger->_logs-invalid_records,
+           _logs-invalid_records.
   ENDMETHOD.
 
 
@@ -248,7 +354,7 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
 
   METHOD create_instance.
     IF _logger IS BOUND.
-        FREE _logger.
+      FREE _logger.
     ENDIF.
     IF _logs IS NOT INITIAL.
       CLEAR _logs.
@@ -288,92 +394,11 @@ CLASS /ESRCC/CL_APPLICATION_LOGS IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD /esrcc/if_application_logs~clear_header.
-    SELECT FROM /esrcc/log_item AS message
-      FIELDS *
-      WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
-      INTO TABLE @FINAL(messages).
-    IF sy-subrc = 0.
-      SELECT FROM /esrcc/inv_rcrds AS records
-        FIELDS *
-        WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
-        INTO TABLE @FINAL(invalid_records).
-    ENDIF.
-
-    IF messages IS NOT INITIAL.
-      DELETE /esrcc/log_item FROM TABLE @messages.
-      IF sy-subrc = 0.
-
-        DATA(message_deleted) = abap_true.
-      ENDIF.
-    ENDIF.
-
-    IF invalid_records IS NOT INITIAL.
-      DELETE /esrcc/inv_rcrds FROM TABLE @invalid_records.
-      IF sy-subrc = 0.
-
-        message_deleted = abap_true.
-      ENDIF.
-    ENDIF.
-
-    DELETE /esrcc/log_hdr FROM @_logs-header.
-    IF sy-subrc = 0.
-
-      message_deleted = abap_true.
-    ENDIF.
-
-    IF message_deleted = abap_true.
-      IF _logs-header-db_commit = abap_true.
-        COMMIT WORK.
-      ENDIF.
-    ENDIF.
-    CLEAR: _logger->_logs-items,
-           _logs-items.
-    CLEAR: _logger->_logs-invalid_records,
-           _logs-invalid_records.
-    CLEAR : _logger->_logs-header,
-            _logs-header,
-            _logger.
-  ENDMETHOD.
-
-
-  METHOD /esrcc/if_application_logs~clear_messages.
-    SELECT FROM /esrcc/log_item AS message
-      FIELDS *
-      WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
-      INTO TABLE @FINAL(messages).
-    IF sy-subrc = 0.
-      SELECT FROM /esrcc/inv_rcrds AS records
-        FIELDS *
-        WHERE log_header_uuid = @_logger->_logs-header-log_header_uuid
-        INTO TABLE @FINAL(invalid_records).
-    ENDIF.
-
-    IF messages IS NOT INITIAL.
-      DELETE /esrcc/log_item FROM TABLE @messages.
-      IF sy-subrc = 0.
-
-        DATA(message_deleted) = abap_true.
-      ENDIF.
-    ENDIF.
-
-    IF invalid_records IS NOT INITIAL.
-      DELETE /esrcc/inv_rcrds FROM TABLE @invalid_records.
-      IF sy-subrc = 0.
-
-        message_deleted = abap_true.
-      ENDIF.
-    ENDIF.
-
-    IF message_deleted = abap_true.
-      IF _logs-header-db_commit = abap_true.
-        COMMIT WORK.
-      ENDIF.
-    ENDIF.
-
-    CLEAR: _logger->_logs-items,
-           _logs-items.
-    CLEAR: _logger->_logs-invalid_records,
-           _logs-invalid_records.
+  METHOD /esrcc/if_application_logs~get_log_status.
+    log_status = COND #( WHEN line_exists( _logs-items[ message_type = 'E' ] ) THEN 'E'
+                         WHEN line_exists( _logs-items[ message_type = 'W' ] ) THEN 'W'
+                         WHEN line_exists( _logs-items[ message_type = 'S' ] ) THEN 'C'
+                         WHEN line_exists( _logs-items[ message_type = 'I' ] ) THEN 'C'
+                         ELSE 'I' ).
   ENDMETHOD.
 ENDCLASS.

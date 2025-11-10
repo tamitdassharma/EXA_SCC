@@ -16,6 +16,8 @@ define view entity /ESRCC/C_LE
       Region,
       @ObjectModel.text.element: ['RoleDesc']
       Role,
+      @ObjectModel.text.element: ['TpProfileDesc']
+      TpProfile,
       CreatedBy,
       CreatedAt,
       LastChangedBy,
@@ -35,6 +37,8 @@ define view entity /ESRCC/C_LE
       _Country.CountryName   as CountryDesc,
       @Semantics.text: true
       _Currency.CurrencyName as LocalCurrDesc,
+      @Semantics.text: true
+      _TPprofileText.Description as TpProfileDesc,
 
       _LegalEntityAll  : redirected to parent /ESRCC/C_LE_S,
       _LegalEntityText : redirected to composition child /ESRCC/C_LEText,

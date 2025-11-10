@@ -35,7 +35,8 @@ annotate view /ESRCC/C_SrvTg with
     parentId: '/ESRCC/I_SrvTg'
   } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   Transactiongroup;
 
   @UI.lineItem: [ { position: 2 } ]

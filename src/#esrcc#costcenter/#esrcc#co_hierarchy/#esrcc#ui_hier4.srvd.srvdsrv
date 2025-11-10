@@ -1,0 +1,5 @@
+define service /ESRCC/UI_HIER4 {
+  expose /ESRCC/C_HIER4_S as ActivityAll;
+  expose /ESRCC/C_HIER4 as Activity;
+  expose /ESRCC/C_HIER4TEXT as ActivityText;
+}

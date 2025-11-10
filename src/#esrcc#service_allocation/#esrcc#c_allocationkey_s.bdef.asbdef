@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_AllocationKey_S alias AllocationKeyAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _AllocationKey { create ( augment ); with draft; }
 }
@@ -20,9 +21,10 @@ define behavior for /ESRCC/C_AllocationKey alias AllocationKey
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+
+  use action Copy;
 
   use association _AllocationKeyAll { with draft; }
   use association _AllocationKeyText { create; with draft; }

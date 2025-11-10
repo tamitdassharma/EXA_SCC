@@ -3,7 +3,18 @@
   headerInfo: {
     typeName: 'Service Capacity',
     typeNamePlural: 'Service Capacities'
-  }
+  },
+  presentationVariant: [{
+    sortOrder: [{ by: 'Sysid', direction: #ASC },
+                { by: 'LegalEntity', direction: #ASC},
+                { by: 'CompanyCode', direction: #ASC },
+                { by: 'Costobject', direction: #ASC },
+                { by: 'Costcenter', direction: #ASC },
+                { by: 'Ryear', direction: #ASC },
+                { by: 'Poper', direction: #ASC },
+                { by: 'ServiceProduct', direction: #ASC },
+                { by: 'Fplv', direction: #ASC }]
+  }]
 }
 
 annotate entity /ESRCC/C_ServiceCapacity with
@@ -112,20 +123,20 @@ annotate entity /ESRCC/C_ServiceCapacity with
                                        useForValidation: true }]
   Costcenter;
 
-  @UI.lineItem: [ { position: 60, importance: #MEDIUM } ]
+  @UI.lineItem: [ { position: 60, importance: #MEDIUM, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 10, qualifier: 'CapacityGroup' }]
   @UI.selectionField: [{ position: 60 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' },
                                        useForValidation: true }]
   Ryear;
 
-  @UI.lineItem: [ { position: 70, importance: #MEDIUM, cssDefault.width: '4.5rem' } ]
+  @UI.lineItem: [ { position: 70, importance: #MEDIUM, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 20, qualifier: 'CapacityGroup' }]
   @UI.selectionField: [{ position: 70 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' },
                                        useForValidation: true }]
   @Consumption.filter.multipleSelections: true
-  @UI.textArrangement: #TEXT_ONLY
+//  @UI.textArrangement: #TEXT_ONLY
   Poper;
 
   @UI.lineItem: [ { position: 80, importance: #MEDIUM } ]
@@ -150,7 +161,6 @@ annotate entity /ESRCC/C_ServiceCapacity with
   Planning;
 
   @Consumption.valueHelpDefinition: [ { entity: { name: 'I_UnitOfMeasure', element: 'UnitOfMeasure' } } ]
-  @EndUserText.label: 'Unit of Measure'
   @Consumption.filter.hidden: true
   Uom;
 
@@ -189,5 +199,5 @@ annotate entity /ESRCC/C_ServiceCapacity with
   @UI.hidden: true
   FplvDescription;
   @UI.hidden: true
-  PoperDescription;
+  poperdescription;
 }

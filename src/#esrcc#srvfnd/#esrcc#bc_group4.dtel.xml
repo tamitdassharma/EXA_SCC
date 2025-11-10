@@ -6,8 +6,8 @@
     <ROLLNAME>/ESRCC/BC_GROUP4</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
-    <DDTEXT>Group 4: TP Compliance Configurations</DDTEXT>
-    <REPTEXT>Group 4: TP Compliance Configurations</REPTEXT>
+    <DDTEXT>Group 04: TP Compliance Configurations</DDTEXT>
+    <REPTEXT>Group 04: TP Compliance Configurations</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -20,8 +20,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 4: TP Compliance Konfigurationen</DDTEXT>
-     <REPTEXT>Gruppe 4: TP Compliance Konfigurationen</REPTEXT>
+     <DDTEXT>Gruppe 04: TP Compliance Konfigurationen</DDTEXT>
+     <REPTEXT>Gruppe 04: TP Compliance Konfigurationen</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

@@ -8,17 +8,11 @@
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000002</LENG>
     <OUTPUTLEN>000002</OUTPUTLEN>
+    <LOWERCASE>X</LOWERCASE>
     <DDTEXT>Process Status</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
-   <I18N_LANGS>
-    <LANGU>D</LANGU>
-   </I18N_LANGS>
-   <DD01_TEXTS>
-    <item>
-     <DDLANGUAGE>D</DDLANGUAGE>
-    </item>
-   </DD01_TEXTS>
   </asx:values>
  </asx:abap>
 </abapGit>

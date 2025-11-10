@@ -1,0 +1,108 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Service Product True-up Rule',
+    typeNamePlural: 'Service Product True-up Rules',
+    title: {
+      type: #STANDARD,
+      value: 'Serviceproduct'
+    }
+  }
+}
+annotate view /ESRCC/C_Chgtrup with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    purpose: #STANDARD,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_Chgtrup',
+    purpose: #STANDARD,
+    parentId: 'CE',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 1
+  },
+  {
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    label: 'Validity',
+    targetQualifier: 'ValidityGroup',
+    parentId: 'CE',
+    position : 20
+  },
+  {
+    type: #FIELDGROUP_REFERENCE,
+    purpose: #STANDARD,
+    label: 'Admin Information',
+    targetQualifier: 'AdminGroup',
+    parentId: 'CE',
+    position: 30
+  } ]
+  
+  @UI.lineItem: [ { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET } ]
+  @UI.hidden: true
+  Uuid;
+
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
+                                       useForValidation: true }]
+  Serviceproduct;
+
+  @UI.lineItem: [ { position: 2 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 10 }]
+  Validfrom;
+
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 20 }]
+  Validto;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_ChargeoutRule_F4', element: 'RuleId' },
+                                       additionalBinding: [{ element: 'ChargeoutMethod', localElement: 'ChargeoutMethod', usage: #RESULT }],
+                                       useForValidation: true }]
+  ChargeoutRuleId;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '10rem' } ]
+  ChargeoutMethod;
+
+  @UI.identification: [ { position: 6, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.textArrangement: #TEXT_ONLY
+  @EndUserText.label: 'Workflow Status'
+  WorkflowStatus;
+
+  @UI.hidden: true
+  WorkflowStatusCriticality;
+
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [{ position: 9 }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 10, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+
+  @UI.hidden
+  ServiceProductDescription;
+  @UI.hidden
+  ChargeoutMethodDescription;
+  @UI.hidden
+  WorkflowStatusDescription;
+  @UI.hidden
+  ChargeoutRuleDescription;
+}

@@ -8,6 +8,6 @@
 define view entity /ESRCC/I_UserGroup_F4
   as select from /esrcc/wfusrg
 {
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key usergroup as Usergroup
 }

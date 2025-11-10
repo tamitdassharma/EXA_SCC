@@ -7,6 +7,14 @@
 annotate view /ESRCC/C_WfSwitch_S with
 {
   @UI.facet: [ {
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1 ,
+    hidden: #(HideTransport)
+  },
+  {
     id: '/ESRCC/I_WfSwitch',
     purpose: #STANDARD,
     type: #LINEITEM_REFERENCE,

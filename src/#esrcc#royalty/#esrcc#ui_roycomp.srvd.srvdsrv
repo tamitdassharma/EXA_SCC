@@ -1,0 +1,5 @@
+define service /ESRCC/UI_ROYCOMP {
+  expose /ESRCC/C_RoyComp_S   as RuleAll;
+  expose /ESRCC/C_RoyComp     as Rule;
+  expose /ESRCC/C_RoyCompText as RuleText;
+}

@@ -11,6 +11,7 @@
     <LOWERCASE>X</LOWERCASE>
     <ENTITYTAB>/ESRCC/WFUSRG</ENTITYTAB>
     <DDTEXT>User Group for Work Flow User</DDTEXT>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

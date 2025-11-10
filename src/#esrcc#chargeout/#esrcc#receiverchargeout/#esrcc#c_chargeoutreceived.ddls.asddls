@@ -12,22 +12,28 @@ define root view entity /ESRCC/C_CHARGEOUTRECEIVED
       @ObjectModel.text.element: [ 'currenytext' ]
   key Currencytype,
       @ObjectModel.text.element: [ 'costdatasetdescription' ]
-      _ServiceCost._CostCenterCost.Fplv,
-      _ServiceCost._CostCenterCost.Ryear,
-      _ServiceCost._CostCenterCost.Poper,
-      _ServiceCost._CostCenterCost.Sysid,
+      Fplv,
+      Ryear,
+      Poper,
+      Sysid,
       @ObjectModel.text.element: [ 'legalentitydescription' ]
-      _ServiceCost._CostCenterCost.Legalentity,
+      Legalentity,
       @ObjectModel.text.element: [ 'ccodedescription' ]
-      _ServiceCost._CostCenterCost.Ccode,
+      Ccode,
       @ObjectModel.text.element: [ 'costobjectdescription' ]
-      _ServiceCost._CostCenterCost.Costobject,
+      Costobject,
       @ObjectModel.text.element: [ 'costcenterdescription' ]
-      _ServiceCost._CostCenterCost.Costcenter,
+      Costcenter,
       @ObjectModel.text.element: [ 'ProcessTypedescription' ]
-      _ServiceCost._CostCenterCost.ProcessType,
+      ProcessType,
+      @ObjectModel.text.element: [ 'profitcenterdescription' ]
+      Profitcenter,
+      @ObjectModel.text.element: [ 'businessdescription' ]
+      Businessdivision,
+      @ObjectModel.text.element: [ 'functionalareadescription' ]
+      FunctionalArea,
       @ObjectModel.text.element: [ 'serviceproductdescription' ]
-      _ServiceCost.Serviceproduct,
+      Serviceproduct,
       ReceiverSysId,
       @ObjectModel.text.element: [ 'RecCcodedescription' ]
       ReceiverCompanyCode,
@@ -37,17 +43,18 @@ define root view entity /ESRCC/C_CHARGEOUTRECEIVED
       ReceiverCostObject,
       @ObjectModel.text.element: [ 'RecCostCenterdescription' ]
       ReceiverCostCenter,
-      @ObjectModel.text.element: [ 'billingfrequencydescription' ]
-      _ServiceCost._CostCenterCost.Billingfrequqncy,
-      @ObjectModel.text.element: [ 'billingperioddescription' ]
-      _ServiceCost._CostCenterCost.Billingperiod,
+//      @ObjectModel.text.element: [ 'billingfrequencydescription' ]
+//      _ServiceCost._CostCenterCost.Billingfrequqncy,
+//      @ObjectModel.text.element: [ 'billingperioddescription' ]
+//      _ServiceCost._CostCenterCost.Billingperiod,
       @ObjectModel.text.element: [ 'chargeoutdescription' ]
       _ServiceCost.Chargeout,
       @ObjectModel.text.element: [ 'servicetypedescription' ]
       _ServiceCost.Servicetype,
       @ObjectModel.text.element: [ 'transactiongroupdescription' ]
       _ServiceCost.Transactiongroup,
-      _ServiceCost.ContractId,
+      ContractId,
+      ErpSalesOrder,
       @DefaultAggregation: #SUM
       @Semantics.amount.currencyCode: 'Currency'
       TotalMarkup,
@@ -62,14 +69,20 @@ define root view entity /ESRCC/C_CHARGEOUTRECEIVED
       TotalPassthrough,
       @DefaultAggregation: #SUM
       @Semantics.amount.currencyCode: 'Currency'
+      ChargeoutAmount,
+      @DefaultAggregation: #SUM
+      @Semantics.amount.currencyCode: 'Currency'
       TotalChargeoutAmount,
+      @DefaultAggregation: #SUM
+      @Semantics.amount.currencyCode: 'Currency'
+      TotalTrueupAmount,      
       Currency,
       @ObjectModel.text.element: [ 'oecdDescription' ]
       _ServiceCost.OECD,
-      @Semantics.text: true
-      _ServiceCost._CostCenterCost.billingfrequencydescription,
-      @Semantics.text: true
-      _ServiceCost._CostCenterCost.billingperioddescription,
+//      @Semantics.text: true
+//      _ServiceCost._CostCenterCost.billingfrequencydescription,
+//      @Semantics.text: true
+//      _ServiceCost._CostCenterCost.billingperioddescription,
       @Semantics.text: true
       _ServiceCost._CostCenterCost.costdatasetdescription,
       @Semantics.text: true
@@ -100,6 +113,12 @@ define root view entity /ESRCC/C_CHARGEOUTRECEIVED
       _ServiceCost.chargeoutdescription,
       @Semantics.text: true
       ProcessTypedescription,
+      @Semantics.text: true
+      _ServiceCost._CostCenterCost.profitcenterdescription,
+      @Semantics.text: true
+      _ServiceCost._CostCenterCost.businessdescription,
+      @Semantics.text: true
+      _ServiceCost._CostCenterCost.functionalareadescription,
       _CurrencyTypeText.text                        as currenytext,
       @ObjectModel.text.element: [ 'legalentitycountryname' ]
       _ServiceCost._CostCenterCost.Country as LECountry,
@@ -108,4 +127,7 @@ define root view entity /ESRCC/C_CHARGEOUTRECEIVED
       _ServiceCost._CostCenterCost._legalCountryText.CountryName                 as legalentitycountryname,
       _ReceivingCountryText.CountryName             as receivingcountryname
 }
+where ProcessType <> 'R'
+  and TotalChargeoutAmount <> 0
+
 

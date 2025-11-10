@@ -4,7 +4,9 @@
   <asx:values>
    <DEVC>
     <CTEXT>Application Logs</CTEXT>
+    <PACKKIND>5</PACKKIND>
     <RESTRICTED>X</RESTRICTED>
+    <MAINPACK>X</MAINPACK>
     <SRV_CHECK>X</SRV_CHECK>
    </DEVC>
   </asx:values>

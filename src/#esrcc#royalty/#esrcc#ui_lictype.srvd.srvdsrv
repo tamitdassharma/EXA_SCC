@@ -1,0 +1,5 @@
+define service /ESRCC/UI_LICTYPE {
+  expose /ESRCC/C_LICTYPE_S as LicenseTypeAll;
+  expose /ESRCC/C_LICTYPE as LicenseType;
+  expose /ESRCC/C_LICTYPETEXT as LicenseTypeText;
+}

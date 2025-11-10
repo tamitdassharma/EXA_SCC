@@ -1,0 +1,5 @@
+define service /ESRCC/UI_TPPROFILE {
+  expose /ESRCC/C_TPPROF_S as TpProfileAll;
+  expose /ESRCC/C_TPPROF as TpProfile;
+  expose /ESRCC/C_TPPROFTEXT as TpProfileText;
+}

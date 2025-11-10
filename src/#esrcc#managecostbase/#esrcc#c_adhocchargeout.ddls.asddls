@@ -16,6 +16,7 @@ define root abstract entity /ESRCC/C_ADHOCCHARGEOUT
   intervalueaddmarkup    : abap.dec(5,2);
   @EndUserText.label     : 'Mark-up on Pass Through (%)'
   interpassthroughmarkup : abap.dec(5,2);
+  contractid             : /esrcc/contractid;
   allocationkey          : /esrcc/allockey;
   receivers              : abap.string;
 }

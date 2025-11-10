@@ -4,13 +4,14 @@
 @EndUserText.label: 'Manage Cost Base'
 define root view entity /ESRCC/C_MANAGECOSTBASE
   provider contract transactional_query
-  as projection on /ESRCC/I_MANAGECOSTBASE
+  as projection on /ESRCC/I_COSTBASEANALYTICS
 {
 
   key Ryear,
   key Poper,
       @ObjectModel.text.element: [ 'costdatasetdescription' ]
   key Fplv,
+  key Ledger,
   key SysID,
       @ObjectModel.text.element: [ 'legalentitydescription' ]
   key Legalentity,
@@ -33,14 +34,24 @@ define root view entity /ESRCC/C_MANAGECOSTBASE
       Profitcenter,
       @ObjectModel.text.element: [ 'FunctionalAreaDescription' ]
       Functionalarea,
+      @ObjectModel.text.element: [ 'Hierarchy1Description' ]
+      Hierarchy1,
+      @ObjectModel.text.element: [ 'Hierarchy2Description' ]
+      Hierarchy2,
+      @ObjectModel.text.element: [ 'Hierarchy3Description' ]
+      Hierarchy3,
+      @ObjectModel.text.element: [ 'Hierarchy4Description' ]
+      Hierarchy4,
       @ObjectModel.text.element: [ 'costtypedescription' ]
       Costtype,
       @Semantics.amount.currencyCode: 'Localcurr'
       @ObjectModel.filter.enabled: false
+      @DefaultAggregation: #SUM
       Hsl,
       Localcurr,
       @Semantics.amount.currencyCode: 'Groupcurr'
       @ObjectModel.filter.enabled: false
+      @DefaultAggregation: #SUM
       Ksl,
       Groupcurr,
       Vendor,
@@ -56,7 +67,8 @@ define root view entity /ESRCC/C_MANAGECOSTBASE
       Status,
       WorkflowId,
       CommentId,
-      UniqueId,    
+      UniqueId, 
+      Recalrefpoper,   
       @Semantics.user.createdBy: true
       CreatedBy,
       @ObjectModel.filter.enabled: false
@@ -101,6 +113,10 @@ define root view entity /ESRCC/C_MANAGECOSTBASE
       ProfitCenterDescription,
       @Semantics.text: true
       FunctionalAreaDescription,
+      Hierarchy1Description,
+      Hierarchy2Description,
+      Hierarchy3Description,
+      Hierarchy4Description,
       usagecriticallity,
       statuscriticallity,
       @ObjectModel.text.element: [ 'legalentitycountryname' ]

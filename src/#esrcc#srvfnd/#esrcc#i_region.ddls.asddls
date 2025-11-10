@@ -11,16 +11,19 @@
 
 @Search.searchable: true
 define view entity /ESRCC/I_REGION
-  as select from DDCDS_CUSTOMER_DOMAIN_VALUE_T( p_domain_name: '/ESRCC/REGION')
+  as select from /esrcc/regions as _region
+   association [0..*] to /esrcc/regionst as _regiont
+                      on _regiont.region = _region.region
+                      and _regiont.spras = $session.system_language
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
-  key value_low as Region,
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
+  key _region.region as Region,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
-      text
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
+      _regiont.description as text
 }
-where
-  language = $session.system_language
+//where
+//  language = $session.system_language

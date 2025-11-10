@@ -23,7 +23,7 @@ define root view entity /ESRCC/C_ServiceCapacity
       @ObjectModel.text.element: [ 'FplvDescription' ]
       Fplv,
       Ryear,
-      @ObjectModel.text.element: [ 'PoperDescription' ]
+//      @ObjectModel.text.element: [ 'PoperDescription' ]
       Poper,
       @ObjectModel.text.element: [ 'ServiceProductDescription' ]
       ServiceProduct,
@@ -53,7 +53,7 @@ define root view entity /ESRCC/C_ServiceCapacity
       @Semantics.text: true
       _CostCenter.Description            as CostCenterDescription,
       @Semantics.text: true
-      _CapacityVersion.text              as FplvDescription,
-      @Semantics.text: true
-      _PoperText.text                    as PoperDescription
+      _CapacityVersion.text              as FplvDescription
+//      @Semantics.text: true
+//      _PoperText.text                    as PoperDescription
 }

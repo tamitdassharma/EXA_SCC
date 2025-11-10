@@ -10,12 +10,12 @@ define view entity /ESRCC/I_BUSINESSDIV_F4
                                                         and businessdivt.spras            = $session.system_language
 {
       @Search.defaultSearchElement: true
-      @Search.fuzzinessThreshold: 0.7
+      @Search.fuzzinessThreshold: 0.9
       @ObjectModel.text.element: ['Description']
   key business_division        as BusinessDivision,
 
       @Semantics.text: true
       @Search.defaultSearchElement: true
-      @Search.fuzzinessThreshold: 0.7
+      @Search.fuzzinessThreshold: 0.9
       businessdivt.description as Description
 }

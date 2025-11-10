@@ -4,22 +4,23 @@
 
 define view entity /ESRCC/I_StwdSpRec
   as select from /esrcc/stwdsprec
-  association        to parent /ESRCC/I_Stewrdshp  as _Stewardship     on  _Stewardship.StewardshipUuid = $projection.StewardshipUuid
-  association [1..1] to /ESRCC/I_Stewrdshp_S       as _StewardshipAll  on  _StewardshipAll.SingletonID = $projection.SingletonID
-  association [1..1] to /ESRCC/I_CstObjct          as _CostObject      on  _CostObject.CostObjectUuid = $projection.CostObjectUuid
-  association [1..1] to /ESRCC/I_SERVICEPRODUCT_F4 as _ServiceProduct  on  _ServiceProduct.ServiceProduct = $projection.ServiceProduct
-  association [1..1] to /esrcc/cst_objtt           as _CostObjectText  on  _CostObjectText.cost_object_uuid = $projection.CostObjectUuid
-                                                                       and _CostObjectText.spras            = $session.system_language
-  association [0..1] to I_CurrencyText             as _InvoiceCurrency on  _InvoiceCurrency.Currency = $projection.InvoiceCurrency
-                                                                       and _InvoiceCurrency.Language = $session.system_language
+  association        to parent /ESRCC/I_StwdSp as _ServiceProduct  on  _ServiceProduct.ServiceProductUuid = $projection.ServiceProductUuid
+  association [1..1] to /ESRCC/I_Stewrdshp_S   as _StewardshipAll  on  _StewardshipAll.SingletonID = $projection.SingletonID
+  association [1..1] to /ESRCC/I_CstObjct      as _CostObject      on  _CostObject.CostObjectUuid = $projection.CostObjectUuid
+  association [1..1] to /esrcc/cst_objtt       as _CostObjectText  on  _CostObjectText.cost_object_uuid = $projection.CostObjectUuid
+                                                                   and _CostObjectText.spras            = $session.system_language
+  association [0..1] to I_CurrencyText         as _InvoiceCurrency on  _InvoiceCurrency.Currency = $projection.InvoiceCurrency
+                                                                   and _InvoiceCurrency.Language = $session.system_language
 {
   key serv_prod_rec_uuid                                        as ServiceReceiverUuid,
-      service_product                                           as ServiceProduct,
+      _ServiceProduct.ServiceProduct                            as ServiceProduct,
       cost_object_uuid                                          as CostObjectUuid,
-      stewardship_uuid                                          as StewardshipUuid,
+      _ServiceProduct.StewardshipUuid                           as StewardshipUuid,
+      service_product_uuid                                      as ServiceProductUuid,
       invoice_currency                                          as InvoiceCurrency,
       active                                                    as Active,
-
+      erp_sales_order                                           as ErpSalesOrder,
+      contract_id                                               as ContractId,
       cast( _CostObject.Sysid as /esrcc/recsysid )              as Sysid,
       cast( _CostObject.LegalEntity as /esrcc/receivingntity )  as LegalEntity,
       cast( _CostObject.CompanyCode as /esrcc/recccode_de )     as CompanyCode,
@@ -38,9 +39,8 @@ define view entity /ESRCC/I_StwdSpRec
       local_last_changed_at                                     as LocalLastChangedAt,
       1                                                         as SingletonID,
       _StewardshipAll,
-      _Stewardship,
+      _ServiceProduct,
       _CostObject,
       _CostObjectText,
-      _ServiceProduct,
       _InvoiceCurrency
 }

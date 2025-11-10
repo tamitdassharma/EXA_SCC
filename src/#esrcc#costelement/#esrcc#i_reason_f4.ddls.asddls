@@ -13,7 +13,7 @@ define view entity /ESRCC/I_REASON_F4
 
 
 {
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['reasondescription']
@@ -21,11 +21,11 @@ define view entity /ESRCC/I_REASON_F4
   key reasonid                as Reasonid,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _ReasonText.description as reasondescription,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['usagedescription']
@@ -33,11 +33,11 @@ define view entity /ESRCC/I_REASON_F4
       calculationusage        as CalculationUsage,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _UsageText.text         as usagedescription,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @EndUserText.label: 'Default'
       @UI.lineItem: [{ position: 30 }]
       defaultflag             as Defaultflag

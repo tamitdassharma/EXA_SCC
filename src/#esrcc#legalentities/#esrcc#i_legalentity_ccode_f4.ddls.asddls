@@ -15,7 +15,7 @@ define view entity /ESRCC/I_LEGALENTITY_CCODE_F4
       @UI: { lineItem: [{ position: 1 }],
              selectionField: [{ position: 1 }],
              textArrangement: #TEXT_LAST }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @ObjectModel.text.association: '_SysInfoText'
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' } }]
   key sysid                         as Sysid,
@@ -24,19 +24,19 @@ define view entity /ESRCC/I_LEGALENTITY_CCODE_F4
              selectionField: [{ position: 3 }],
              textArrangement: #TEXT_LAST }
       @ObjectModel.text: { element: ['CcodeDesc'] }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key ccode                         as Ccode,
 
       @UI: { lineItem: [{ position: 2 }],
              selectionField: [{ position: 2 }],
              textArrangement: #TEXT_LAST }
       @ObjectModel.text: { element: ['LeDesc'] }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' } }]
       legalentity                   as Legalentity,
 
       @Consumption: { filter.hidden: true }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Semantics.text: true
       _LegalEntity.Description      as LeDesc,
 
@@ -71,7 +71,7 @@ define view entity /ESRCC/I_LEGALENTITY_CCODE_F4
       _LegalEntity.RegionDesc,
 
       @Consumption: { filter.hidden: true }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Semantics.text: true
       _CompanyCode.ccodedescription as CcodeDesc,
 

@@ -98,6 +98,12 @@
      <MSGNR>014</MSGNR>
      <TEXT>Receiver cannot be same as Provider</TEXT>
     </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/MANAGECOSTBAS</ARBGB>
+     <MSGNR>015</MSGNR>
+     <TEXT>Ad-hoc Charge-out is not allowed for Virtual SCC Charge-in line items</TEXT>
+    </T100>
    </T100>
   </asx:values>
  </asx:abap>

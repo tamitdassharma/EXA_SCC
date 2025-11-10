@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "GroupConfigAll",
     "name": "Group Configuration",
-    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "configurationGroup": "/ESRCC/BC_GROUP11",
     "skipRootEntity": true
   },
   "appConfiguration": {

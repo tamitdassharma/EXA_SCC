@@ -1,0 +1,43 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'License Type'
+  }
+}
+annotate view /ESRCC/C_LicType_S with
+{
+  @UI.facet: [ {
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1 ,
+    hidden: #(HideTransport)
+  },
+  {
+    id: '/ESRCC/I_LicType',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain License Types',
+    position: 2,
+    targetElement: '_LicenseType'
+  } ]
+  @UI.lineItem: [ {
+    position: 1
+  } ]
+  SingletonID;
+
+  @UI.hidden: true
+  HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
+  } ]
+  TransportRequestID;
+}

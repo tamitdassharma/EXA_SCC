@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_LeTaxInfo_S alias TaxInformationAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _TaxInformation { create; with draft; }
 }
@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_LeTaxInfo alias TaxInformation
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _TaxInformationAll { with draft; }
 }

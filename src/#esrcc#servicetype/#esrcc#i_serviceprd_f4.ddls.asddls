@@ -11,11 +11,11 @@ define view entity /ESRCC/I_SERVICEPRD_F4
   
 {
       @ObjectModel.text: { element: ['Description'] }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_SEPARATE
   key serviceproduct      as ServiceProduct,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       srvprot.description as Description
 }

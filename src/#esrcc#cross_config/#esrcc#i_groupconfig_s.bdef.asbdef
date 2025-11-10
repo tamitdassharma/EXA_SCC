@@ -9,16 +9,19 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
-//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _GroupConfig { create ( features : instance ); with draft; }
 }
@@ -44,20 +47,20 @@ authorization dependent by _GroupConfigAll
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/GROUP
-  {
-    Id = ID;
-    GroupCurrency = GROUP_CURRENCY;
-    CostSign = COST_SIGN;
-    ConversionRateType = CONVERSION_RATE_TYPE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/group
+    {
+      Id                 = ID;
+      GroupCurrency      = GROUP_CURRENCY;
+      CostSign           = COST_SIGN;
+      ConversionRateType = CONVERSION_RATE_TYPE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _GroupConfigAll { with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

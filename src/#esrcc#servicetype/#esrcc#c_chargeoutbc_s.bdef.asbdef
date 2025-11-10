@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_ChargeoutBc_S alias ChargeoutAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _Chargeout { create; with draft; }
 }
@@ -19,6 +20,7 @@ define behavior for /ESRCC/C_ChargeoutBc alias Chargeout
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _ChargeoutAll { with draft; }
 }

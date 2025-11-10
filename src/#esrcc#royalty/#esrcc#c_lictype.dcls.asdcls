@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/C_LicType {
+  grant select on /ESRCC/C_LicType
+  where INHERITING CONDITIONS FROM ENTITY /ESRCC/I_LicType;
+}

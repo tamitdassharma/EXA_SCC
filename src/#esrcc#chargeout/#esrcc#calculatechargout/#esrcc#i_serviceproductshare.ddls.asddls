@@ -48,7 +48,7 @@ define view entity /ESRCC/I_ServiceProductShare
     CapacityVersion, 
     serviceproduct.OECD, 
     Costshare,  
-    ContractId,        
+//    ContractId,        
     _CostCenterCost.Currency,
     Chargeout,
     Planning,
@@ -62,20 +62,20 @@ define view entity /ESRCC/I_ServiceProductShare
     cast(( Costshare / 100 ) * (_CostCenterCost.Passtotalcost - ( ( _CostCenterCost.Stewardship / 100 ) * _CostCenterCost.Passtotalcost )) as abap.dec(23,2)) as Passthroughshare,
 
 // Cost Share price per unit calculation for direct chargeout case
-    cast(case when Chargeout = 'D' and  Planning <> 0 then
+    case when Chargeout = 'D' and  Planning <> 0 then
      ( ( Costshare / 100 ) * _CostCenterCost.Remainingcostbase ) / Planning                                      
     else
-    0 end as abap.dec(10,2)) as Servicecostperunit,
+    0 end as Servicecostperunit,
     
-    cast(case when Chargeout = 'D' and  Planning <> 0 then
+    case when Chargeout = 'D' and  Planning <> 0 then
     ( ( ( Costshare / 100 ) * (_CostCenterCost.Origtotalcost - ( ( _CostCenterCost.Stewardship / 100 ) * _CostCenterCost.Origtotalcost )) ) / Planning ) 
     else
-    0 end as abap.dec(10,2)) as Valueaddcostperunit,
+    0 end as Valueaddcostperunit,
     
-    cast(case when Chargeout = 'D' and  Planning <> 0 then
+    case when Chargeout = 'D' and  Planning <> 0 then
     ( ( ( Costshare / 100 ) * (_CostCenterCost.Passtotalcost - ( ( _CostCenterCost.Stewardship / 100 ) * _CostCenterCost.Passtotalcost )) ) / Planning ) 
     else
-    0 end as abap.dec(10,2)) as Passthrucostperunit,
+    0 end as Passthrucostperunit,
 
 // Additonal Attributes   
     srvcost.Status,

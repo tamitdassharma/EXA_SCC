@@ -15,12 +15,21 @@ define view entity /ESRCC/C_CstObjct
       @ObjectModel.text.element: [ 'CostObjectDescription' ]
       CostObject,
       CostCenter,
+      Active,
       @ObjectModel.text.element: [ 'FunctionalAreaDescription' ]
       FunctionalArea,
       @ObjectModel.text.element: [ 'ProfitCenterDescription' ]
       ProfitCenter,
       @ObjectModel.text.element: [ 'BusinessDivisionDescription' ]
       BusinessDivision,
+      @ObjectModel.text.element: ['Hierarchy1Description']
+      Hierarchy1,
+      @ObjectModel.text.element: ['Hierarchy2Description']
+      Hierarchy2,
+      @ObjectModel.text.element: ['Hierarchy3Description']
+      Hierarchy3,
+      @ObjectModel.text.element: ['Hierarchy4Description']
+      Hierarchy4,
       @ObjectModel.text.element: [ 'BillingFrequencyDescription' ]
       BillingFrequency,
       CreatedBy,
@@ -46,6 +55,14 @@ define view entity /ESRCC/C_CstObjct
       _ProfitCenterText.profitcenterdescription as ProfitCenterDescription,
       @Semantics.text: true
       _BusinessDivisionText.Description         as BusinessDivisionDescription,
+      @Semantics.text: true
+      _Hierarchy1Text.description               as Hierarchy1Description,
+      @Semantics.text: true
+      _Hierarchy2Text.description               as Hierarchy2Description,
+      @Semantics.text: true
+      _Hierarchy3Text.description               as Hierarchy3Description,
+      @Semantics.text: true
+      _Hierarchy4Text.description               as Hierarchy4Description,
       @Semantics.text: true
       _BillingFreqText.text                     as BillingFrequencyDescription,
 

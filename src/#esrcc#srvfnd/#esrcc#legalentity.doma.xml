@@ -11,6 +11,7 @@
     <LOWERCASE>X</LOWERCASE>
     <ENTITYTAB>/ESRCC/LE</ENTITYTAB>
     <DDTEXT>Legal Entity</DDTEXT>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

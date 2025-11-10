@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_LeAddress_S alias LeAddressAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _LeAddress { create; with draft; }
 }
@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_LeAddress alias LeAddress
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _LeAddressAll { with draft; }
 }

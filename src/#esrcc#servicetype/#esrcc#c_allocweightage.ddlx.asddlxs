@@ -35,6 +35,7 @@ annotate entity /ESRCC/C_AllocWeightage with
   } ]
 
   @UI.hidden: true
+  @UI.lineItem: [ { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 }]
   RuleId;
 
   @UI.identification: [ { position: 1 } ]

@@ -13,6 +13,7 @@ define view entity /ESRCC/C_CostElements
       @ObjectModel.text.element: [ 'CompanyCodeDescription' ]
       CompanyCode,
       CostElement,
+      Active,
       CreatedBy,
       CreatedAt,
       LastChangedBy,

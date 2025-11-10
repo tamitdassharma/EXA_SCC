@@ -9,18 +9,22 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare
   {
     validation CostElementChar~ValidateData;
   }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _CostElementChar { create ( features : instance, precheck ); with draft; }
 }
@@ -45,7 +49,7 @@ authorization dependent by _CostElementCharAll
   CstElmntCharUuid;
 
   field ( mandatory )
-  CostIndicator, ValidTo;
+  PostingType, UsageType, CostIndicator, ValueSource, ValidTo;
 
   field ( mandatory : create, readonly : update )
   Sysid, LegalEntity, CompanyCode, Costelement, ValidFrom;
@@ -53,26 +57,29 @@ authorization dependent by _CostElementCharAll
   update ( features : global, precheck );
   delete ( features : global );
 
-  mapping for /ESRCC/CSTELMTCH
-  {
-    CstElmntCharUuid = CST_ELMNT_CHAR_UUID;
-    ValidFrom = VALID_FROM;
-    ValidTo = VALID_TO;
-    CostType = COST_TYPE;
-    PostingType = POSTING_TYPE;
-    CostIndicator = COST_INDICATOR;
-    UsageType = USAGE_TYPE;
-    ReasonId = REASON_ID;
-    ValueSource = VALUE_SOURCE;
-    CostElementUuid = COST_ELEMENT_UUID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyCostElementCharP [1];
+
+  mapping for /esrcc/cstelmtch
+    {
+      CstElmntCharUuid   = CST_ELMNT_CHAR_UUID;
+      ValidFrom          = VALID_FROM;
+      ValidTo            = VALID_TO;
+      CostType           = COST_TYPE;
+      PostingType        = POSTING_TYPE;
+      CostIndicator      = COST_INDICATOR;
+      UsageType          = USAGE_TYPE;
+      ReasonId           = REASON_ID;
+      ValueSource        = VALUE_SOURCE;
+      CostElementUuid    = COST_ELEMENT_UUID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _CostElementCharAll { with draft; }
 
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
 }

@@ -9,6 +9,6 @@ define view entity /ESRCC/I_WF_COST_NUMBER_F4
   as select distinct from /esrcc/cst_objct as coscen
 {
       @UI.lineItem: [{ position: 1 }]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key cost_center as CostCenter
 }

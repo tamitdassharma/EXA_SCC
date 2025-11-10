@@ -24,6 +24,7 @@ CLASS /esrcc/cl_abap_behv_msghandler DEFINITION
         create          TYPE abap_boolean,
         update          TYPE abap_boolean,
         delete          TYPE abap_boolean,
+        copy            TYPE abap_boolean,
         create_by_assoc TYPE abap_boolean,
       END OF ts_authorization_for,
 
@@ -56,6 +57,11 @@ CLASS /esrcc/cl_abap_behv_msghandler DEFINITION
       IMPORTING
         state_area TYPE string.
 
+    METHODS reset_state_area
+      IMPORTING
+        entity     TYPE any
+        state_area TYPE string.
+
     METHODS set_first_flag
       IMPORTING
         is_first TYPE abap_boolean DEFAULT 'X'.
@@ -71,7 +77,9 @@ CLASS /esrcc/cl_abap_behv_msghandler DEFINITION
   PROTECTED SECTION.
 
   PRIVATE SECTION.
-    CONSTANTS c_singletonid TYPE abp_field_name VALUE 'SINGLETONID' ##NO_TEXT.
+    CONSTANTS:
+      c_singletonid TYPE abp_field_name VALUE 'SINGLETONID' ##NO_TEXT,
+      c_copy        TYPE abp_field_name VALUE 'COPY' ##NO_TEXT.
 
     DATA:
       gv_state_area    TYPE string,
@@ -94,7 +102,7 @@ CLASS /esrcc/cl_abap_behv_msghandler DEFINITION
       IMPORTING
         entity TYPE any.
 
-    METHODS reset_state_area
+    METHODS reset_state_area_internal
       IMPORTING
         key_component TYPE abp_field_name
         key_value     TYPE any.
@@ -118,21 +126,13 @@ ENDCLASS.
 
 
 
-CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
+CLASS /esrcc/cl_abap_behv_msghandler IMPLEMENTATION.
 
 
   METHOD authorize_instance.
     " Populate "result"
     APPEND INITIAL LINE TO result ASSIGNING FIELD-SYMBOL(<res>).
 
-*    " Populate Key
-*    ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE key TO FIELD-SYMBOL(<tky>).
-*    IF sy-subrc = 0.
-*      ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE <res> TO FIELD-SYMBOL(<tky_r>).
-*      IF sy-subrc = 0.
-*        <tky_r> = CORRESPONDING #( <tky> ).
-*      ENDIF.
-*    ENDIF.
     " Populate Key
     copy_key(
       EXPORTING
@@ -150,6 +150,13 @@ CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
       ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-create OF STRUCTURE <res> TO FIELD-SYMBOL(<create>).
       IF sy-subrc = 0.
         <create> = authorized-create.
+      ENDIF.
+    ENDIF.
+
+    IF set_authorization_for-copy = abap_true.
+      ASSIGN COMPONENT c_copy OF STRUCTURE <res> TO FIELD-SYMBOL(<copy>).
+      IF sy-subrc = 0.
+        <copy> = authorized-create.
       ENDIF.
     ENDIF.
 
@@ -193,7 +200,18 @@ CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD reset_state_area.      " Reset error state area of previous messages
+  METHOD copy_key.
+    ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE source TO FIELD-SYMBOL(<source>).
+    IF sy-subrc = 0.
+      ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE destination TO FIELD-SYMBOL(<destination>).
+      IF sy-subrc = 0.
+        <destination> = CORRESPONDING #( <source> ).
+      ENDIF.
+    ENDIF.
+  ENDMETHOD.
+
+
+  METHOD reset_state_area_internal.      " Reset error state area of previous messages
     FIELD-SYMBOLS <reported_entities> TYPE STANDARD TABLE.
 
     CHECK gv_first = abap_true AND gv_is_transition = abap_false.   " To be set only once
@@ -265,6 +283,22 @@ CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD set_message_for_field.
+    gs_field = field.
+
+*   Set reported entity with message
+    set_reported(
+      entity = entity
+      msg    = msg
+    ).
+
+*   Set failed entity
+    IF msg IS BOUND.
+      set_failed( entity = entity ).
+    ENDIF.
+  ENDMETHOD.
+
+
   METHOD set_path.      " Populate path data for navigation from message
     ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-path OF STRUCTURE reported_entity TO FIELD-SYMBOL(<path>).
     IF sy-subrc = 0.
@@ -304,7 +338,7 @@ CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
     ENDIF.
 
 *   Reset previous messages
-    reset_state_area( EXPORTING key_component = key_component key_value = <key_value> ).
+    reset_state_area_internal( EXPORTING key_component = key_component key_value = <key_value> ).
 
     IF msg IS NOT BOUND.
       RETURN.
@@ -350,29 +384,22 @@ CLASS /ESRCC/CL_ABAP_BEHV_MSGHANDLER IMPLEMENTATION.
   ENDMETHOD.
 
 
-  METHOD copy_key.
-    ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE source TO FIELD-SYMBOL(<source>).
-    IF sy-subrc = 0.
-      ASSIGN COMPONENT cl_abap_behv=>co_techfield_name-tky OF STRUCTURE destination TO FIELD-SYMBOL(<destination>).
-      IF sy-subrc = 0.
-        <destination> = CORRESPONDING #( <source> ).
+  METHOD reset_state_area.
+    set_state_area( state_area = state_area ).
+    set_first_flag( ).
+
+*   Get key values
+    DATA(key_component) = cl_abap_behv=>co_techfield_name-tky.
+    ASSIGN COMPONENT key_component OF STRUCTURE entity TO FIELD-SYMBOL(<key_value>).
+    IF sy-subrc <> 0.
+      key_component = cl_abap_behv=>co_techfield_name-cid.
+      ASSIGN COMPONENT key_component OF STRUCTURE entity TO <key_value>.
+      IF sy-subrc <> 0.
+        RETURN.
       ENDIF.
     ENDIF.
-  ENDMETHOD.
 
-
-  METHOD set_message_for_field.
-    gs_field = field.
-
-*   Set reported entity with message
-    set_reported(
-      entity = entity
-      msg    = msg
-    ).
-
-*   Set failed entity
-    IF msg IS BOUND.
-      set_failed( entity = entity ).
-    ENDIF.
+*   Reset previous messages
+    reset_state_area_internal( EXPORTING key_component = key_component key_value = <key_value> ).
   ENDMETHOD.
 ENDCLASS.

@@ -1,7 +1,7 @@
 {
   "formatVersion": "1",
   "header": {
-    "description": "Maintain Service Product Charge-out Rules",
+    "description": "Maintain Service Product Standard Rules",
     "originalLanguage": "en",
     "abapLanguageVersion": "cloudDevelopment"
   },
@@ -25,9 +25,9 @@
       {
         "entitySet": "Chargeout",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "ChargeoutAll",

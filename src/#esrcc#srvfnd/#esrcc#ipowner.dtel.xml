@@ -23,10 +23,9 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gesellschaft</DDTEXT>
-     <REPTEXT>Gesellschaft</REPTEXT>
-     <SCRTEXT_M>Gesellschaft</SCRTEXT_M>
-     <SCRTEXT_L>Gesellschaft</SCRTEXT_L>
+     <DDTEXT>IP-Inhaber</DDTEXT>
+     <REPTEXT>IP-Inhaber</REPTEXT>
+     <SCRTEXT_L>IP-Inhaber</SCRTEXT_L>
     </item>
    </DD04_TEXTS>
   </asx:values>

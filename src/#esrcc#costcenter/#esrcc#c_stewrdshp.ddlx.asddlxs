@@ -67,19 +67,12 @@ annotate view /ESRCC/C_Stewrdshp with
     parentId: 'CE',
     targetQualifier: 'pVariant',
     position: 50
-  },
-  {
-    id: 'ServiceReceiver',
-    type: #PRESENTATIONVARIANT_REFERENCE,
-    targetElement: '_ServiceReceiver',
-    parentId: 'CE',
-    targetQualifier: 'pVariant',
-    position: 60
   } ]
 
-  @UI.lineItem: [{ type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
-                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
-                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+  @UI.lineItem: [{ type: #FOR_ACTION, position: 10, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 20, dataAction: 'Submit', label: 'Submit', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 30, dataAction: 'Finalize', label: 'Finalize', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 40, dataAction: 'Reopen', label: 'Re-open', invocationGrouping: #CHANGE_SET }]
   @UI.hidden: true
   @EndUserText.label: 'Stewardship UUID'
   StewardshipUuid;
@@ -184,7 +177,7 @@ annotate view /ESRCC/C_Stewrdshp with
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
   WorkflowId;
 
-  @UI.lineItem: [ { position: 13, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.lineItem: [ { position: 13, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
   @UI.textArrangement: #TEXT_ONLY
   @EndUserText.label: 'Workflow Status'

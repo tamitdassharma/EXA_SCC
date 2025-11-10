@@ -4,6 +4,7 @@ INTERFACE /esrcc/if_application_logs PUBLIC.
     message_ids_type TYPE STANDARD TABLE OF sysuuid_c32 WITH EMPTY KEY.
 
   METHODS:
+    get_log_status      RETURNING VALUE(log_status) TYPE /esrcc/upload_status,
     get_log_header_id   RETURNING VALUE(log_header_uuid) TYPE sysuuid_c32,
     get_log_header_info RETURNING VALUE(log_header)      TYPE /esrcc/log_hdr,
     set_log_header_info IMPORTING log_header             TYPE /esrcc/log_hdr,

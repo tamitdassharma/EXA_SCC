@@ -10,26 +10,35 @@ CLASS /esrcc/cl_wf_utility DEFINITION
 
     CONSTANTS:
       BEGIN OF wf_status,
+        initial             TYPE /esrcc/status_de VALUE '',
         draft               TYPE /esrcc/status_de VALUE 'D',
         in_process          TYPE /esrcc/status_de VALUE 'P',
         approval_pending    TYPE /esrcc/status_de VALUE 'W',
         approved            TYPE /esrcc/status_de VALUE 'A',
         rejected            TYPE /esrcc/status_de VALUE 'R',
         finalize_in_process TYPE /esrcc/status_de VALUE 'J',
+        finalize_in_error   TYPE /esrcc/status_de VALUE 'O',
         finalized           TYPE /esrcc/status_de VALUE 'F',
         failed              TYPE /esrcc/status_de VALUE 'E',
         reopen_in_process   TYPE /esrcc/status_de VALUE 'L',
       END OF wf_status .
     CONSTANTS:
       BEGIN OF app,
-        cost_base_line_item   TYPE /esrcc/application_type_de VALUE 'CBL',
-        cost_base_stewardship TYPE /esrcc/application_type_de VALUE 'CBS',
-        cost_share_markup     TYPE /esrcc/application_type_de VALUE 'SCM',
-        charge_out_receiver   TYPE /esrcc/application_type_de VALUE 'CHR',
-        bc_stewardship        TYPE /esrcc/application_type_de VALUE 'CST',
-        bc_charge_out_rule    TYPE /esrcc/application_type_de VALUE 'CCR',
-        bc_product_markup     TYPE /esrcc/application_type_de VALUE 'CPM',
+        cost_base_line_item     TYPE /esrcc/application_type_de VALUE 'CBL',
+        cost_base_stewardship   TYPE /esrcc/application_type_de VALUE 'CBS',
+        cost_share_markup       TYPE /esrcc/application_type_de VALUE 'SCM',
+        charge_out_receiver     TYPE /esrcc/application_type_de VALUE 'CHR',
+        stdchargeout            TYPE /esrcc/application_type_de VALUE 'STD',
+        trueuprecal             TYPE /esrcc/application_type_de VALUE 'TRU',
+        adhoc_chargeout         TYPE /esrcc/application_type_de VALUE 'ADH',
+        royalty_chargeout       TYPE /esrcc/application_type_de VALUE 'ROY',
+        bc_stewardship          TYPE /esrcc/application_type_de VALUE 'CST',
+        bc_charge_out_rule      TYPE /esrcc/application_type_de VALUE 'CCR',
+        bc_product_markup       TYPE /esrcc/application_type_de VALUE 'CPM',
+        bc_hierarchy_definition TYPE /esrcc/application_type_de VALUE 'CHD',
       END OF app .
+
+    CONSTANTS title_separator TYPE c LENGTH 2 VALUE '||'.
 
     CLASS-METHODS is_wf_on
       IMPORTING
@@ -45,10 +54,22 @@ CLASS /esrcc/cl_wf_utility DEFINITION
     CLASS-METHODS wf_status_action_submit
       RETURNING
         VALUE(rt_list) TYPE tt_workflow_status .
+    CLASS-METHODS wf_status_action_copy
+      RETURNING
+        VALUE(rt_list) TYPE tt_workflow_status .
+    CLASS-METHODS wf_status_action_copy_obj_page
+      RETURNING
+        VALUE(rt_list) TYPE tt_workflow_status .
     CLASS-METHODS wf_status_action_finalize
       RETURNING
         VALUE(rt_list) TYPE tt_workflow_status .
     CLASS-METHODS wf_status_action_reopen
+      RETURNING
+        VALUE(rt_list) TYPE tt_workflow_status .
+    CLASS-METHODS wf_status_action_sync
+      RETURNING
+        VALUE(rt_list) TYPE tt_workflow_status .
+    CLASS-METHODS wf_status_action_autogenerate
       RETURNING
         VALUE(rt_list) TYPE tt_workflow_status .
     CLASS-METHODS wf_status_criticality
@@ -62,7 +83,7 @@ ENDCLASS.
 
 
 
-CLASS /ESRCC/CL_WF_UTILITY IMPLEMENTATION.
+CLASS /esrcc/cl_wf_utility IMPLEMENTATION.
 
 
   METHOD is_wf_on.
@@ -76,7 +97,7 @@ CLASS /ESRCC/CL_WF_UTILITY IMPLEMENTATION.
 
 
   METHOD wf_status_action_delete.
-    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = '' )
+    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-initial )
                        ( sign = 'I' option = 'EQ' low = wf_status-draft )
                        ( sign = 'I' option = 'EQ' low = wf_status-approved )
                        ( sign = 'I' option = 'EQ' low = wf_status-rejected )
@@ -85,7 +106,8 @@ CLASS /ESRCC/CL_WF_UTILITY IMPLEMENTATION.
 
 
   METHOD wf_status_action_finalize.
-    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-approved ) ).
+    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-approved )
+                       ( sign = 'I' option = 'EQ' low = wf_status-finalize_in_error ) ).
   ENDMETHOD.
 
 
@@ -98,9 +120,37 @@ CLASS /ESRCC/CL_WF_UTILITY IMPLEMENTATION.
     rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-draft ) ).
   ENDMETHOD.
 
+  METHOD wf_status_action_sync.
+    rt_list = wf_status_action_reopen( ).
+  ENDMETHOD.
+
+  METHOD wf_status_action_autogenerate.
+    rt_list = wf_status_action_reopen( ).
+  ENDMETHOD.
+
+
+  METHOD wf_status_action_copy.
+    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-initial )
+                       ( sign = 'I' option = 'EQ' low = wf_status-draft )
+                       ( sign = 'I' option = 'EQ' low = wf_status-in_process )
+                       ( sign = 'I' option = 'EQ' low = wf_status-approval_pending )
+                       ( sign = 'I' option = 'EQ' low = wf_status-approved )
+                       ( sign = 'I' option = 'EQ' low = wf_status-rejected )
+                       ( sign = 'I' option = 'EQ' low = wf_status-finalize_in_process )
+                       ( sign = 'I' option = 'EQ' low = wf_status-finalize_in_error )
+                       ( sign = 'I' option = 'EQ' low = wf_status-finalized )
+                       ( sign = 'I' option = 'EQ' low = wf_status-failed )
+                       ( sign = 'I' option = 'EQ' low = wf_status-reopen_in_process ) ).
+  ENDMETHOD.
+
+
+  METHOD wf_status_action_copy_obj_page.
+    rt_list = wf_status_action_update( ).
+  ENDMETHOD.
+
 
   METHOD wf_status_action_update.
-    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = '' )
+    rt_list = VALUE #( ( sign = 'I' option = 'EQ' low = wf_status-initial )
                        ( sign = 'I' option = 'EQ' low = wf_status-draft )
                        ( sign = 'I' option = 'EQ' low = wf_status-approved )
                        ( sign = 'I' option = 'EQ' low = wf_status-rejected )
@@ -111,7 +161,8 @@ CLASS /ESRCC/CL_WF_UTILITY IMPLEMENTATION.
   METHOD wf_status_criticality.
     criticality = SWITCH #( status " Red
                                    WHEN wf_status-rejected OR
-                                        wf_status-failed THEN 1
+                                        wf_status-failed OR
+                                        wf_status-finalize_in_error THEN 1
                                    " Yellow
                                    WHEN wf_status-draft OR
                                         wf_status-in_process OR

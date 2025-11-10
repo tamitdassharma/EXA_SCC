@@ -1,6 +1,6 @@
 @AbapCatalog.viewEnhancementCategory: [ #PROJECTION_LIST, #UNION ]
 @AccessControl.authorizationCheck: #CHECK
-@EndUserText.label: 'Service Charge Out Analytical List'
+@EndUserText.label: 'Service Charge-Out Analytical List'
 @Metadata.ignorePropagatedAnnotations: false
 @Metadata.allowExtensions: true
 @ObjectModel.usageType:{
@@ -9,14 +9,16 @@
     dataClass: #MIXED
 }
 
-
 define view entity /ESRCC/I_CHARGEOUT_CHARTS
   as select from /ESRCC/I_CHG_ANALYTICS
-{
+{     
+      @ObjectModel.filter.enabled: false
       @AnalyticsDetails.query.hidden: true
   key UUID,
+      @ObjectModel.filter.enabled: false
       @AnalyticsDetails.query.hidden: true
   key ParentUUID,
+      @ObjectModel.filter.enabled: false
       @AnalyticsDetails.query.hidden: true
   key RootUUID,
       @AnalyticsDetails.query.display: #KEY
@@ -37,16 +39,10 @@ define view entity /ESRCC/I_CHARGEOUT_CHARTS
   key Costobject,
       @AnalyticsDetails.query.display: #KEY
       @ObjectModel.text.element: [ 'costcenterdescription' ]
-  key Costcenter,
-      @AnalyticsDetails.query.display: #KEY
-      @ObjectModel.text.element: [ 'transactiongroupdescription' ]
-  key Transactiongroup,
+  key Costcenter,     
       @AnalyticsDetails.query.display: #KEY
       @ObjectModel.text.element: [ 'serviceproductdescription' ]
-  key Serviceproduct,
-      @AnalyticsDetails.query.display: #KEY
-      @ObjectModel.text.element: [ 'servicetypedescription' ]
-  key Servicetype,
+  key Serviceproduct,     
       @AnalyticsDetails.query.display: #KEY
   key ReceiverSysId,
       @AnalyticsDetails.query.display: #KEY
@@ -64,7 +60,15 @@ define view entity /ESRCC/I_CHARGEOUT_CHARTS
   
       @AnalyticsDetails.query.display: #KEY
       @ObjectModel.text.element: [ 'ProcessTypedescription' ]
-      ProcessType,
+  key ProcessType,
+      
+      @AnalyticsDetails.query.display: #KEY
+      @ObjectModel.text.element: [ 'transactiongroupdescription' ]
+      Transactiongroup,
+      
+      @AnalyticsDetails.query.display: #KEY
+      @ObjectModel.text.element: [ 'servicetypedescription' ]
+      Servicetype,
       
       @AnalyticsDetails.query.display: #KEY
       @ObjectModel.text.element: [ 'functionalareadescription' ]
@@ -80,6 +84,14 @@ define view entity /ESRCC/I_CHARGEOUT_CHARTS
       @DefaultAggregation: #SUM
       @Semantics.amount.currencyCode: 'Currency'
       TotalChargeout       as TotalChargeOutAmount,
+      
+      @DefaultAggregation: #SUM
+      @Semantics.amount.currencyCode: 'Currency'
+      TotalTrueupAmount    as TotalTrueupAmount,
+      
+      @DefaultAggregation: #SUM
+      @Semantics.amount.currencyCode: 'Currency'
+      StdChargeout       as TotalStdChargeOutAmount,
 
       @DefaultAggregation: #SUM
       @Semantics.amount.currencyCode: 'Currency'
@@ -165,4 +177,4 @@ define view entity /ESRCC/I_CHARGEOUT_CHARTS
       _legalCountryText.CountryName as legalcountryname,
       @Semantics.text: true
       _ReceivingCountryText.CountryName as receivingcountryname
-}
+}where ProcessType <> 'R'

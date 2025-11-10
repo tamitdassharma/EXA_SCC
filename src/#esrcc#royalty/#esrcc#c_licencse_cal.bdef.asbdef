@@ -1,0 +1,18 @@
+unmanaged implementation in class /esrcc/bp_c_licencse_cal unique;
+strict ( 1 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+
+define behavior for /ESRCC/C_LICENCSE_CAL //alias <alias_name>
+//late numbering
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+//  create;
+//  update;
+//  delete;
+  action ( features : instance, precheck, authorization : update ) Submit parameter /esrcc/c_comment result [1] $self;
+  action ( features : instance, precheck, authorization : update ) Reopen result [1] $self;
+  action ( features : instance, precheck, authorization : update ) Calculate parameter /ESRCC/C_ROYCHGEOUTAMOUNT result [1] $self;
+  action ( features : instance, precheck, authorization : update ) Finalize result [1] $self;
+
+}

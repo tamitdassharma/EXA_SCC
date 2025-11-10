@@ -11,6 +11,7 @@
     <DDTEXT>Draft table for entity /ESRCC/I_BILLINGFREQUENCY</DDTEXT>
     <CONTFLAG>A</CONTFLAG>
     <EXCLASS>4</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/D_BILLFRE</TABNAME>
@@ -114,12 +115,6 @@
      <DDTEXT>Entwurf Tabelle für Gesellschaft /ESRCC/I_BILLINGFREQUENCY</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/D_BILLFRE</TABNAME>
-     <CCLASS>CUS_DEV_SUP_DA</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

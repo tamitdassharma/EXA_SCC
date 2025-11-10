@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_WfSwitch alias WorkflowSwitch
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _WorkflowSwitchAll { with draft; }
 }

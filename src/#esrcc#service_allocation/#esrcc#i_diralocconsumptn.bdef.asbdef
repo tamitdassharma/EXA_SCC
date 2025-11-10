@@ -25,6 +25,8 @@ authorization master ( global )
   ServiceProduct,
   Fplv;
 
+  field ( mandatory ) Consumption, Uom;
+
   field ( readonly )
   CreatedAt,
   CreatedBy,
@@ -32,28 +34,28 @@ authorization master ( global )
   LastChangedBy,
   LocalLastChangedAt;
 
-  field ( numbering : managed )
+  field ( numbering : managed, readonly : update )
   DirectAllocationUUID;
 
   create ( precheck );
   update ( precheck );
   delete ( precheck );
 
-  mapping for /ESRCC/CONSUMPTN
-  {
-    DirectAllocationUUID = DIRECT_ALLOCATION_UUID;
-    ServiceProduct = SERVICE_PRODUCT;
-    Ryear = RYEAR;
-    Poper = POPER;
-    Fplv = FPLV;
-    Consumption = CONSUMPTION;
-    Uom = UOM;
-    CostObjectUuid = COST_OBJECT_UUID;
-    ProviderCostObjectUuid = PROVIDER_COST_OBJECT_UUID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/consumptn
+    {
+      DirectAllocationUUID   = DIRECT_ALLOCATION_UUID;
+      ServiceProduct         = SERVICE_PRODUCT;
+      Ryear                  = RYEAR;
+      Poper                  = POPER;
+      Fplv                   = FPLV;
+      Consumption            = CONSUMPTION;
+      Uom                    = UOM;
+      CostObjectUuid         = COST_OBJECT_UUID;
+      ProviderCostObjectUuid = PROVIDER_COST_OBJECT_UUID;
+      CreatedBy              = CREATED_BY;
+      CreatedAt              = CREATED_AT;
+      LastChangedBy          = LAST_CHANGED_BY;
+      LastChangedAt          = LAST_CHANGED_AT;
+      LocalLastChangedAt     = LOCAL_LAST_CHANGED_AT;
+    }
 }

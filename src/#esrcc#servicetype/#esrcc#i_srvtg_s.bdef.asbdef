@@ -9,16 +9,19 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
-//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _TransactionGrp { create ( features : instance, precheck ); with draft; }
 }
@@ -40,24 +43,25 @@ authorization dependent by _TransactionGrpAll
   field ( readonly : update )
   Transactiongroup;
 
-
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/SRVTG
-  {
-    Transactiongroup = TRANSACTIONGROUP;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopySrvTgP [1];
+
+  mapping for /esrcc/srvtg
+    {
+      Transactiongroup   = TRANSACTIONGROUP;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _TransactionGrpAll { with draft; }
   association _TransactionGrpText { create ( features : global ); with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }
 
 define behavior for /ESRCC/I_SrvTgText alias TransactionGrpText
@@ -82,16 +86,16 @@ authorization dependent by _TransactionGrpAll
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/TGT
-  {
-    Spras = SPRAS;
-    Transactiongroup = TRANSACTIONGROUP;
-    Description = DESCRIPTION;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/tgt
+    {
+      Spras              = SPRAS;
+      Transactiongroup   = TRANSACTIONGROUP;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _TransactionGrpAll { with draft; }
   association _TransactionGrp { with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

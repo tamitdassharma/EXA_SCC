@@ -3,18 +3,21 @@ strict;
 with draft;
 
 define behavior for /ESRCC/I_ExecutionStatus_S alias ExecutionStatusAll
-draft table /ESRCC/D_EXECS_S
+draft table /esrcc/d_execs_s
 with unmanaged save
 lock master total etag LastChangedAtMax
-authorization master( global )
+authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare
@@ -27,84 +30,85 @@ authorization master( global )
 }
 
 define behavior for /ESRCC/I_ExecutionStatus alias ExecutionStatus
-persistent table /ESRCC/EXEC_ST
-draft table /ESRCC/D_EXECST
+persistent table /esrcc/exec_st
+draft table /esrcc/d_execst
 etag master LocalLastChangedAt
 lock dependent by _ExecutionStatusAll
 authorization dependent by _ExecutionStatusAll
 
 {
   field ( mandatory : create )
-   Application,
-   Status;
+  Application,
+  Status;
 
   field ( readonly )
-   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
 
   field ( readonly : update )
-   Application,
-   Status;
+  Application,
+  Status;
 
   field ( mandatory )
-   Color;
+  Color;
 
+  update ( features : global, precheck );
+  delete ( features : global );
 
-  update( features : global, precheck );
-  delete( features : global );
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyExecutionStatusP [1];
 
-  mapping for /ESRCC/EXEC_ST
-  {
-    Application = APPLICATION;
-    Status = STATUS;
-    Color = COLOR;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/exec_st
+    {
+      Application        = APPLICATION;
+      Status             = STATUS;
+      Color              = COLOR;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _ExecutionStatusAll { with draft; }
   association _ExecutionStatusText { create ( features : global ); with draft; }
 
-  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
 }
 
 define behavior for /ESRCC/I_ExecutionStatusText alias ExecutionStatusText
-persistent table /ESRCC/EXECST_T
-draft table /ESRCC/D_EXECSTT
+persistent table /esrcc/execst_t
+draft table /esrcc/d_execstt
 etag master LocalLastChangedAt
 lock dependent by _ExecutionStatusAll
 authorization dependent by _ExecutionStatusAll
 
 {
   field ( mandatory : create )
-   Spras;
+  Spras;
 
   field ( readonly )
-   SingletonID,
-   Application,
-   Status;
+  SingletonID,
+  Application,
+  Status;
 
   field ( readonly : update )
-   Spras;
+  Spras;
 
 
-  update( features : global );
-  delete( features : global );
+  update ( features : global );
+  delete ( features : global );
 
-  mapping for /ESRCC/EXECST_T
-  {
-    Spras = SPRAS;
-    Application = APPLICATION;
-    Status = STATUS;
-    Description = DESCRIPTION;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/execst_t
+    {
+      Spras              = SPRAS;
+      Application        = APPLICATION;
+      Status             = STATUS;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _ExecutionStatusAll { with draft; }
   association _ExecutionStatus { with draft; }
 
-  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_CostElements_S alias CostElementsAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _CostElements { create ( augment ); with draft; }
 }
@@ -22,6 +23,7 @@ define behavior for /ESRCC/C_CostElements alias CostElements
 
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _CostElementsAll { with draft; }
   use association _CostElementsText { create; with draft; }

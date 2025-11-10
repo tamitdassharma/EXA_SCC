@@ -9,16 +9,19 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
-//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _ProfitCenter { create ( features : instance, precheck ); with draft; }
 }
@@ -43,20 +46,22 @@ authorization dependent by _ProfitCenterAll
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/PFC
-  {
-    ProfitCenter = PROFIT_CENTER;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyPfcP [1];
+
+  mapping for /esrcc/pfc
+    {
+      ProfitCenter       = PROFIT_CENTER;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _ProfitCenterAll { with draft; }
   association _PfcText { create ( features : global ); with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }
 
 define behavior for /ESRCC/I_PfcText alias PfcText
@@ -80,16 +85,16 @@ authorization dependent by _ProfitCenterAll
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/PFCT
-  {
-    Spras = SPRAS;
-    ProfitCenter = PROFIT_CENTER;
-    Description = DESCRIPTION;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/pfct
+    {
+      Spras              = SPRAS;
+      ProfitCenter       = PROFIT_CENTER;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _ProfitCenterAll { with draft; }
   association _ProfitCenter { with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

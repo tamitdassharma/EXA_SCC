@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyBillingFrequencyP
+{
+  field ( mandatory ) billingfreq, billingvalue, poper;
+}

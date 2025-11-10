@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyHierDefP
+{
+  field ( mandatory ) Hierarchy1, ValidFrom;
+}

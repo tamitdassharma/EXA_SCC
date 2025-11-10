@@ -30,8 +30,6 @@ define root view entity /ESRCC/I_RECCOST_WORKFLOW
     Receivingentity,
     ReceiverCostObject,
     ReceiverCostCenter,
-    _ServiceCost._CostCenterCost.Billingfrequqncy,
-    _ServiceCost._CostCenterCost.Billingperiod,
     Reckpi as Reckpi,  
     Reckpishare as Reckpishare,
     _ServiceCost.Chargeout as Chargeout,
@@ -76,4 +74,4 @@ define root view entity /ESRCC/I_RECCOST_WORKFLOW
     //association
     _ReceivingCountryText,
     _ServiceCost._CostCenterCost._legalCountryText
-}
+} where Workflowid is not initial

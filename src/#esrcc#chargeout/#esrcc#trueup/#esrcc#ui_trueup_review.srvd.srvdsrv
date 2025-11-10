@@ -1,0 +1,4 @@
+@EndUserText.label: 'True Up Review'
+define service /ESRCC/UI_TRUEUP_REVIEW {
+  expose /ESRCC/C_TRUEUP_REVIEW as TruepReview;
+}

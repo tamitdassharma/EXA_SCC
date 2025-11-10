@@ -9,8 +9,8 @@ as select from /ESRCC/I_CostBaseData as cc_cost
   
  composition [0..*] of /ESRCC/I_ServiceProductShare            as _ServiceMarkup
 
- association [0..1] to /ESRCC/I_LEGALENTITY_F4 as legalentity
-  on legalentity.Legalentity = $projection.Legalentity
+ association [0..1] to /ESRCC/I_LEGALENTITY_F4 as _legalentity
+  on _legalentity.Legalentity = $projection.Legalentity
   
   association [0..1] to /ESRCC/I_COMPANYCODES_F4 as ccode  
   on ccode.Ccode        = $projection.Ccode
@@ -38,12 +38,6 @@ as select from /ESRCC/I_CostBaseData as cc_cost
 
   association [0..1] to /ESRCC/I_FunctionalArea_F4 as functionalarea
   on functionalarea.FunctionalArea = $projection.FunctionalArea
-    
-  association [0..1] to /ESRCC/I_BILLINGFREQ as billingfreq
-  on billingfreq.Billingfreq = $projection.Billingfrequqncy
-  
-  association [0..1] to /ESRCC/I_BILLINGPERIOD as billingperiod
-  on billingperiod.Billingperiod = $projection.Billingperiod
   
   association [0..1] to /ESRCC/I_STATUS as status
   on status.Status = $projection.Status
@@ -64,17 +58,16 @@ as select from /ESRCC/I_CostBaseData as cc_cost
     Fplv as Fplv,
     Ryear as Ryear,
     Poper as Poper,
+    RefPoper,
     Sysid as Sysid,
     cc_cost.Legalentity as Legalentity,
     cc_cost.Ccode as Ccode,
     cc_cost.Costobject as Costobject,
     cc_cost.Costcenter as Costcenter,    
-    cc_cost.Billfrequency as Billingfrequqncy,
     cc_cost.Businessdivision as Businessdivision,
     cc_cost.FunctionalArea as FunctionalArea,
     cc_cost.Profitcenter as Profitcenter,
     Controllingarea as Controllingarea,    
-    cc_cost.Billingperiod as Billingperiod,
     ProcessType as ProcessType,
     Currency,
     VirtualCost,
@@ -89,25 +82,27 @@ as select from /ESRCC/I_CostBaseData as cc_cost
     cc_cost.Status,
     Workflowid,
     CommentId,
+    ChainId, 
+    Recalrefpoper,
     CreatedBy,
     CreatedAt,
     LastChangedBy,
     LastChangedAt,
     ccode.ccodedescription,
-    legalentity.Description as legalentitydescription,
+    _legalentity.Description as legalentitydescription,
     costobject.text as costobjectdescription,
     costcenter.Description as costcenterdescription,
     costdataset.text as costdatasetdescription,
     businessdiv.Description as businessdescription,
     functionalarea.Description as functionalareadescription,
     profitcenter.profitcenterdescription,
-    billingfreq.text as billingfrequencydescription,
-    billingperiod.text as billingperioddescription,
     status.text as statusdescription,
-    legalentity.Country,
-    legalentity.LocalCurr,
-    legalentity.Region,
-    legalentity.RegionDesc,
+    _legalentity.Country,
+    _legalentity.LocalCurr,
+    _legalentity.Region,
+    _legalentity.RegionDesc,
+    _legalentity.TpProfile,
+    _legalentity.TpProfileDesc,
     _legalCountryText,
     _Processtype.text as ProcessTypedescription,
     // Make association public   

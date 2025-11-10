@@ -3,64 +3,69 @@ strict;
 with draft;
 
 define behavior for /ESRCC/I_LeBnkInfo_S alias BankInformationAll
-draft table /ESRCC/D_LEBNK_S
+draft table /esrcc/d_lebnk_s
 with unmanaged save
 lock master total etag LastChangedAtMax
-authorization master( global )
+authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
-//  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _BankInformation { create ( features : instance ); with draft; }
 }
 
 define behavior for /ESRCC/I_LeBnkInfo alias BankInformation
-persistent table /ESRCC/LEBNKINFO
-draft table /ESRCC/D_LEBNKIN
+persistent table /esrcc/lebnkinfo
+draft table /esrcc/d_lebnkin
 etag master LocalLastChangedAt
 lock dependent by _BankInformationAll
 authorization dependent by _BankInformationAll
 
 {
   field ( mandatory : create )
-   LegalEntity;
+  LegalEntity;
 
   field ( readonly )
-   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
 
   field ( readonly : update )
-   LegalEntity;
+  LegalEntity;
 
 
-  update( features : global );
-  delete( features : global );
+  update ( features : global );
+  delete ( features : global );
 
-  mapping for /ESRCC/LEBNKINFO
-  {
-    LegalEntity = LEGAL_ENTITY;
-    BankAccountNumber = BANK_ACCOUNT_NUMBER;
-    BicCode = BIC_CODE;
-    PaymentTerms = PAYMENT_TERMS;
-    FreeText = FREE_TEXT;
-    ContactPerson = CONTACT_PERSON;
-    AgreementId = AGREEMENT_ID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLeBnkInfoP [1];
+
+  mapping for /esrcc/lebnkinfo
+    {
+      LegalEntity        = LEGAL_ENTITY;
+      BankAccountNumber  = BANK_ACCOUNT_NUMBER;
+      BicCode            = BIC_CODE;
+      PaymentTerms       = PAYMENT_TERMS;
+      FreeText           = FREE_TEXT;
+      ContactPerson      = CONTACT_PERSON;
+      AgreementId        = AGREEMENT_ID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _BankInformationAll { with draft; }
 
-//  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

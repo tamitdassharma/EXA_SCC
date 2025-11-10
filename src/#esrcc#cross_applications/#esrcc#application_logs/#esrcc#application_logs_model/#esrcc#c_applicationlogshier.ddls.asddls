@@ -22,8 +22,12 @@
             direction: #ASC
         },
         {
-            by: 'RunNumber',
-            direction: #DESC
+            by: 'SerialNumber',
+            direction: #ASC
+        },
+        {
+            by: 'CreatedAt',
+            direction: #ASC
         }],
         visualizations: [{
             type: #AS_LINEITEM
@@ -68,6 +72,7 @@ define root view entity /ESRCC/C_ApplicationLogsHier
           @ObjectModel.text.element: ['CompanyCodeDescription']
           CompanyCode,
           CreatedBy,
+          SerialNumber,
           MessageId,
           MessageNumber,
           MessageType,

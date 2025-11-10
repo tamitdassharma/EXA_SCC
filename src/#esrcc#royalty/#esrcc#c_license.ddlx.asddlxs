@@ -1,0 +1,99 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'License',
+    typeNamePlural: 'Licenses',
+    title: {
+      type: #STANDARD,
+      value: 'License'
+    }
+  }
+}
+annotate view /ESRCC/C_License with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_License',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 10
+  },
+  {
+    id: 'Validity',
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'ValidityGroup',
+    label: 'Validity',
+    position: 20
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 30
+  },
+  {
+    id: '/ESRCC/I_LicenseText',
+    type: #LINEITEM_REFERENCE,
+    parentId: 'CE',
+    position: 40,
+    targetElement: '_LicenseText'
+  } ]
+
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET } ]
+  License;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LicenseType_F4', element: 'LicenseType' }, useForValidation: true }]
+  LicenseTyp;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RoyaltyCompRule_F4', element: 'RuleId' }, useForValidation: true }]
+  RuleId;
+
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 1 }]
+  ValidFrom;
+
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.fieldGroup: [{ qualifier: 'ValidityGroup', position: 2 }]
+  ValidTo;
+
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 8, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 10, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.hidden: true
+  LicenseTypeDescription;
+  @UI.hidden: true
+  ComputationRuleDesc;
+}

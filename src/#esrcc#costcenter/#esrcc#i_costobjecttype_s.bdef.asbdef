@@ -1,0 +1,108 @@
+managed with additional save implementation in class /ESRCC/BP_I_COSTOBJECTTYPE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_CostObjectType_S alias CostObjectTypeAll
+draft table /esrcc/d_cstob_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _CostObjectType { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_CostObjectType alias CostObjectType
+persistent table /esrcc/cstobjtyp
+draft table /esrcc/d_cstobty
+etag master LocalLastChangedAt
+lock dependent by _CostObjectTypeAll
+authorization dependent by _CostObjectTypeAll
+
+{
+  field ( mandatory : create )
+  CostObject;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  CostObject;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyCostObjectTypeP [1];
+
+  mapping for /esrcc/cstobjtyp
+    {
+      CostObject         = COST_OBJECT;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _CostObjectTypeAll { with draft; }
+  association _CostObjectTypeText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_CostObjectTypeText alias CostObjectTypeText
+persistent table /esrcc/cstbjtypt
+draft table /esrcc/d_cstbjty
+etag master LocalLastChangedAt
+lock dependent by _CostObjectTypeAll
+authorization dependent by _CostObjectTypeAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  CostObject,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/cstbjtypt
+    {
+      Spras              = SPRAS;
+      CostObject         = COST_OBJECT;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _CostObjectTypeAll { with draft; }
+  association _CostObjectType { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

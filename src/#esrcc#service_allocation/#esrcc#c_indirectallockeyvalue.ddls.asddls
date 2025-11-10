@@ -8,7 +8,7 @@ define root view entity /ESRCC/C_INDIRECTALLOCKEYVALUE
 {
   key IndirectAllocationUUID,
       Ryear,
-      @ObjectModel.text.element: ['PoperDescription']
+//      @ObjectModel.text.element: ['PoperDescription']
       Poper,
       @ObjectModel.text.element: ['AllocationKeyDescription']
       AllocationKey,
@@ -39,8 +39,8 @@ define root view entity /ESRCC/C_INDIRECTALLOCKEYVALUE
       _KeyVersionText.text    as FplvDescription,
       @Semantics.text: true
       _AllockeyText.AllocationKeyDescription,
-      @Semantics.text: true
-      _PoperText.text         as PoperDescription,
+//      @Semantics.text: true
+//      _PoperText.text         as PoperDescription,
       @Semantics.text: true
       _CostCenter.SysidDescription,
       @Semantics.text: true

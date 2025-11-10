@@ -1,0 +1,35 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Licensor & Licensee",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_LIC_MAP_O4",
+    "serviceName": "/ESRCC/UI_LIC_MAP_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "LicenseeAll",
+    "name": "Licensor & Licensee",
+    "configurationGroup": "/ESRCC/BC_GROUP8",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "LicenseeAll",
+        "variantManagement": "control"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "Licensee",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      }
+    ]
+  }
+}

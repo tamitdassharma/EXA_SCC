@@ -15,11 +15,11 @@ define view entity /ESRCC/I_COLORCODE_F4
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key value_low as ColorCode,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       text
 }
 where

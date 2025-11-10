@@ -1,0 +1,5 @@
+define service /ESRCC/UI_COSTOBJECTTYPE {
+  expose /ESRCC/C_CostObjectType_S   as CostObjectTypeAll;
+  expose /ESRCC/C_CostObjectType     as CostObjectType;
+  expose /ESRCC/C_CostObjectTypeText as CostObjectTypeText;
+}

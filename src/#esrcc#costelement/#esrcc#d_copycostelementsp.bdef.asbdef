@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyCostElementsP
+{
+  field ( mandatory ) Sysid, LegalEntity, CompanyCode, CostElement;
+}

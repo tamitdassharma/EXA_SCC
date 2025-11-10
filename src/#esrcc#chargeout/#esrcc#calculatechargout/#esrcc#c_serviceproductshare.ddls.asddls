@@ -15,7 +15,7 @@ as projection on /ESRCC/I_ServiceProductShare
     Servicetype,
     @ObjectModel.text.element: [ 'Transactiongroupdescription' ]
     Transactiongroup,
-    ContractId,
+//    ContractId,
     @DefaultAggregation: #SUM
     Costshare,
     @DefaultAggregation: #SUM

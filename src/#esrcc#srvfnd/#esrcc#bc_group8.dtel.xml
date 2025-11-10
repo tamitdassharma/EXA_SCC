@@ -6,8 +6,8 @@
     <ROLLNAME>/ESRCC/BC_GROUP8</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
-    <DDTEXT>Group 8: Workflow &amp; Process Control Configurations</DDTEXT>
-    <REPTEXT>Group 8: Workflow &amp; Process Control Configurations</REPTEXT>
+    <DDTEXT>Group 08: License Catalogue and Licensees</DDTEXT>
+    <REPTEXT>Group 08: License Catalogue and Licensees</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -20,8 +20,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 8: Workflow &amp; Prozesssteuerungskonfigurationen</DDTEXT>
-     <REPTEXT>Gruppe 8: Workflow &amp; Prozesssteuerungskonfigurationen</REPTEXT>
+     <DDTEXT>Gruppe 08: Lizenzkatalog und Lizenznehmer</DDTEXT>
+     <REPTEXT>Gruppe 08: Lizenzkatalog und Lizenznehmer</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

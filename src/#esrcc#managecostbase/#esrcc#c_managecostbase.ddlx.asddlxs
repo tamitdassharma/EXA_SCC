@@ -108,7 +108,7 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   @UI.lineItem: [ {
     position: 40 ,
     importance: #MEDIUM,
-    label: ''    
+    label: ''
   } ]
   @UI.identification: [ {
     position: 40 ,
@@ -132,6 +132,17 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   @UI.selectionField: [{position: 50}]
   @UI.textArrangement: #TEXT_ONLY
   Fplv;
+
+  @UI.lineItem: [ {
+   position: 55 ,
+   importance: #MEDIUM,
+   label: ''
+  } ]
+  @UI.identification: [ {
+    position: 55 ,
+    label: ''
+  } ]
+  Ledger;
 
   @UI.lineItem: [ {
     position: 160 ,
@@ -170,8 +181,8 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
     position: 20 ,
     label: ''
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CompanyCodes_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CompanyCodes_F4', element: 'Ccode' } }]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
   @UI.selectionField: [{position: 20}]
   @UI.textArrangement: #TEXT_LAST
   Ccode;
@@ -223,8 +234,8 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
     position: 70 ,
     label: ''
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' } }]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject' }]}]
   @UI.selectionField: [{position: 70}]
   @UI.textArrangement: #TEXT_LAST
   Costcenter;
@@ -245,11 +256,11 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   Costelement;
 
   @UI.lineItem: [ {
-    position: 85 ,
+    position: 115 ,
     importance: #MEDIUM
   } ]
   @UI.identification: [ {
-  position: 85,
+  position: 115,
   importance: #HIGH
   } ]
   @UI.selectionField: [{position: 85}]
@@ -282,7 +293,7 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }}]
   @UI.textArrangement: #TEXT_LAST
   Profitcenter;
-  
+
   @UI.lineItem: [ {
     position: 205 ,
     importance: #MEDIUM,
@@ -373,8 +384,9 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   @UI.lineItem: [ {
     position: 145 ,
     importance: #MEDIUM,
-    label: '',
-    criticality: 'usagecriticallity'
+    label: ''
+//    criticality: 'usagecriticallity',
+//    criticalityRepresentation: #WITHOUT_ICON
   } ]
   @UI.textArrangement: #TEXT_ONLY
   @UI.selectionField: [{position: 145}]
@@ -389,7 +401,7 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   } ]
   @UI.textArrangement: #TEXT_ONLY
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_REASON_F4', element: 'Reasonid' },
-                                       additionalBinding: [{ element: 'CalculationUsage', localElement: 'Usagecal' }],
+//                                       additionalBinding: [{ element: 'CalculationUsage', localElement: 'Usagecal' }],
                                        useForValidation: true }]
   //  @UI.dataPoint: { qualifier: 'usage', title: 'Usage in Calculation', criticality: 'usagecriticallity', criticalityRepresentation: #WITH_ICON }
   @EndUserText.label: 'Reason'
@@ -398,9 +410,9 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   @UI.lineItem: [ {
     position: 110 ,
     importance: #HIGH,
-    label: 'Status',
-    criticality: 'statuscriticallity',
-    criticalityRepresentation: #WITHOUT_ICON
+    label: 'Status'
+//    criticality: 'statuscriticallity',
+//    criticalityRepresentation: #WITHOUT_ICON
   } ]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_STATUS', element: 'Status' } }]
   @UI.selectionField: [{position: 110}]
@@ -416,12 +428,28 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   position: 210 ,
   importance: #HIGH
   } ]
-//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' } }]
+  //  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' } }]
   WorkflowId;
 
-//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RECEIVINGENTITY_F4', element: 'Receivingentity' } }]
-//  @UI.hidden: true
-//  ReceivingEntity;
+  @UI.lineItem: [ {
+      position: 800 ,
+      importance: #LOW,
+      label: ''
+    } ]
+  @EndUserText.label: 'Charge-out Ref. ID'
+  UniqueId;
+
+  @UI.lineItem: [ {
+      position: 810 ,
+      importance: #LOW,
+      label: ''
+    } ]
+  @EndUserText.label: 'Re-Calculation Ref. Period'
+  Recalrefpoper;
+
+  //  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RECEIVINGENTITY_F4', element: 'Receivingentity' } }]
+  //  @UI.hidden: true
+  //  ReceivingEntity;
 
   @UI.lineItem: [ {
     position: 240 ,
@@ -478,9 +506,50 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
 
   @UI.hidden: true
   LocalLastChangedAt;
-
-  @EndUserText.label: 'Charge-out Ref. Id'
-  UniqueId;
+  
+  @UI.lineItem: [ {
+//    position: 900 ,
+//    importance: #MEDIUM,
+    hidden: true
+  } ]
+  @UI.identification: [ {
+    position: 500 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy1;
+  @UI.lineItem: [ {
+//    position: 910 ,
+//    importance: #MEDIUM,
+    hidden: true
+  } ]
+  @UI.identification: [ {
+    position: 500 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy2;
+  @UI.lineItem: [ {
+//    position: 920 ,
+//    importance: #MEDIUM,
+    hidden: true
+  } ]
+  @UI.identification: [ {
+    position: 500 ,
+    label: ''
+  } ]
+  Hierarchy3;  
+  @UI.lineItem: [ {
+//    position: 940 ,
+//    importance: #MEDIUM,
+    hidden: true
+  } ]
+  @UI.identification: [ {
+    position: 500 ,
+    label: ''
+  } ]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy4; 
 
   // hidden fields
   @UI.hidden: true
@@ -525,4 +594,12 @@ annotate view /ESRCC/C_MANAGECOSTBASE with
   reasondescription;
   @UI.hidden: true
   FunctionalAreaDescription;
+  @UI.hidden: true
+  Hierarchy1Description;
+  @UI.hidden: true
+  Hierarchy2Description;
+  @UI.hidden: true
+  Hierarchy3Description;
+  @UI.hidden: true
+  Hierarchy4Description;
 }

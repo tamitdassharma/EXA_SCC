@@ -24,6 +24,7 @@ define view entity /ESRCC/I_Stewardship
       co.FunctionalArea,
       co.BusinessDivision,
       co.BillingFrequency,
+      workflow_status,
       @Semantics.text: true
       co._CostObjectText[ Spras = $session.system_language ].Description                as CostCenterDescription,
 

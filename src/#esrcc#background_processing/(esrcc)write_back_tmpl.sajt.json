@@ -1,0 +1,55 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Write Back Job Template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "/ESRCC/WRITE_BACK_CAT"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "REP_YEAR",
+        "value": ""
+      }
+    ],
+    "valueRangesParameters": [
+      {
+        "name": "DOCUMENT",
+        "valueRanges": []
+      },
+      {
+        "name": "ITEM_NO",
+        "valueRanges": []
+      },
+      {
+        "name": "PERIOD",
+        "valueRanges": []
+      },
+      {
+        "name": "PLAN_VER",
+        "valueRanges": []
+      },
+      {
+        "name": "RECEIVER",
+        "valueRanges": []
+      },
+      {
+        "name": "SENDER",
+        "valueRanges": []
+      },
+      {
+        "name": "SIMULATE",
+        "valueRanges": [
+          {
+            "sign": "",
+            "option": "",
+            "low": "X"
+          }
+        ]
+      }
+    ]
+  }
+}

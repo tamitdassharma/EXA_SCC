@@ -24,11 +24,11 @@ define view entity /ESRCC/I_STW_SERVICEPRODUCT
       stw.FunctionalArea,
       stw.BusinessDivision,
       stw.BillingFrequency,
-      
+      workflow_status,
       stw_sp.valid_from as SpValidFrom,
       stw_sp.valid_to as SpValidto,
-      stw_sp.contract_id as ContractId,
-      stw_sp.erp_sales_order as ErpSalesOrder,
+//      stw_sp.contract_id as ContractId,
+//      stw_sp.erp_sales_order as ErpSalesOrder,
       stw_sp.service_product as ServiceProduct,
       stw_sp.share_of_cost as ShareOfCost,
       

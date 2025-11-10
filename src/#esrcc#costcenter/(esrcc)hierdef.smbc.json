@@ -1,0 +1,35 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Hierarchy Definition for Cost Objects",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_HIERDEF_O4",
+    "serviceName": "/ESRCC/UI_HIERDEF_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "HierDefAll",
+    "name": "Hierarchy Definition",
+    "configurationGroup": "/ESRCC/BC_GROUP1",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "HierDefAll",
+        "variantManagement": "control"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "HierDef",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      }
+    ]
+  }
+}

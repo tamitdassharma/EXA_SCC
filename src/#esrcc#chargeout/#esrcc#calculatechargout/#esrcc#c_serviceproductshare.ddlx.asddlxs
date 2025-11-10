@@ -119,19 +119,19 @@ annotate view /ESRCC/C_ServiceProductShare with
   } ]
   @UI.textArrangement: #TEXT_LAST
   Transactiongroup;
-  @UI.lineItem: [ {
-  position: 35 ,
-  importance: #MEDIUM,
-  label: '',
-  cssDefault:{width: '15rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-   importance: #HIGH,
-   position: 95 ,
-   qualifier: 'OrgData'
-  } ]
-  ContractId;
+//  @UI.lineItem: [ {
+//  position: 35 ,
+//  importance: #MEDIUM,
+//  label: '',
+//  cssDefault:{width: '15rem'}
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//   importance: #HIGH,
+//   position: 95 ,
+//   qualifier: 'OrgData'
+//  } ]
+//  ContractId;
   @UI.lineItem: [ {
   position: 40 ,
   importance: #MEDIUM,
@@ -260,18 +260,18 @@ annotate view /ESRCC/C_ServiceProductShare with
   } ]
   @UI.dataPoint: { qualifier: 'status', title: 'Service Cost Share & Mark-up Status' }
   Status;
-  @UI.lineItem: [ {
-  position: 170 ,
-  importance: #MEDIUM,
-  label: ''
-  } ]
-  @UI.fieldGroup: [
-  {
-   importance: #HIGH,
-   position: 170 ,
-   qualifier: 'AdminData'
-  } ]
-  Workflowid;
+//  @UI.lineItem: [ {
+//  position: 170 ,
+//  importance: #MEDIUM,
+//  label: ''
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//   importance: #HIGH,
+//   position: 170 ,
+//   qualifier: 'AdminData'
+//  } ]
+//  Workflowid;
   @UI.lineItem: [ {
     position: 250 ,
     importance: #MEDIUM,

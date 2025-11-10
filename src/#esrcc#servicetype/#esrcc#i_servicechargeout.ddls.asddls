@@ -14,7 +14,7 @@ define view entity /ESRCC/I_ServiceChargeout
       chargeout_rule_id         as RuleId,
       
       _Rule.chargeout_method    as ChargeoutMethod,
-      _Rule.cost_version        as CostVersion,
+//      _Rule.cost_version        as CostVersion,
       _Rule.capacity_version    as CapacityVersion,
       _Rule.consumption_version as ConsumptionVersion,
       _Rule.key_version         as KeyVersion

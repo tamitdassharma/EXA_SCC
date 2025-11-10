@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyCostElementCharP
+{
+  field ( mandatory ) Sysid, LegalEntity, CompanyCode, CostElement, ValidFrom, ValidTo;
+}

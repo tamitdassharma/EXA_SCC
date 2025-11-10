@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyHier3P
+{
+  field ( mandatory ) Hierarchy;
+}

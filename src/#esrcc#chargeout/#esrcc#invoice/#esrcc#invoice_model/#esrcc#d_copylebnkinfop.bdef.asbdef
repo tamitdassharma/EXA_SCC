@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyLeBnkInfoP
+{
+  field ( mandatory ) LegalEntity;
+}

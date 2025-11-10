@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyAllocWeightageP
+{
+  field ( mandatory ) AllocationKey;
+}

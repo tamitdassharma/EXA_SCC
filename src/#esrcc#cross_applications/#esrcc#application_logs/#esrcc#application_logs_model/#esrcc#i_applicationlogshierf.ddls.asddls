@@ -34,7 +34,7 @@ define root view entity /ESRCC/I_ApplicationLogsHierF
       CompanyCode,
       CreatedBy,
       /* Application Log Items Header */
-      //      cast('' as sysuuid_c32)         as ParentLogUuid,
+      cast('' as abap.char(3))                 as SerialNumber,
       cast('' as symsgid)                      as MessageId,
       cast('' as symsgno)                      as MessageNumber,
       cast('None' as abap.char(15))            as MessageType,
@@ -116,7 +116,7 @@ union all select from /ESRCC/I_AppLogItemsHeaderHier
       //      cast('' as /esrcc/ccode_de)                     as CompanyCode,
       //      cast('' as abp_creation_user)                   as CreatedBy,
       /* Application Log Items Header */
-      //      ParentLogUuid,
+      SerialNumber,
       MessageId,
       MessageNumber,
       MessageType,
@@ -182,7 +182,7 @@ union all select from /ESRCC/I_AppLogItemsChildHier
       _log_items_header._log_header.CompanyCode,
       _log_items_header._log_header.CreatedBy,
       /* Application Log Items Child */
-      //      LogHeaderUuid,
+      SerialNumber,
       MessageId,
       MessageNumber,
       MessageType,
@@ -247,7 +247,7 @@ union all select from /ESRCC/I_InvalidRecordsHier
       _log_items_child._log_items_header._log_header.CompanyCode,
       _log_items_child._log_items_header._log_header.CreatedBy,
       /* Application Log Items */
-      //      cast('' as sysuuid_c32)         as ParentLogUuid,
+      cast('' as abap.char(3))                        as SerialNumber,
       cast('' as symsgid)                             as MessageId,
       cast('' as symsgno)                             as MessageNumber,
       cast('None' as abap.char(15))                   as MessageType,

@@ -22,8 +22,8 @@ as projection on /ESRCC/I_CostBaseStewardship
     Costobject,
     @ObjectModel.text.element: [ 'costcenterdescription' ]
     Costcenter,
-    @ObjectModel.text.element: [ 'billingfrequencydescription' ]
-    Billingfrequqncy,
+    @ObjectModel.text.element: [ 'TpProfileDesc' ]
+    TpProfile,
     @ObjectModel.text.element: [ 'businessdescription' ]
     Businessdivision,
     @ObjectModel.text.element: [ 'functionalareadescription' ]
@@ -31,8 +31,6 @@ as projection on /ESRCC/I_CostBaseStewardship
     @ObjectModel.text.element: [ 'profitcenterdescription' ]
     Profitcenter,
     Controllingarea,    
-    @ObjectModel.text.element: [ 'billingperioddescription' ]
-    Billingperiod,
     @ObjectModel.text.element: [ 'ProcessTypedescription' ]
     ProcessType,
     @Semantics.currencyCode: true
@@ -62,6 +60,7 @@ as projection on /ESRCC/I_CostBaseStewardship
     Status,
     Workflowid, 
     CommentId,
+    Recalrefpoper,
     @Semantics.text: true  
     ccodedescription,
     @Semantics.text: true 
@@ -79,13 +78,11 @@ as projection on /ESRCC/I_CostBaseStewardship
     @Semantics.text: true 
     profitcenterdescription,
     @Semantics.text: true 
-    billingfrequencydescription,
-    @Semantics.text: true 
-    billingperioddescription,
-    @Semantics.text: true 
     statusdescription,
     @Semantics.text: true 
     ProcessTypedescription,
+    @Semantics.text: true 
+    TpProfileDesc,
     @Semantics.text: true 
     _Currencytype.text as CurrencyTypedescription,
     @ObjectModel.text.element: [ 'countryname' ]

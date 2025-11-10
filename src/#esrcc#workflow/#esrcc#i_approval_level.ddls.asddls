@@ -10,11 +10,11 @@ define view entity /ESRCC/I_APPROVAL_LEVEL
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key value_low as ApprovalLevel,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       text
 }
 where

@@ -1,0 +1,5 @@
+define service /ESRCC/UI_HIER3 {
+  expose /ESRCC/C_HIER3_S as HierarchyAll;
+  expose /ESRCC/C_HIER3 as Hierarchy;
+  expose /ESRCC/C_HIER3TEXT as HierarchyText;
+}

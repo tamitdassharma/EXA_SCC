@@ -1,0 +1,41 @@
+projection implementation in class /ESRCC/BP_C_HIER4_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_Hier4_S alias HierarchyAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _Hierarchy { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_Hier4 alias Hierarchy
+
+{
+  field ( modify )
+  Description;
+
+  use update ( augment );
+  use delete;
+
+  use action Copy;
+
+  use association _HierarchyAll { with draft; }
+  use association _HierarchyText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_Hier4Text alias HierarchyText
+
+{
+  use update;
+  use delete;
+
+  use association _HierarchyAll { with draft; }
+  use association _Hierarchy { with draft; }
+}

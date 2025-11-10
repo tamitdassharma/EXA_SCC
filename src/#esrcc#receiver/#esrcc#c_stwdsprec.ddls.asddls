@@ -7,10 +7,8 @@ define view entity /ESRCC/C_StwdSpRec
   as projection on /ESRCC/I_StwdSpRec
 {
   key ServiceReceiverUuid,
-      @ObjectModel.text.element: ['ServiceProductDescription']
-      ServiceProduct,
       CostObjectUuid,
-      StewardshipUuid,
+      ServiceProductUuid,
 
       @ObjectModel.text.element: ['SysidDescription']
       Sysid,
@@ -29,6 +27,9 @@ define view entity /ESRCC/C_StwdSpRec
 
       @ObjectModel.text.element: ['InvoiceCurrencyDescription']
       InvoiceCurrency,
+
+      ErpSalesOrder,
+      ContractId,
 
       Active,
       CreatedBy,
@@ -51,11 +52,9 @@ define view entity /ESRCC/C_StwdSpRec
       @Semantics.text: true
       _CostObjectText.description                   as CostCenterDescription,
       @Semantics.text: true
-      _ServiceProduct.Description                   as ServiceProductDescription,
-      @Semantics.text: true
       _InvoiceCurrency.CurrencyName                 as InvoiceCurrencyDescription,
 
       /* Associations */
-      _Stewardship    : redirected to parent /ESRCC/C_Stewrdshp,
+      _ServiceProduct : redirected to parent /ESRCC/C_StwdSp,
       _StewardshipAll : redirected to /ESRCC/C_Stewrdshp_S
 }

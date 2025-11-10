@@ -12,8 +12,6 @@ define view entity /ESRCC/C_StwdSp
       ValidFrom,
       ValidTo,
       ShareOfCost,
-      ErpSalesOrder,
-      ContractId,
       StewardshipUuid,
       CreatedBy,
       CreatedAt,
@@ -28,6 +26,7 @@ define view entity /ESRCC/C_StwdSp
       _ServiceProductText.Description as ServiceProductDescription,
 
       /* Associations */
-      _Stewardship    : redirected to parent /ESRCC/C_Stewrdshp,
-      _StewardshipAll : redirected to /ESRCC/C_Stewrdshp_S
+      _Stewardship     : redirected to parent /ESRCC/C_Stewrdshp,
+      _StewardshipAll  : redirected to /ESRCC/C_Stewrdshp_S,
+      _ServiceReceiver : redirected to composition child /ESRCC/C_StwdSpRec
 }

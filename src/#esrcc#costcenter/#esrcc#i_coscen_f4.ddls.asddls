@@ -15,13 +15,16 @@ define view entity /ESRCC/I_COSCEN_F4
   association [0..1] to /ESRCC/I_PROFITCENTER_F4   as _ProfitCenterText     on  _ProfitCenterText.ProfitCenter = $projection.ProfitCenter
   association [0..1] to /ESRCC/I_BUSINESSDIV_F4    as _BusinessDivisionText on  _BusinessDivisionText.BusinessDivision = $projection.BusinessDivision
   association [0..1] to /ESRCC/I_BILLINGFREQ       as _BillingFreqText      on  _BillingFreqText.Billingfreq = $projection.Billfrequency
+  association [0..1] to /ESRCC/I_Hierarchy1_F4     as _Hierarchy1Text       on  _Hierarchy1Text.Hierarchy = $projection.Hierarchy1
+  association [0..1] to /ESRCC/I_Hierarchy2_F4     as _Hierarchy2Text       on  _Hierarchy2Text.Hierarchy = $projection.Hierarchy2
+  association [0..1] to /ESRCC/I_Hierarchy3_F4     as _Hierarchy3Text       on  _Hierarchy3Text.Hierarchy = $projection.Hierarchy3
+  association [0..1] to /ESRCC/I_Hierarchy4_F4     as _Hierarchy4Text       on  _Hierarchy4Text.Hierarchy = $projection.Hierarchy4
   association [0..1] to /ESRCC/I_FunctionalArea_F4 as _FunctionalAreaText   on  _FunctionalAreaText.FunctionalArea = $projection.FunctionalArea
 {
       @UI.hidden: true
   key cost_object_uuid                          as CostObjectUuid,
 
       @ObjectModel.text.element: [ 'SysidDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
       @UI.lineItem: [{ position: 1 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }}]
@@ -29,14 +32,14 @@ define view entity /ESRCC/I_COSCEN_F4
       sysid                                     as Sysid,
 
       @ObjectModel.text.element: [ 'LegalEntityDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 2 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' }}]
       legal_entity                              as LegalEntity,
 
       @ObjectModel.text.element: [ 'CompanyCodeDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 3 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' }}]
@@ -45,43 +48,67 @@ define view entity /ESRCC/I_COSCEN_F4
       @ObjectModel.text.element: [ 'CostObjectDescription' ]
       @UI.lineItem: [{ position: 4 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
       cost_object                               as Costobject,
 
       @ObjectModel.text.element: [ 'Description' ]
       @UI.lineItem: [{ position: 5 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       cost_center                               as Costcenter,
 
       @ObjectModel.text.element: [ 'FunctionalAreaDescription' ]
       @UI.lineItem: [{ position: 6 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }}]
       functional_area                           as FunctionalArea,
 
       @ObjectModel.text.element: [ 'ProfitCenterDescription' ]
       @UI.lineItem: [{ position: 7 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }}]
       profit_center                             as ProfitCenter,
 
       @ObjectModel.text.element: [ 'BusinessDivisionDescription' ]
       @UI.lineItem: [{ position: 8 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }}]
       business_division                         as BusinessDivision,
 
       @ObjectModel.text.element: [ 'BillfrequencyDescription' ]
       @UI.lineItem: [{ position: 9 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' }}]
       billing_frequency                         as Billfrequency,
+      
+      @ObjectModel.text.element: [ 'Hierarchy1Description' ]
+      @UI.lineItem: [{ position: 10 }]
+      @UI.textArrangement: #TEXT_LAST
+      @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy1_F4', element: 'Hierarchy' }}]
+      hierarchy1                                as Hierarchy1,
+
+      @ObjectModel.text.element: [ 'Hierarchy2Description' ]
+      @UI.lineItem: [{ position: 11 }]
+      @UI.textArrangement: #TEXT_LAST
+      @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy2_F4', element: 'Hierarchy' }}]
+      hierarchy2                                as Hierarchy2,
+
+      @ObjectModel.text.element: [ 'Hierarchy3Description' ]
+      @UI.lineItem: [{ position: 12 }]
+      @UI.textArrangement: #TEXT_LAST
+      @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy3_F4', element: 'Hierarchy' }}]
+      hierarchy3                                as Hierarchy3,
+
+      @ObjectModel.text.element: [ 'Hierarchy4Description' ]
+      @UI.lineItem: [{ position: 13 }]
+      @UI.textArrangement: #TEXT_LAST
+      @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy4_F4', element: 'Hierarchy' }}]
+      hierarchy4                                as Hierarchy4,
 
       @Semantics.text: true
       @Consumption.filter.hidden: true
@@ -114,6 +141,22 @@ define view entity /ESRCC/I_COSCEN_F4
       @Semantics.text: true
       @Consumption.filter.hidden: true
       _BillingFreqText.text                     as BillfrequencyDescription,
+      
+      @Semantics.text: true
+      @Consumption.filter.hidden: true
+      _Hierarchy1Text.Description               as Hierarchy1Description,
+
+      @Semantics.text: true
+      @Consumption.filter.hidden: true
+      _Hierarchy2Text.Description               as Hierarchy2Description,
+
+      @Semantics.text: true
+      @Consumption.filter.hidden: true
+      _Hierarchy3Text.Description               as Hierarchy3Description,
+
+      @Semantics.text: true
+      @Consumption.filter.hidden: true
+      _Hierarchy4Text.Description               as Hierarchy4Description,
 
       @Semantics.text: true
       @Consumption.filter.hidden: true

@@ -137,41 +137,6 @@ annotate view /ESRCC/C_RECEIVER_WORKFLOW with
   @UI.textArrangement: #TEXT_LAST
   Serviceproduct;
   
-  
-
-  
-//  @UI.lineItem: [ {
-//    position:   15 ,
-//    importance: #MEDIUM,
-//    label: '',
-//    cssDefault:{width: '5rem'}
-//  } ]
-//  @UI.fieldGroup: [
-//  {
-//    importance: #HIGH,
-//    position: 15 ,
-//    qualifier: 'OrgData'
-//  } ]
-//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
-//  @UI.textArrangement: #TEXT_ONLY
-//  Billingfrequqncy;
-//  @UI.lineItem: [ {
-//    position: 16 ,
-//    importance: #MEDIUM,
-//    label: '',
-//    cssDefault:{width: '5rem'}
-//  } ]
-//  @UI.fieldGroup: [
-//  {
-//    importance: #HIGH,
-//    position: 16 ,
-//    qualifier: 'OrgData'
-//  } ]
-//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQUENCY_F4', element: 'Billingperiod' },
-//                                          additionalBinding: [{ element: 'Billingfreq', localElement: 'Billingfrequqncy' }] }]
-//  @UI.textArrangement: #TEXT_ONLY
-//  Billingperiod;
-  
   @UI.lineItem: [ {
     position: 80 ,
     importance: #MEDIUM,
@@ -362,6 +327,11 @@ annotate view /ESRCC/C_RECEIVER_WORKFLOW with
   @EndUserText.quickInfo: 'Legal Entity Country'
   @UI.textArrangement: #TEXT_LAST
   legalentitycountry;
+  @UI.lineItem: [ {
+    position: 999 ,
+    importance: #MEDIUM,
+    label: 'Id'
+  } ]
   @UI.hidden: true
   UUID;
   @UI.hidden: true

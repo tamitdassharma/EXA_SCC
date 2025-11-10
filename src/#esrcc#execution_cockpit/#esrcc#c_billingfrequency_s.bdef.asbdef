@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_BillingFrequency alias BillingFrequency
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _BillingFrequencyAll { with draft; }
 }

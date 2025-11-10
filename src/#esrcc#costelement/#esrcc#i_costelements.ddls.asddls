@@ -17,6 +17,7 @@ define view entity /ESRCC/I_CostElements
       legal_entity          as LegalEntity,
       company_code          as CompanyCode,
       cost_element          as CostElement,
+      active                as Active,
       @Semantics.user.createdBy: true
       created_by            as CreatedBy,
       @Semantics.systemDateTime.createdAt: true

@@ -1,7 +1,8 @@
 CLASS lcl_custom_validation DEFINITION.
   PUBLIC SECTION.
     TYPES:
-      ts_reason TYPE STRUCTURE FOR READ RESULT /esrcc/i_reason_s\\Reason,
+      ts_reason        TYPE STRUCTURE FOR READ RESULT /esrcc/i_reason_s\\reason,
+      tt_reason_create TYPE TABLE FOR CREATE /esrcc/i_reason_s\\reasonall\_reason,
       BEGIN OF ts_control,
         reasonid TYPE if_abap_behv=>t_xflag,
       END OF ts_control.
@@ -12,6 +13,14 @@ CLASS lcl_custom_validation DEFINITION.
         IMPORTING
           entity  TYPE ts_reason
           control TYPE ts_control.
+
+    CLASS-METHODS:
+      precheck_cba_reason
+        IMPORTING
+          entities TYPE tt_reason_create
+        CHANGING
+          reported TYPE any
+          failed   TYPE any.
 
   PRIVATE SECTION.
     DATA config_util_ref TYPE REF TO /esrcc/cl_config_util.
@@ -36,6 +45,26 @@ CLASS lcl_custom_validation IMPLEMENTATION.
       entity = entity
     ).
   ENDMETHOD.
+
+  METHOD precheck_cba_reason.
+    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+      EXPORTING
+        paths              = VALUE #( ( path = 'ReasonAll' ) )
+        source_entity_name = '/ESRCC/C_REASON'
+        is_transition      = abap_true
+      CHANGING
+        reported_entity    = reported
+        failed_entity      = failed ) ).
+
+    LOOP AT entities INTO DATA(entity).
+      LOOP AT entity-%target INTO DATA(target).
+        lo_validation->validate_reason(
+          entity  = CORRESPONDING #( target )
+          control = VALUE #( reasonid = if_abap_behv=>mk-on )
+        ).
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts DEFINITION.
@@ -43,16 +72,15 @@ CLASS lhc_rap_tdat_cts DEFINITION.
     CLASS-METHODS:
       get
         RETURNING
-          VALUE(result) TYPE REF TO if_mbc_cp_rap_table_cts.
+          VALUE(result) TYPE REF TO if_mbc_cp_rap_tdat_cts.
 
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts IMPLEMENTATION.
   METHOD get.
-    result = mbc_cp_api=>rap_table_cts( table_entity_relations = VALUE #(
-                                         ( entity = 'Reason' table = '/ESRCC/REASON' )
-                                         ( entity = 'ReasonText' table = '/ESRCC/REASONT' )
-                                       ) ).
+    result = mbc_cp_api=>rap_tdat_cts( tdat_name = '/ESRCC/REASON'
+                                       table_entity_relations = VALUE #( ( entity = 'Reason' table = '/ESRCC/REASON' )
+                                                                         ( entity = 'ReasonText' table = '/ESRCC/REASONT' ) ) ) ##NO_TEXT.
   ENDMETHOD.
 ENDCLASS.
 CLASS lhc_/esrcc/i_reason_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -60,92 +88,68 @@ CLASS lhc_/esrcc/i_reason_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS:
       get_instance_features FOR INSTANCE FEATURES
         IMPORTING
-                  keys   REQUEST requested_features FOR ReasonAll
+                  keys   REQUEST requested_features FOR reasonall
         RESULT    result,
-*      SELECTCUSTOMIZINGTRANSPTREQ FOR MODIFY
-*        IMPORTING
-*          KEYS FOR ACTION ReasonAll~SelectCustomizingTransptReq
-*        RESULT result,
+      selectcustomizingtransptreq FOR MODIFY
+        IMPORTING
+                  keys   FOR ACTION reasonall~selectcustomizingtransptreq
+        RESULT    result,
       get_global_authorizations FOR GLOBAL AUTHORIZATION
         IMPORTING
-        REQUEST requested_authorizations FOR ReasonAll
+        REQUEST requested_authorizations FOR reasonall
         RESULT result,
-      precheck_cba_Reason FOR PRECHECK
-        IMPORTING entities FOR CREATE ReasonAll\_Reason.
+      precheck_cba_reason FOR PRECHECK
+        IMPORTING entities FOR CREATE reasonall\_reason.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_reason_s IMPLEMENTATION.
   METHOD get_instance_features.
-    DATA: selecttransport_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled,
-          edit_flag            TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
+    DATA(selecttransport_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
 
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-        iv_objectname = '/ESRCC/REASON'
-        iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    DATA(transport_service) = cl_bcfg_cd_reuse_api_factory=>get_transport_service_instance(
-                                iv_objectname = '/ESRCC/REASON'
-                                iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table ).
-    IF transport_service->is_transport_allowed( ) = abap_false.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    READ ENTITIES OF /ESRCC/I_Reason_S IN LOCAL MODE
-    ENTITY ReasonAll
+    READ ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+    ENTITY reasonall
       ALL FIELDS WITH CORRESPONDING #( keys )
-      RESULT DATA(all).
-    IF all[ 1 ]-%is_draft = if_abap_behv=>mk-off.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    result = VALUE #( (
-               %tky = all[ 1 ]-%tky
+      RESULT DATA(entities)
+      FAILED failed.
+
+    result = VALUE #( FOR row IN entities (
+               %tky = row-%tky
                %action-edit = edit_flag
-               %assoc-_Reason = edit_flag ) ).
-*               %ACTION-SelectCustomizingTransptReq = selecttransport_flag ) ).
+               %assoc-_reason = edit_flag
+               %action-selectcustomizingtransptreq = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE selecttransport_flag ) ) ).
   ENDMETHOD.
-*  METHOD SELECTCUSTOMIZINGTRANSPTREQ.
-*    MODIFY ENTITIES OF /ESRCC/I_Reason_S IN LOCAL MODE
-*      ENTITY ReasonAll
-*        UPDATE FIELDS ( TransportRequestID HideTransport )
-*        WITH VALUE #( FOR key IN keys
-*                        ( %TKY               = key-%TKY
-*                          TransportRequestID = key-%PARAM-transportrequestid
-*                          HideTransport      = abap_false ) ).
-*
-*    READ ENTITIES OF /ESRCC/I_Reason_S IN LOCAL MODE
-*      ENTITY ReasonAll
-*        ALL FIELDS WITH CORRESPONDING #( keys )
-*        RESULT DATA(entities).
-*    result = VALUE #( FOR entity IN entities
-*                        ( %TKY   = entity-%TKY
-*                          %PARAM = entity ) ).
-*  ENDMETHOD.
+  METHOD selectcustomizingtransptreq.
+    MODIFY ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+      ENTITY reasonall
+        UPDATE FIELDS ( transportrequestid hidetransport )
+        WITH VALUE #( FOR key IN keys
+                        ( %tky               = key-%tky
+                          transportrequestid = key-%param-transportrequestid
+                          hidetransport      = abap_false ) ).
+
+    READ ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+      ENTITY reasonall
+        ALL FIELDS WITH CORRESPONDING #( keys )
+        RESULT DATA(entities).
+
+    result = VALUE #( FOR entity IN entities
+                        ( %tky   = entity-%tky
+                          %param = entity ) ).
+  ENDMETHOD.
   METHOD get_global_authorizations.
-    AUTHORITY-CHECK OBJECT 'S_TABU_NAM' ID 'TABLE' FIELD '/ESRCC/I_REASON' ID 'ACTVT' FIELD '02'.
-    DATA(is_authorized) = COND #( WHEN sy-subrc = 0 THEN if_abap_behv=>auth-allowed
-                                  ELSE if_abap_behv=>auth-unauthorized ).
+    DATA(is_authorized) = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_REASON' ).
     result-%update      = is_authorized.
-    result-%action-Edit = is_authorized.
-*    result-%ACTION-SelectCustomizingTransptReq = is_authorized.
+    result-%action-edit = is_authorized.
+    result-%action-selectcustomizingtransptreq = is_authorized.
   ENDMETHOD.
-  METHOD precheck_cba_Reason.
-    TYPES ts_reason TYPE STRUCTURE FOR READ RESULT /esrcc/i_reason_s\\reason.
-
-    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+  METHOD precheck_cba_reason.
+    lcl_custom_validation=>precheck_cba_reason(
       EXPORTING
-        paths              = VALUE #( ( path = 'ReasonAll' ) )
-        source_entity_name = '/ESRCC/C_REASON'
-        is_transition      = abap_true
+        entities = entities
       CHANGING
-        reported_entity    = reported-reason
-        failed_entity      = failed-reason ) ).
-
-    LOOP AT entities[ 1 ]-%target INTO DATA(entity).
-      lo_validation->validate_reason(
-        entity  = CORRESPONDING #( entity )
-        control = VALUE #( reasonid = if_abap_behv=>mk-on )
-      ).
-    ENDLOOP.
+        failed   = failed-reason
+        reported = reported-reason ).
   ENDMETHOD.
 
 ENDCLASS.
@@ -158,10 +162,10 @@ ENDCLASS.
 
 CLASS lsc_/esrcc/i_reason_s IMPLEMENTATION.
   METHOD save_modified.
-    READ TABLE update-ReasonAll INDEX 1 INTO DATA(all).
-    IF all-TransportRequestID IS NOT INITIAL.
+    READ TABLE update-reasonall INDEX 1 INTO DATA(all).
+    IF all-transportrequestid IS NOT INITIAL.
       lhc_rap_tdat_cts=>get( )->record_changes(
-                                  transport_request = all-TransportRequestID
+                                  transport_request = all-transportrequestid
                                   create            = REF #( create )
                                   update            = REF #( update )
                                   delete            = REF #( delete ) ).
@@ -173,70 +177,167 @@ ENDCLASS.
 CLASS lhc_/esrcc/i_reason DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS:
-*      VALIDATERECORDCHANGES FOR VALIDATE ON SAVE
-*        IMPORTING
-*          KEYS FOR Reason~ValidateRecordChanges,
+      validatetransportrequest FOR VALIDATE ON SAVE
+        IMPORTING
+          keys FOR reason~validatetransportrequest,
       get_global_features FOR GLOBAL FEATURES
         IMPORTING
-        REQUEST requested_features FOR Reason
-        RESULT result.
+        REQUEST requested_features FOR reason
+        RESULT result,
+      get_instance_features FOR INSTANCE FEATURES
+        IMPORTING keys REQUEST requested_features FOR reason RESULT result.
+
+    METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+      IMPORTING REQUEST requested_authorizations FOR reason RESULT result.
+
+    METHODS copy FOR MODIFY
+      IMPORTING keys FOR ACTION reason~copy.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_reason IMPLEMENTATION.
-*  METHOD VALIDATERECORDCHANGES.
-*    DATA change TYPE REQUEST FOR CHANGE /ESRCC/I_Reason_S.
-*    SELECT SINGLE TransportRequestID FROM /ESRCC/D_REASO_S INTO @DATA(TransportRequestID). "#EC CI_NOORDER
-*    lhc_rap_tdat_cts=>get( )->validate_changes(
-*                                transport_request = TransportRequestID
-*                                table             = '/ESRCC/REASON'
-*                                keys              = REF #( keys )
-*                                reported          = REF #( reported )
-*                                failed            = REF #( failed )
-*                                change            = REF #( change-Reason ) ).
-*  ENDMETHOD.
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_reason_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_reaso_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/REASON'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-reason ) ).
+  ENDMETHOD.
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/REASON'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
-    result-%assoc-_ReasonText = edit_flag.
+    result-%assoc-_reasontext = edit_flag.
   ENDMETHOD.
+
+  METHOD get_instance_features.
+    result = VALUE #( FOR row IN keys ( %tky = row-%tky
+                                        %action-copy = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ) ) ).
+  ENDMETHOD.
+
+  METHOD get_global_authorizations.
+    result-%action-copy = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_REASON' ).
+  ENDMETHOD.
+
+  METHOD copy.
+    DATA:
+      new_main TYPE TABLE FOR CREATE /esrcc/i_reason_s\_reason,
+      new_text TYPE TABLE FOR CREATE /esrcc/i_reason_s\\reason\_reasontext.
+
+    FIELD-SYMBOLS <new_text> LIKE LINE OF new_text.
+
+    IF lines( keys ) > 1.
+      INSERT mbc_cp_api=>message( )->get_select_only_one_entry( ) INTO TABLE reported-%other.
+      failed-reason = VALUE #( FOR fkey IN keys ( %tky = fkey-%tky ) ).
+      RETURN.
+    ENDIF.
+
+    READ ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+      ENTITY reason
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(ref_main)
+      FAILED DATA(read_failed).
+
+    READ ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+      ENTITY reason BY \_reasontext
+      ALL FIELDS WITH CORRESPONDING #( ref_main )
+      RESULT DATA(ref_text).
+
+    LOOP AT ref_main ASSIGNING FIELD-SYMBOL(<ref_main>).
+      DATA(key)     = keys[ KEY draft %tky = <ref_main>-%tky ].
+      DATA(key_cid) = key-%cid.
+
+      APPEND VALUE #(
+        %tky-singletonid = 1
+        %is_draft = <ref_main>-%is_draft
+        %target = VALUE #( ( %cid      = key_cid
+                             %is_draft = <ref_main>-%is_draft
+                             %data     = CORRESPONDING #( <ref_main> EXCEPT reasonid singletonid )
+                             reasonid  = key-%param-reasonid ) ) ) TO new_main.
+
+      UNASSIGN <new_text>.
+      LOOP AT ref_text ASSIGNING FIELD-SYMBOL(<ref_text>) USING KEY draft WHERE %tky-%is_draft = key-%tky-%is_draft
+                                                                            AND %tky-reasonid  = key-%tky-reasonid.
+        IF <new_text> IS NOT ASSIGNED.
+          INSERT VALUE #( %cid_ref  = key_cid
+                          %is_draft = key-%is_draft ) INTO TABLE new_text ASSIGNING <new_text>.
+        ENDIF.
+
+        INSERT VALUE #( %cid      = key_cid && <ref_text>-spras
+                        %is_draft = key-%is_draft
+                        %data     = CORRESPONDING #( <ref_text> EXCEPT reasonid singletonid )
+                        reasonid  = key-%param-reasonid ) INTO TABLE <new_text>-%target.
+      ENDLOOP.
+    ENDLOOP.
+
+*   Pre-check validation before create
+    lcl_custom_validation=>precheck_cba_reason(
+      EXPORTING
+        entities = new_main
+      CHANGING
+        failed   = failed-reason
+        reported = reported-reason ).
+
+    IF failed-reason IS INITIAL.
+      MODIFY ENTITIES OF /esrcc/i_reason_s IN LOCAL MODE
+        ENTITY reasonall CREATE BY \_reason
+        FIELDS (
+                 reasonid
+                 calculationusage
+               ) WITH new_main
+        ENTITY reason CREATE BY \_reasontext
+        FIELDS (
+                 spras
+                 reasonid
+                 description
+               ) WITH new_text
+        MAPPED DATA(mapped_create)
+        FAILED failed
+        REPORTED reported.
+    ENDIF.
+
+    mapped-reason = mapped_create-reason.
+    INSERT LINES OF read_failed-reason INTO TABLE failed-reason.
+
+    IF failed-reason IS INITIAL.
+      reported-reason = VALUE #( FOR created IN mapped-reason (
+                                     %cid            = created-%cid
+                                     %action-copy    = if_abap_behv=>mk-on
+                                     %msg            = mbc_cp_api=>message( )->get_item_copied( )
+                                     %path-reasonall = VALUE #( %is_draft = created-%is_draft singletonid = 1 ) ) ).
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.
 CLASS lhc_/esrcc/i_reasontext DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS:
-*      VALIDATERECORDCHANGES FOR VALIDATE ON SAVE
-*        IMPORTING
-*          KEYS FOR ReasonText~ValidateRecordChanges,
+      validatetransportrequest FOR VALIDATE ON SAVE
+        IMPORTING
+          keys FOR reasontext~validatetransportrequest,
       get_global_features FOR GLOBAL FEATURES
         IMPORTING
-        REQUEST requested_features FOR ReasonText
+        REQUEST requested_features FOR reasontext
         RESULT result.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_reasontext IMPLEMENTATION.
-*  METHOD VALIDATERECORDCHANGES.
-*    DATA change TYPE REQUEST FOR CHANGE /ESRCC/I_Reason_S.
-*    SELECT SINGLE TransportRequestID FROM /ESRCC/D_REASO_S INTO @DATA(TransportRequestID). "#EC CI_NOORDER
-*    lhc_rap_tdat_cts=>get( )->validate_changes(
-*                                transport_request = TransportRequestID
-*                                table             = '/ESRCC/REASONT'
-*                                keys              = REF #( keys )
-*                                reported          = REF #( reported )
-*                                failed            = REF #( failed )
-*                                change            = REF #( change-ReasonText ) ).
-*  ENDMETHOD.
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_reason_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_reaso_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/REASONT'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-reasontext ) ).
+  ENDMETHOD.
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/REASONT'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
   ENDMETHOD.

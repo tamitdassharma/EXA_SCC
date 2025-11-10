@@ -1,7 +1,7 @@
 {
   "formatVersion": "1",
   "header": {
-    "description": "Maintain Standard Charge-out Rules",
+    "description": "Maintain Charge-out Rules",
     "originalLanguage": "en",
     "abapLanguageVersion": "cloudDevelopment"
   },
@@ -10,7 +10,7 @@
     "serviceName": "/ESRCC/UI_CORULE_O4",
     "serviceVersion": "0001",
     "rootEntitySet": "RuleAll",
-    "name": "Standard Charge-out Rules",
+    "name": "Charge-out Rules",
     "configurationGroup": "/ESRCC/BC_GROUP5",
     "skipRootEntity": true
   },
@@ -31,8 +31,8 @@
       {
         "entitySet": "Rule",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "RuleAll"

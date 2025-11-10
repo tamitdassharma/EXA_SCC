@@ -1,0 +1,4 @@
+define service /ESRCC/UI_SWITCH {
+  expose /ESRCC/C_SWITCH_S as SwitchAll;
+  expose /ESRCC/C_SWITCH as Switch;
+}

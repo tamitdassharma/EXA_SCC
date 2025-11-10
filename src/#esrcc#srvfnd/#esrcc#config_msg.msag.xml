@@ -90,13 +90,13 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>014</MSGNR>
-     <TEXT>&apos;&amp;1&apos; is not applicable for Indirect Charge Out</TEXT>
+     <TEXT>&apos;&amp;1&apos; is not applicable for &apos;&amp;2&apos;</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>015</MSGNR>
-     <TEXT>&apos;&amp;1&apos; is mandatory for Direct Charge Out</TEXT>
+     <TEXT>&apos;&amp;1&apos; is mandatory for Direct Charge-Out</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -126,7 +126,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>020</MSGNR>
-     <TEXT>&apos;&amp;1&apos; is mandatory for Indirect Charge Out</TEXT>
+     <TEXT>&apos;&amp;1&apos; is mandatory for Indirect Charge-Out</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -156,7 +156,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>025</MSGNR>
-     <TEXT>Service Product is not assigned to this Stewardship</TEXT>
+     <TEXT>Service Product is not yet assigned with Stewardship</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -180,7 +180,7 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>029</MSGNR>
-     <TEXT>Entry doesn&apos;t exists in &apos;Cost Object Maste Data &amp;&amp; Frequency&apos;</TEXT>
+     <TEXT>Entry doesn&apos;t exists in &apos;Cost Object Master Data &amp;&amp; Frequency&apos;</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -193,6 +193,24 @@
      <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
      <MSGNR>031</MSGNR>
      <TEXT>At least one &apos;Service Product Receiver&apos; should be active</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>032</MSGNR>
+     <TEXT>Either &apos;&amp;1&apos; or &apos;&amp;2&apos; is mandatory but not both</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>033</MSGNR>
+     <TEXT>Synchronization triggered for finalized entries</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/CONFIG_MSG</ARBGB>
+     <MSGNR>034</MSGNR>
+     <TEXT>Job scheduled to create the &amp;1 entries</TEXT>
     </T100>
    </T100>
   </asx:values>

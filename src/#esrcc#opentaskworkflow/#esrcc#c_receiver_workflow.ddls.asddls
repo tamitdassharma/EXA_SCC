@@ -36,8 +36,6 @@ as projection on /ESRCC/I_RECCOST_WORKFLOW
     @ObjectModel.filter.enabled: false
     @ObjectModel.text.element: [ 'receivingentitydescription' ]
     Receivingentity,
-//    @ObjectModel.filter.enabled: false
-//    @ObjectModel.text.element: [ 'costdatasetdescription' ]
     ReceiverSysId,
     @ObjectModel.filter.enabled: false
     @ObjectModel.text.element: [ 'Reccodedescription' ]
@@ -48,21 +46,9 @@ as projection on /ESRCC/I_RECCOST_WORKFLOW
     @ObjectModel.filter.enabled: false
     @ObjectModel.text.element: [ 'Reccostcenterdescription' ]
     ReceiverCostCenter,
-//    @ObjectModel.filter.enabled: false
-//    @ObjectModel.text.element: [ 'billingfrequencydescription' ]
-//    Billingfrequqncy,
-//    @ObjectModel.filter.enabled: false
-//    @ObjectModel.text.element: [ 'billingperioddescription' ]
-//    Billingperiod,
     Reckpi,
     @ObjectModel.filter.enabled: false
     Currency,
-//    @DefaultAggregation: #SUM
-//    @Semantics.amount.currencyCode: 'Currency'
-//    onvalueaddedmarkupabs,
-//    @DefaultAggregation: #SUM
-//    @Semantics.amount.currencyCode: 'Currency'
-//    onvpassthrudmarkupabs,
     @DefaultAggregation: #SUM
     @Semantics.amount.currencyCode: 'Currency'
     TotalRecMarkup, 
@@ -106,10 +92,6 @@ as projection on /ESRCC/I_RECCOST_WORKFLOW
     Reccostcenterdescription,
     @Semantics.text: true
     Reccostobjectdescription,
-//    @Semantics.text: true
-//    billingfrequencydescription,
-//    @Semantics.text: true
-//    billingperioddescription,
     @ObjectModel.text.element: [ 'reccountryname' ]
     receivingentitycountry,
     @ObjectModel.text.element: [ 'legalcountryname' ]

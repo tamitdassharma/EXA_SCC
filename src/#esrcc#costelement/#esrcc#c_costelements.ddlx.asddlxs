@@ -51,6 +51,7 @@ annotate view /ESRCC/C_CostElements with
   } ]
 
   @UI.hidden: true
+  @UI.lineItem: [ { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   CostElementUuid;
 
   @UI.identification: [ { position: 1 } ]
@@ -86,20 +87,24 @@ annotate view /ESRCC/C_CostElements with
 
   @UI.lineItem: [ { position: 5 } ]
   Description;
-
+  
+  @UI.identification: [ { position: 6 } ]
   @UI.lineItem: [ { position: 6 } ]
+  Active;
+
+  @UI.lineItem: [ { position: 7 } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
   CreatedBy;
 
-  @UI.lineItem: [ { position: 7, cssDefault.width: '9.5rem' } ]
+  @UI.lineItem: [ { position: 8, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
   CreatedAt;
 
-  @UI.lineItem: [ { position: 8 } ]
+  @UI.lineItem: [ { position: 9 } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
   LastChangedBy;
 
-  @UI.lineItem: [ { position: 9, cssDefault.width: '9.5rem' } ]
+  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
   LastChangedAt;
 

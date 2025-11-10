@@ -7,45 +7,12 @@ CLASS /esrcc/cl_c_executioncockpit DEFINITION
     INTERFACES if_rap_query_provider.
   PROTECTED SECTION.
   PRIVATE SECTION.
-    METHODS determine_costbase_status.
-    METHODS determine_stewardship_status.
-    METHODS determine_chargeout_status.
-    METHODS costbase_authority_check
-      IMPORTING
-        action TYPE /esrcc/actions
-      CHANGING
-        result TYPE /esrcc/c_execution_cockpit.
-    METHODS serviceproduct_authority_check
-      IMPORTING
-        action TYPE /esrcc/actions
-      CHANGING
-        result TYPE /esrcc/c_execution_cockpit.
-    METHODS chargeout_authority_check
-      IMPORTING
-        action TYPE /esrcc/actions
-      CHANGING
-        result TYPE /esrcc/c_execution_cockpit.
+
 ENDCLASS.
 
 
 
-CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
-
-
-  METHOD determine_chargeout_status.
-
-  ENDMETHOD.
-
-
-  METHOD determine_costbase_status.
-
-
-  ENDMETHOD.
-
-
-  METHOD determine_stewardship_status.
-
-  ENDMETHOD.
+CLASS /esrcc/cl_c_executioncockpit IMPLEMENTATION.
 
 
   METHOD if_rap_query_provider~select.
@@ -155,7 +122,11 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
         DATA _action          TYPE /esrcc/actions.
         DATA _oecd            TYPE RANGE OF /esrcc/oecdtpg_de.
         DATA fplv             TYPE /esrcc/costdataset_de.
+        DATA _chainid         TYPE RANGE OF /esrcc/chain_id.
+        DATA _tpprofile       TYPE RANGE OF /esrcc/tpprofile.
         DATA hierarchylevel   TYPE /esrcc/hierarchylevel.
+        DATA trueuperformed   TYPE abap_boolean.
+        DATA incompletetrueup TYPE abap_boolean.
 
 *   filters
         LOOP AT lt_filter ASSIGNING FIELD-SYMBOL(<ls_filter>).
@@ -164,8 +135,8 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
 
             WHEN 'SYSID'.
               _sysid = CORRESPONDING #( <ls_filter>-range ).
-            WHEN 'FPLV'.
-              _fplv = CORRESPONDING #( <ls_filter>-range ).
+*            WHEN 'FPLV'.
+*              _fplv = CORRESPONDING #( <ls_filter>-range ).
             WHEN 'RYEAR'.
               _ryear = CORRESPONDING #( <ls_filter>-range ).
             WHEN 'POPER'.
@@ -188,34 +159,24 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
               _action = <ls_filter>-range[ 1 ]-low.
             WHEN 'OECD'.
               _oecd = CORRESPONDING #( <ls_filter>-range ).
+            WHEN 'CHAIN_ID'.
+              _chainid = CORRESPONDING #( <ls_filter>-range ).
+            WHEN 'TPPROFILE'.
+              _tpprofile = CORRESPONDING #( <ls_filter>-range ).
             WHEN OTHERS.
           ENDCASE.
 
         ENDLOOP.
 
-*Derive poper from billing frequency customizing
-        SELECT 'I'  AS sign,
-              'EQ'  AS option,
-              poper AS low
-              FROM /esrcc/billfreq
-              WHERE billingfreq = @_billingfreq
-                AND billingvalue = @_billingperiod
-              ORDER BY low ASCENDING
-              INTO CORRESPONDING FIELDS OF TABLE @_poper.
-
 * get master data
         DATA(lv_year) = _ryear[ 1 ]-low.
+        DATA(lv_poper) = _poper[ 1 ]-low.
 
-        READ TABLE _poper ASSIGNING FIELD-SYMBOL(<ls_poper>) INDEX 1.
-        IF sy-subrc = 0.
-          CONCATENATE lv_year <ls_poper>-low+1(2) '01' INTO _validon.
-        ENDIF.
+        CONCATENATE lv_year lv_poper+1(2) '01' INTO _validon.
 
 *********************************************************************************************************
 *        Create Data Tree
 *********************************************************************************************************
-
-        fplv = _fplv[ 1 ]-low.
         hierarchylevel = 0.
 
 *        Read legal entity & Company Code from stewardship customizing as root node
@@ -231,32 +192,32 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
                le~country AS legalcountry,
                @hierarchylevel AS hierarchylevel,
                @lv_year AS ryear,
-               @_billingfreq AS billingfreq,
-               @_billingperiod AS billingperiod,
+               @lv_poper AS poper,
                concat( srv~legalentity, companycode ) AS nodeid,
-               '08' AS Costbase_status,
-               '05' AS Stewardship_status,
-               '05' AS chargeout_status,
+               @/esrcc/if_calculate_chargeout=>stdchargeout_finalized AS StdChargeout_Status,
+               @/esrcc/if_calculate_chargeout=>recalculation_finalized AS Recalculation_Status,
+               @/esrcc/if_calculate_chargeout=>chargeout_finalized AS chargeout_status,
                @abap_false AS selectionallowed
         FROM  /esrcc/i_stw_serviceproduct AS srv
-            INNER JOIN /esrcc/le AS le
-            ON le~legalentity = srv~legalentity
-            INNER JOIN /esrcc/le_ccode AS leccode
-            ON leccode~active = @abap_true
-            AND leccode~legalentity = srv~legalentity
-            AND leccode~ccode = srv~CompanyCode
-            INNER JOIN /esrcc/srvpro AS srvpro
-            ON srvpro~Serviceproduct = srv~Serviceproduct
+               INNER JOIN /esrcc/le AS le
+               ON le~legalentity = srv~legalentity
+               INNER JOIN /esrcc/le_ccode AS leccode
+               ON leccode~active = @abap_true
+               AND leccode~legalentity = srv~legalentity
+               AND leccode~ccode = srv~CompanyCode
+               INNER JOIN /esrcc/srvpro AS srvpro
+               ON srvpro~Serviceproduct = srv~Serviceproduct
        WHERE srv~legalentity IN @_legalentity
          AND srv~sysid IN @_sysid
          AND srv~CompanyCode IN @_ccode
          AND srv~costobject IN @_costobject
          AND srv~costcenter IN @_costcenter
          AND srv~serviceproduct IN @_serviceproduct
-         AND srv~BillingFrequency = @_billingfreq
          AND srv~validfrom <= @_validon
          AND srv~validto >= @_validon
          AND srvpro~OecdTpg IN @_oecd
+         AND srv~chain_id IN @_chainid
+         AND le~tpprofile IN @_tpprofile
          APPENDING CORRESPONDING FIELDS OF TABLE @lt_result.
 
 
@@ -278,15 +239,25 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
                le~country AS legalcountry,
                @hierarchylevel AS hierarchylevel,
                @lv_year AS ryear,
-               @_billingfreq AS billingfreq,
-               @_billingperiod AS billingperiod,
+               @lv_poper AS poper,
                concat( srv~legalentity, companycode ) AS parentnodeid,
                concat( concat( concat( srv~legalentity, companycode ), srv~costobject ), srv~costcenter ) AS nodeid,
-               procctrl~status AS Costbase_status,
-               procctrl~log_header_uuid AS costbaselogid,
-               '05' AS Stewardship_status,
-               '05' AS chargeout_status,
-               @abap_false AS selectionallowed
+               procctrl~status AS StdChargeout_Status,
+               CASE WHEN procctrltru~log_header_uuid IS NOT INITIAL THEN
+               procctrltru~log_header_uuid
+               ELSE
+               procctrl~log_header_uuid
+               END AS logid,
+               CASE WHEN procctrltru~log_header_uuid IS NOT INITIAL THEN
+               @/esrcc/if_calculate_chargeout=>trueuprecal
+               ELSE
+               @/esrcc/if_calculate_chargeout=>stdchargeout
+               END AS logapp,
+               procctrltru~status AS Recalculation_Status,
+*               procctrlchr~status AS chargeout_status,
+               @abap_false AS selectionallowed,
+               procctrl~fplv AS stdchargeoutfplv,
+               procctrltru~fplv AS Recalculationfplv
         FROM  /esrcc/i_stw_serviceproduct AS srv
             INNER JOIN /esrcc/le AS le
             ON le~legalentity = srv~legalentity
@@ -302,14 +273,35 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
             LEFT OUTER JOIN /esrcc/procctrl AS procctrl
             ON  procctrl~sysid       = srv~sysid
             AND procctrl~ryear       = @lv_year
-            AND procctrl~fplv        = @fplv
+*            AND procctrl~fplv        = @fplv
             AND procctrl~legalentity = srv~legalentity
             AND procctrl~ccode       = srv~CompanyCode
             AND procctrl~costobject  = srv~costobject
             AND procctrl~costcenter  = srv~costcenter
-            AND procctrl~billingfreq = @_billingfreq
-            AND procctrl~billingperiod = @_billingperiod
-            AND procctrl~process    = 'CBS'
+            AND procctrl~poper       = @lv_poper
+            AND procctrl~process    = @/esrcc/if_calculate_chargeout=>stdchargeout
+
+            LEFT OUTER JOIN /esrcc/procctrl AS procctrltru
+            ON  procctrltru~sysid       = srv~sysid
+            AND procctrltru~ryear       = @lv_year
+*            AND procctrlscm~fplv        = @fplv
+            AND procctrltru~legalentity = srv~legalentity
+            AND procctrltru~ccode       = srv~CompanyCode
+            AND procctrltru~costobject  = srv~costobject
+            AND procctrltru~costcenter  = srv~costcenter
+            AND procctrltru~poper       = @lv_poper
+            AND procctrltru~process    = @/esrcc/if_calculate_chargeout=>trueuprecal
+
+*            LEFT OUTER JOIN /esrcc/procctrl AS procctrlchr
+*            ON  procctrlchr~sysid       = srv~sysid
+*            AND procctrlchr~ryear       = @lv_year
+**            AND procctrlscm~fplv        = @fplv
+*            AND procctrlchr~legalentity = srv~legalentity
+*            AND procctrlchr~ccode       = srv~CompanyCode
+*            AND procctrlchr~costobject  = srv~costobject
+*            AND procctrlchr~costcenter  = srv~costcenter
+*            AND procctrlchr~poper       = @lv_poper
+*            AND procctrlchr~process    = @/esrcc/if_calculate_chargeout=>chargeout
 
        WHERE srv~legalentity IN @_legalentity
          AND srv~sysid IN @_sysid
@@ -317,10 +309,11 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
          AND srv~costobject IN @_costobject
          AND srv~costcenter IN @_costcenter
          AND srv~serviceproduct IN @_serviceproduct
-         AND srv~BillingFrequency = @_billingfreq
-         AND srv~validfrom <= @_validon
-         AND srv~validto >= @_validon
+         AND srv~validfrom  <= @_validon
+         AND srv~validto    >= @_validon
          AND srvpro~OecdTpg IN @_oecd
+         AND srv~chain_id   IN @_chainid
+         AND le~tpprofile   IN @_tpprofile
          APPENDING CORRESPONDING FIELDS OF TABLE @lt_result.
 
         hierarchylevel = 2.
@@ -343,14 +336,9 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
                le~country AS legalcountry,
                @hierarchylevel AS hierarchylevel,
                @lv_year AS ryear,
-               @_billingfreq AS billingfreq,
-               @_billingperiod AS billingperiod,
+               @lv_poper AS poper,
                concat( concat( concat( srv~legalentity, companycode ), srv~costobject ), srv~costcenter ) AS parentnodeid,
                concat( concat( concat( concat( srv~legalentity, companycode ), srv~costobject ), srv~costcenter ), srv~serviceproduct ) AS nodeid,
-               procctrlscm~status AS Stewardship_status,
-               procctrlscm~log_header_uuid AS serviceproductlogid,
-               procctrlchr~status AS chargeout_status,
-               procctrlchr~log_header_uuid AS chargeoutlogid,
                @abap_false AS selectionallowed
         FROM  /esrcc/i_stw_serviceproduct AS srv
             INNER JOIN /esrcc/le AS le
@@ -361,30 +349,6 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
             AND leccode~ccode = srv~CompanyCode
             INNER JOIN /esrcc/srvpro AS srvpro
             ON srvpro~Serviceproduct = srv~Serviceproduct
-            LEFT OUTER JOIN /esrcc/procctrl AS procctrlscm
-            ON  procctrlscm~sysid       = srv~sysid
-            AND procctrlscm~ryear       = @lv_year
-            AND procctrlscm~fplv        = @fplv
-            AND procctrlscm~legalentity = srv~legalentity
-            AND procctrlscm~ccode       = srv~CompanyCode
-            AND procctrlscm~costobject  = srv~costobject
-            AND procctrlscm~costcenter  = srv~costcenter
-            AND procctrlscm~serviceproduct = srv~ServiceProduct
-            AND procctrlscm~billingfreq = @_billingfreq
-            AND procctrlscm~billingperiod = @_billingperiod
-            AND procctrlscm~process    = 'SCM'
-            LEFT OUTER JOIN /esrcc/procctrl AS procctrlchr
-            ON  procctrlchr~sysid       = srv~sysid
-            AND procctrlchr~ryear       = @lv_year
-            AND procctrlchr~fplv        = @fplv
-            AND procctrlchr~legalentity = srv~legalentity
-            AND procctrlchr~ccode       = srv~CompanyCode
-            AND procctrlchr~costobject  = srv~costobject
-            AND procctrlchr~costcenter  = srv~costcenter
-            AND procctrlchr~serviceproduct = srv~ServiceProduct
-            AND procctrlchr~billingfreq = @_billingfreq
-            AND procctrlchr~billingperiod = @_billingperiod
-            AND procctrlchr~process    = 'CHR'
 
             LEFT OUTER JOIN /esrcc/srvprot AS srvprodt
              ON srv~serviceproduct = srvprodt~serviceproduct
@@ -395,10 +359,11 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
          AND srv~costobject IN @_costobject
          AND srv~costcenter IN @_costcenter
          AND srv~serviceproduct IN @_serviceproduct
-         AND srv~BillingFrequency = @_billingfreq
          AND srv~validfrom <= @_validon
          AND srv~validto >= @_validon
          AND srvpro~OecdTpg IN @_oecd
+         AND srv~chain_id IN @_chainid
+         AND le~tpprofile        IN @_tpprofile
          APPENDING CORRESPONDING FIELDS OF TABLE @lt_result.
 
 *   get the count of total objects per legal entity for status display
@@ -410,7 +375,7 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
             FROM  @lt_result AS result
        WHERE ServiceProduct IS INITIAL
         AND  Costcenter IS NOT INITIAL
-        AND Costobject IS NOT INITIAL
+        AND  Costobject IS NOT INITIAL
          GROUP BY legalentity,
                   sysid,
                   ccode
@@ -426,10 +391,10 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
                ccode,
                CAST( COUNT( costcenter ) AS CHAR ) AS finalcostcenter
             FROM  @lt_result AS result
-       WHERE Costbase_status = @/esrcc/cl_calculate_chargeout=>costbase_finalized
+       WHERE StdChargeout_Status = @/esrcc/if_calculate_chargeout=>stdchargeout_finalized
         AND  ServiceProduct IS INITIAL
         AND  Costcenter IS NOT INITIAL
-        AND Costobject IS NOT INITIAL
+        AND  Costobject IS NOT INITIAL
          GROUP BY legalentity,
                   sysid,
                   ccode
@@ -438,129 +403,104 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
                   legalentity
          INTO TABLE @DATA(lt_finalcostcenters).
 
-*   get the count of total service products per legal enity and costcenter for status display
+
+*get the number of costobjects finalized per legal entity for trueups
         SELECT DISTINCT
                legalentity,
                sysid,
                ccode,
-               costobject,
-               costcenter,
-               CAST( COUNT( serviceproduct ) AS CHAR ) AS totalserviceproducts
-       FROM  @lt_result AS result
-       WHERE ServiceProduct IS NOT INITIAL
+               CAST( COUNT( costcenter ) AS CHAR ) AS finalcostcenter
+            FROM  @lt_result AS result
+       WHERE Recalculation_Status = @/esrcc/if_calculate_chargeout=>recalculation_finalized
+        AND  ServiceProduct IS INITIAL
+        AND  Costcenter IS NOT INITIAL
+        AND  Costobject IS NOT INITIAL
          GROUP BY legalentity,
                   sysid,
-                  ccode,
-                  costobject,
-                  costcenter
+                  ccode
          ORDER BY sysid,
                   ccode,
-                  legalentity,
-                  costobject,
-                  costcenter
-         INTO TABLE @DATA(lt_totalserviceproducts).
+                  legalentity
+         INTO TABLE @DATA(lt_finalcostcentersscm).
 
-*get the number of serviceproduct finalized per legal entity per costobject
-        SELECT DISTINCT
-               legalentity,
-               sysid,
-               ccode,
-               costobject,
-               costcenter,
-               CAST( COUNT( serviceproduct ) AS CHAR ) AS finalserviceproduct
-            FROM  @lt_result AS result
-       WHERE Stewardship_status = @/esrcc/cl_calculate_chargeout=>serviceshare_finalized
-        AND  ServiceProduct IS NOT INITIAL
-        AND  Costcenter IS NOT INITIAL
-        AND Costobject IS NOT INITIAL
-         GROUP BY legalentity,
-                  sysid,
-                  ccode,
-                  costobject,
-                  costcenter
-         ORDER BY sysid,
-                  ccode,
-                  legalentity,
-                  costobject,
-                  costcenter
-         INTO TABLE @DATA(lt_finalserviceproductscm).
-
-*get the number of serviceproduct finalized per legal entity per costobject
-        SELECT DISTINCT
-               legalentity,
-               sysid,
-               ccode,
-               costobject,
-               costcenter,
-               CAST( COUNT( serviceproduct ) AS CHAR ) AS finalserviceproduct
-            FROM  @lt_result AS result
-       WHERE chargeout_status = @/esrcc/cl_calculate_chargeout=>chargeout_finalized
-        AND  ServiceProduct IS NOT INITIAL
-        AND  Costcenter IS NOT INITIAL
-        AND Costobject IS NOT INITIAL
-         GROUP BY legalentity,
-                  sysid,
-                  ccode,
-                  costobject,
-                  costcenter
-          ORDER BY sysid,
-                  ccode,
-                  legalentity,
-                  costobject,
-                  costcenter
-         INTO TABLE @DATA(lt_finalserviceproductchr).
+**get the number of costobjects finalized per legal entity for writebacks
+*        SELECT DISTINCT
+*               legalentity,
+*               sysid,
+*               ccode,
+*               CAST( COUNT( costcenter ) AS CHAR ) AS finalcostcenter
+*            FROM  @lt_result AS result
+*       WHERE Chargeout_status = @/esrcc/if_calculate_chargeout=>chargeout_finalized
+*        AND  ServiceProduct IS INITIAL
+*        AND  Costcenter IS NOT INITIAL
+*        AND  Costobject IS NOT INITIAL
+*         GROUP BY legalentity,
+*                  sysid,
+*                  ccode
+*         ORDER BY sysid,
+*                  ccode,
+*                  legalentity
+*         INTO TABLE @DATA(lt_finalcostcenterschr).
 
 *********************************************************************************************************
 *        End Data Tree
 *********************************************************************************************************
-        SELECT DISTINCT
-               result~sysid,
-               result~legalentity,
-               result~ccode,
-               result~costobject,
-               result~costcenter,
-               result~serviceproduct
-            FROM @lt_result AS result
-            WHERE ServiceProduct IS NOT INITIAL
-            ORDER BY sysid,
-                     legalentity,
-                     ccode,
-                     costobject,
-                     costcenter,
-                     serviceproduct
-            INTO CORRESPONDING FIELDS OF TABLE @lt_service_share.
 
 * Determine Status-----------------------------------------------------------
         SELECT DISTINCT
                 proc~sysid,
                 ryear,
+                poper,
                 fplv,
                 proc~legalentity,
                 proc~ccode,
                 proc~costobject,
                 proc~costcenter,
-                proc~serviceproduct,
-                billingfreq,
-                billingperiod,
                 process,
                 status,
-                log_header_uuid
+                log_header_uuid,
+                errorflag
                 FROM /esrcc/procctrl AS proc
-                INNER JOIN @lt_service_share AS srvshare
-                  ON proc~legalentity = srvshare~legalentity
-                  AND proc~sysid = srvshare~sysid
-                  AND proc~ccode = srvshare~ccode
-                  AND proc~costobject = srvshare~costobject
-                  AND proc~costcenter = srvshare~costcenter
-                 WHERE fplv IN @_fplv
-                  AND ryear IN @_ryear
-                  AND billingfreq = @_billingfreq
-                  AND billingperiod = @_billingperiod
-                  ORDER BY proc~sysid, ryear, fplv, proc~legalentity,
+                 WHERE
+                  ryear IN @_ryear
+                  AND poper IN @_poper
+                  AND legalentity IN @_legalentity
+                  AND ccode IN @_ccode
+                  AND costobject IN @_costobject
+                  AND costcenter IN @_costcenter
+                  AND process = @/esrcc/if_calculate_chargeout=>stdchargeout
+                  ORDER BY proc~sysid, ryear, poper, proc~legalentity,
                            proc~ccode, proc~costobject, proc~costcenter,
-                           billingfreq, billingperiod,
-                           process, proc~serviceproduct
+                           process
                  INTO TABLE @DATA(lt_procctrl).
+
+        SELECT DISTINCT
+               proc~sysid,
+               ryear,
+               poper,
+               fplv,
+               proc~legalentity,
+               proc~ccode,
+               proc~costobject,
+               proc~costcenter,
+               process,
+               status,
+               log_header_uuid,
+               errorflag
+               FROM /esrcc/procctrl AS proc
+                WHERE
+                 ryear IN @_ryear
+                 AND legalentity IN @_legalentity
+                 AND ccode IN @_ccode
+                 AND costobject IN @_costobject
+                 AND costcenter IN @_costcenter
+                 AND process = @/esrcc/if_calculate_chargeout=>trueuprecal
+                 ORDER BY proc~sysid, ryear, poper, proc~legalentity,
+                          proc~ccode, proc~costobject, proc~costcenter,
+                          process
+                APPENDING TABLE @lt_procctrl.
+
+        SORT lt_procctrl BY sysid ryear poper legalentity ccode costobject costcenter process.
 
 
 *Read line items for cost base status
@@ -575,16 +515,13 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
               SUM( hsl ) AS totalcost ,
               localcurr
               FROM /esrcc/cb_li AS cbli
-              INNER JOIN @lt_service_share AS srvshare
-                  ON cbli~legalentity = srvshare~legalentity
-                  AND cbli~sysid = srvshare~sysid
-                  AND cbli~ccode = srvshare~ccode
-                  AND cbli~costobject = srvshare~costobject
-                  AND cbli~costcenter = srvshare~costcenter
               WHERE ryear IN @_ryear
                 AND fplv  IN @_fplv
                 AND poper IN @_poper
-                AND ( status = 'D' OR status = 'A' OR status = 'W' )
+                AND ( status = @/esrcc/if_calculate_chargeout=>draft OR
+                      status = @/esrcc/if_calculate_chargeout=>approved OR
+                      status = @/esrcc/if_calculate_chargeout=>approval_pending
+                       )
               GROUP BY
               fplv,
               ryear,
@@ -597,7 +534,6 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
               localcurr
               ORDER BY cbli~sysid,
                        cbli~ryear,
-                       cbli~fplv,
                        cbli~legalentity,
                        cbli~ccode,
                        cbli~costobject,
@@ -623,160 +559,183 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
 *Mapping Status to outupt
 
         LOOP AT lt_result ASSIGNING FIELD-SYMBOL(<ls_result>) WHERE Costobject IS NOT INITIAL
-                                                                AND Costcenter IS NOT INITIAL.
+                                                                AND Costcenter IS NOT INITIAL
+                                                                AND ServiceProduct IS INITIAL.
 
 
 *  Costbase status----------------------------------------------------
           IF <ls_result>-Costcenter IS NOT INITIAL AND <ls_result>-serviceproduct IS INITIAL.
-            IF <ls_result>-Costbase_status IS INITIAL.
-              <ls_result>-costbase_status = '01'.   "Line Items not Available
+            IF <ls_result>-StdChargeout_Status IS INITIAL.
+              <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>lineitemsnot_available.   "Line Items not Available
 
               READ TABLE lt_li ASSIGNING FIELD-SYMBOL(<ls_li>) WITH KEY sysid       = <ls_result>-sysid
                                                                         ryear       = <ls_result>-ryear
-                                                                        fplv        = <ls_result>-fplv
                                                                         legalentity = <ls_result>-legalentity
                                                                          ccode      = <ls_result>-ccode
                                                                          costobject = <ls_result>-costobject
                                                                          costcenter = <ls_result>-costcenter
-                                                                         status     = 'D' BINARY SEARCH.
+                                                                         status     = /esrcc/if_calculate_chargeout=>draft
+                                                                         BINARY SEARCH.
               IF sy-subrc = 0.
-                <ls_result>-costbase_status = '02'.   "Line Items In Draft
+                <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>lineitems_drafft.   "Line Items In Draft
               ELSE.
                 READ TABLE lt_li ASSIGNING <ls_li> WITH KEY  sysid       = <ls_result>-sysid
                                                              ryear       = <ls_result>-ryear
-                                                             fplv        = <ls_result>-fplv
                                                              legalentity = <ls_result>-legalentity
                                                              ccode       = <ls_result>-ccode
                                                              costobject  = <ls_result>-costobject
                                                              costcenter  = <ls_result>-costcenter
-                                                              status     = 'W' BINARY SEARCH.
+                                                             status     = /esrcc/if_calculate_chargeout=>approval_pending
+                                                             BINARY SEARCH.
                 IF sy-subrc = 0.
-                  <ls_result>-costbase_status = '03'.   "Line Items In Approval Pending
+                  <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>lineitems_inapproval.   "Line Items In Approval Pending
                 ELSE.
                   READ TABLE lt_li TRANSPORTING NO FIELDS WITH KEY sysid       = <ls_result>-sysid
-                                                                  ryear       = <ls_result>-ryear
-                                                                  fplv        = <ls_result>-fplv
-                                                                  legalentity = <ls_result>-legalentity
-                                                                  ccode      = <ls_result>-ccode
-                                                                  costobject = <ls_result>-costobject
-                                                                  costcenter = <ls_result>-costcenter
+                                                                   ryear       = <ls_result>-ryear
+*                                                                   fplv        = <ls_result>-fplv
+                                                                   legalentity = <ls_result>-legalentity
+                                                                   ccode       = <ls_result>-ccode
+                                                                   costobject  = <ls_result>-costobject
+                                                                   costcenter  = <ls_result>-costcenter
                                                                   BINARY SEARCH.
 
                   IF sy-subrc = 0.
-                    <ls_result>-costbase_status = '04'.   "Calculate Stewardship
+                    <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_allowed.   "Calculate Stewardship
                   ENDIF.
                 ENDIF.
 
               ENDIF.
             ENDIF.
 
-            IF <ls_result>-costbase_status = '11'.   "Costbase calculation failed.
-              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messagecostbase.
-              <ls_result>-messagetypecostbase = 'I'.
-            ENDIF.
+            IF <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_failed.   "Costbase calculation failed.
+              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messagestdchargeout.
+              <ls_result>-messagetypestdchargeout = 'I'.
 
-            costbase_authority_check(
-              EXPORTING
-                action = _action
-              CHANGING
-                result = <ls_result>
-            ).
-* Derive the aggregate status for service product costing
-            READ TABLE lt_totalserviceproducts ASSIGNING FIELD-SYMBOL(<totalserviceproducts>)
-                                               WITH KEY  sysid       = <ls_result>-sysid
-                                                         ccode       = <ls_result>-ccode
-                                                         legalentity = <ls_result>-legalentity
-                                                         costobject  = <ls_result>-costobject
-                                                         costcenter  = <ls_result>-costcenter BINARY SEARCH.
-            IF sy-subrc = 0.
-              READ TABLE lt_finalserviceproductscm ASSIGNING FIELD-SYMBOL(<finalserviceproducts>)
-                                                 WITH KEY  sysid       = <ls_result>-sysid
-                                                           ccode       = <ls_result>-ccode
-                                                           legalentity = <ls_result>-legalentity
-                                                           costobject  = <ls_result>-costobject
-                                                           costcenter  = <ls_result>-costcenter BINARY SEARCH.
-              IF sy-subrc = 0.
-                DATA(finalized) = <finalserviceproducts>-finalserviceproduct.
-              ELSE.
-                finalized = 0.
-              ENDIF.
-              CONCATENATE ' (' finalized '/' <totalserviceproducts>-totalserviceproducts ' )'
-              INTO <ls_result>-stewardshipstatusdescr.
-*
-*            map status color
-              IF finalized = 0.
-                <ls_result>-stewardshipcriticality = 0.
-              ELSEIF finalized <> <totalserviceproducts>-totalserviceproducts.
-                <ls_result>-stewardshipcriticality = 2.
-              ELSEIF finalized = <totalserviceproducts>-totalserviceproducts.
-                <ls_result>-stewardshipcriticality = 3.
-              ENDIF.
-
-* Derive the aggregate status for chargeout to receiver
-              READ TABLE lt_finalserviceproductchr ASSIGNING <finalserviceproducts>
-                                                 WITH KEY  sysid       = <ls_result>-sysid
-                                                           ccode       = <ls_result>-ccode
-                                                           legalentity = <ls_result>-legalentity
-                                                           costobject  = <ls_result>-costobject
-                                                           costcenter  = <ls_result>-costcenter BINARY SEARCH.
-              IF sy-subrc = 0.
-                finalized = <finalserviceproducts>-finalserviceproduct.
-              ELSE.
-                finalized = 0.
-              ENDIF.
-              CONCATENATE ' (' finalized '/' <totalserviceproducts>-totalserviceproducts ' )'
-              INTO <ls_result>-chargeoutstatusdescr.
-*
-*            map status color
-              IF finalized = 0.
-                <ls_result>-chargeoutcriticality = 0.
-              ELSEIF finalized <> <totalserviceproducts>-totalserviceproducts.
-                <ls_result>-chargeoutcriticality = 2.
-              ELSEIF finalized = <totalserviceproducts>-totalserviceproducts.
-                <ls_result>-chargeoutcriticality = 3.
-              ENDIF.
             ENDIF.
 
 *Derive the selection allowed flag
-            IF <ls_result>-messagetypecostbase <> 'E'.
+
+*Check if already True-ups is performed for future period
+            CLEAR: trueuperformed.
+            LOOP AT lt_procctrl ASSIGNING FIELD-SYMBOL(<ls_procctrl>)
+                                   WHERE     sysid         = <ls_result>-sysid
+                                     AND     ryear         = <ls_result>-ryear
+                                     AND     poper         > <ls_result>-poper
+                                     AND     legalentity   = <ls_result>-legalentity
+                                     AND     ccode         = <ls_result>-ccode
+                                     AND     costobject    = <ls_result>-costobject
+                                     AND     costcenter    = <ls_result>-costcenter
+                                     AND     process       = /esrcc/if_calculate_chargeout=>trueuprecal
+                                     AND     ( status      = /esrcc/if_calculate_chargeout=>recalculation_finalized
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_fin_inproces
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_approved
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_inprocess
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_reopen_inprocess
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_rejected
+                                      OR       status      = /esrcc/if_calculate_chargeout=>recalculation_pending ).
+
+*              IF sy-subrc = 0.
+              trueuperformed = abap_true.
+              MESSAGE e032(/esrcc/execcockpit) WITH <ls_procctrl>-poper INTO <ls_result>-messagestdchargeout.
+              <ls_result>-messagetypestdchargeout = 'I'.
+              DATA(trueupeperiod) = <ls_procctrl>-poper.
+              EXIT.
+*              ENDIF.
+            ENDLOOP.
+
+*Check if already True-ups is performed in past but not finalized
+            CLEAR: incompletetrueup.
+            LOOP AT lt_procctrl ASSIGNING <ls_procctrl>
+                                   WHERE     sysid         = <ls_result>-sysid
+                                     AND     ryear         = <ls_result>-ryear
+                                     AND     poper         < <ls_result>-poper
+                                     AND     legalentity   = <ls_result>-legalentity
+                                     AND     ccode         = <ls_result>-ccode
+                                     AND     costobject    = <ls_result>-costobject
+                                     AND     costcenter    = <ls_result>-costcenter
+                                     AND     process       = /esrcc/if_calculate_chargeout=>trueuprecal
+                                     AND     status        <> /esrcc/if_calculate_chargeout=>recalculation_finalized.
+
+*              IF sy-subrc = 0.
+              incompletetrueup = abap_true.
+              MESSAGE e034(/esrcc/execcockpit) INTO <ls_result>-messagerecalculation.
+              <ls_result>-messagetyperecalculation = 'I'.
+              EXIT.
+*              ENDIF.
+            ENDLOOP.
+
+*  Check if error flag is raised for any node in the sequential chains
+            READ TABLE lt_procctrl ASSIGNING <ls_procctrl> WITH KEY
+                                                   sysid         = <ls_result>-sysid
+                                                   ryear         = <ls_result>-ryear
+                                                   poper         = <ls_result>-poper
+                                                   legalentity   = <ls_result>-legalentity
+                                                   ccode         = <ls_result>-ccode
+                                                   costobject    = <ls_result>-costobject
+                                                   costcenter    = <ls_result>-costcenter
+                                                   process       = /esrcc/if_calculate_chargeout=>stdchargeout
+                                                   BINARY SEARCH.
+            IF sy-subrc = 0.
+              DATA(errorseq) = <ls_procctrl>-errorflag.
+            ELSE.
+              CLEAR errorseq.
+            ENDIF.
+*
+
+            IF <ls_result>-messagetypestdchargeout <> 'E'.
               CASE _action.
-                WHEN /esrcc/cl_calculate_chargeout=>action_calculate_costbase.
-                  IF ( <ls_result>-costbase_status = '04' OR
-                       <ls_result>-costbase_status = '07' OR
-                       <ls_result>-costbase_status = '10' OR
-                       <ls_result>-costbase_status = '11' )
-                       AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>calculate_stdchargeout.
+                  IF ( <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_allowed OR
+                       <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_approved OR
+                       <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_rejected OR
+                       <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_failed )
+                       AND <ls_result>-chain_id IS INITIAL
+                       AND trueuperformed = abap_false.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
 
-                WHEN /esrcc/cl_calculate_chargeout=>action_finalize_costbase.
-                  IF <ls_result>-costbase_status = '07' AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>finalize_stdchargeout.
+                  IF <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_approved
+                     AND <ls_result>-chain_id IS INITIAL
+                     AND trueuperformed = abap_false.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
-                WHEN /esrcc/cl_calculate_chargeout=>action_reopen_costbase.
-                  IF <ls_result>-costbase_status = '08' AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>reopen_stdchargeout.
+                  IF <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_finalized
+                     AND <ls_result>-chain_id IS INITIAL
+                     AND trueuperformed = abap_false.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
 
-                WHEN /esrcc/cl_calculate_chargeout=>action_sequential_chargeout.
+                WHEN /esrcc/if_calculate_chargeout=>calculate_stdseqchargeout.
                   IF wf_flag = abap_false.
                     IF <ls_result>-chain_id IS NOT INITIAL AND
                        <ls_result>-chain_sequence = 1 AND
-                              ( <ls_result>-costbase_status = '04' OR
-                             <ls_result>-costbase_status = '07' OR
-                             <ls_result>-costbase_status = '10' OR
-                             <ls_result>-costbase_status = '11' ).
+                       trueuperformed = abap_false AND
+                       ( <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_allowed OR
+                         <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_approved OR
+                         <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_rejected OR
+                         <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_failed ).
                       <ls_result>-selectionallowed = abap_true.
                     ENDIF.
                   ELSE.
-                    MESSAGE e016(/esrcc/execcockpit) INTO <ls_result>-messagecostbase.
-                    <ls_result>-messagetypecostbase = 'I'.
+                    MESSAGE e016(/esrcc/execcockpit) INTO <ls_result>-messagestdchargeout.
+                    <ls_result>-messagetypestdchargeout = 'I'.
                   ENDIF.
 *                  ENDIF.
-                WHEN /esrcc/cl_calculate_chargeout=>action_reopenseq_chargeout.
+                WHEN /esrcc/if_calculate_chargeout=>finalize_stdseqchargeout.
                   IF <ls_result>-chain_id IS NOT INITIAL AND
                      <ls_result>-chain_sequence = 1 AND
-                     <ls_result>-costbase_status = '08'.
+                     errorseq = abap_false AND
+                     trueuperformed = abap_false AND
+                     <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_approved.
+                    <ls_result>-selectionallowed = abap_true.
+                  ENDIF.
+                WHEN /esrcc/if_calculate_chargeout=>reopen_stdseqchargeout.
+                  IF <ls_result>-chain_id IS NOT INITIAL AND
+                     <ls_result>-chain_sequence = 1 AND
+                     trueuperformed = abap_false AND
+                     <ls_result>-StdChargeout_Status = /esrcc/if_calculate_chargeout=>stdchargeout_finalized.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
                 WHEN OTHERS.
@@ -784,226 +743,178 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
             ENDIF.
 
 *Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING FIELD-SYMBOL(<ls_processstatus>) WITH KEY  application = 'CBS'
-                                                                                             status = <ls_result>-costbase_status.
+            READ TABLE lt_processstatus ASSIGNING FIELD-SYMBOL(<ls_processstatus>)
+                                        WITH KEY  application = /esrcc/if_calculate_chargeout=>stdchargeout
+                                                  status = <ls_result>-StdChargeout_Status.
             IF sy-subrc = 0.
-              <ls_result>-costbasestatusdescr = <ls_processstatus>-description.
-              <ls_result>-costbasecriticallity = <ls_processstatus>-color.
+              <ls_result>-StdChargeoutstatusdescr = <ls_processstatus>-description.
+              <ls_result>-StdChargeoutcriticallity = <ls_processstatus>-color.
             ENDIF.
 
-*Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'SCM'
-                                                                                    status = <ls_result>-stewardship_status.
-            IF sy-subrc = 0.
-              CONCATENATE <ls_processstatus>-description <ls_result>-stewardshipstatusdescr INTO  <ls_result>-stewardshipstatusdescr.
-            ENDIF.
-
-*Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'CHR'
-                                                                                    status = <ls_result>-chargeout_status.
-            IF sy-subrc = 0.
-              CONCATENATE <ls_processstatus>-description <ls_result>-chargeoutstatusdescr INTO  <ls_result>-chargeoutstatusdescr.
-            ENDIF.
-
-          ENDIF.
 ****************************************************************************************************************************************************
-*  Service Cost Share & Markup Status-----------------------------------------------------
-          IF <ls_result>-serviceproduct IS NOT INITIAL.
-            IF <ls_result>-Stewardship_status IS INITIAL.
+**  Service Product Costing Status-----------------------------------------------------
+            IF <ls_result>-Recalculation_Status IS INITIAL.
 
-              READ TABLE lt_procctrl ASSIGNING FIELD-SYMBOL(<ls_procctrl>) WITH KEY sysid         = <ls_result>-sysid
-                                                                      ryear         = <ls_result>-ryear
-                                                                      fplv          = <ls_result>-fplv
-                                                                      legalentity   = <ls_result>-legalentity
-                                                                      ccode         = <ls_result>-ccode
-                                                                      costobject    = <ls_result>-costobject
-                                                                      costcenter    = <ls_result>-costcenter
-                                                                      billingfreq   = <ls_result>-billingfreq
-                                                                      billingperiod = <ls_result>-billingperiod
-                                                                         process    = 'CBS' BINARY SEARCH.
-*                                                                           status = '08'.    "Cost base Finalized
-              IF sy-subrc = 0 AND <ls_procctrl>-status = '08'.
-                <ls_result>-stewardship_status = '01'.  "Calculate Stewardship & Service Cost Share
-              ELSE.
-                <ls_result>-stewardship_status = '00'.  "Not Possible
+              IF <ls_result>-Recalculation_Status <> /esrcc/if_calculate_chargeout=>recalculation_notpossible.  "Not Possible
+                READ TABLE lt_procctrl ASSIGNING <ls_procctrl> WITH KEY
+                                                  sysid         = <ls_result>-sysid
+                                                  ryear         = <ls_result>-ryear
+                                                  poper         = <ls_result>-poper
+*                                                  fplv          = <ls_result>-fplv
+                                                  legalentity   = <ls_result>-legalentity
+                                                  ccode         = <ls_result>-ccode
+                                                  costobject    = <ls_result>-costobject
+                                                  costcenter    = <ls_result>-costcenter
+                                                  process       = /esrcc/if_calculate_chargeout=>stdchargeout.
+*                                                  BINARY SEARCH.
+*
+                IF sy-subrc = 0 AND <ls_procctrl>-status = /esrcc/if_calculate_chargeout=>stdchargeout_finalized.
+                  <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_allowed.  "Calculate Stewardship & Service Cost Share
+                ELSE.
+                  <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_notpossible.  "Not Possible
+                ENDIF.
               ENDIF.
-
+            ENDIF.
+*
+            IF <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_failed.   "Costbase calculation failed.
+              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messagerecalculation.
+              <ls_result>-messagetyperecalculation = 'I'.
             ENDIF.
 
-            IF <ls_result>-stewardship_status = '07'.   "Costbase calculation failed.
-              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messageservice.
-              <ls_result>-messagetypeservice = 'I'.
+            IF trueuperformed = abap_true.
+              MESSAGE e032(/esrcc/execcockpit) WITH trueupeperiod INTO <ls_result>-messagerecalculation.
+              <ls_result>-messagetyperecalculation = 'I'.
             ENDIF.
 
-            serviceproduct_authority_check(
-              EXPORTING
-                action = _action
-              CHANGING
-                result = <ls_result>
-            ).
 
-*Derive the selection allowed field.
-            IF <ls_result>-messagetypeservice <> 'E'.
+            CLEAR errorseq.
+*  Check if error flag is raised for any node in the sequential chains
+            READ TABLE lt_procctrl ASSIGNING <ls_procctrl> WITH KEY
+                                                           sysid         = <ls_result>-sysid
+                                                           ryear         = <ls_result>-ryear
+                                                           poper         = <ls_result>-poper
+                                                           legalentity   = <ls_result>-legalentity
+                                                           ccode         = <ls_result>-ccode
+                                                           costobject    = <ls_result>-costobject
+                                                           costcenter    = <ls_result>-costcenter
+                                                           process       = /esrcc/if_calculate_chargeout=>trueuprecal
+                                                           BINARY SEARCH.
+            IF sy-subrc = 0.
+              errorseq = <ls_procctrl>-errorflag.
+            ELSE.
+              CLEAR errorseq.
+            ENDIF.
+
+**Derive the selection allowed field.
+            IF <ls_result>-messagetyperecalculation <> 'E'.
               CASE _action.
-                WHEN /esrcc/cl_calculate_chargeout=>action_calculat_serviceproduct.
-                  IF ( <ls_result>-Stewardship_status = '01' OR
-                       <ls_result>-Stewardship_status = '04' OR
-                       <ls_result>-Stewardship_status = '06' OR
-                       <ls_result>-Stewardship_status = '07' )
-                       AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>calculate_recalchargeout.
+                  IF ( <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_allowed OR
+                       <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_approved OR
+                       <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_rejected OR
+                       <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_failed )
+                       AND <ls_result>-chain_id IS INITIAL
+                       AND trueuperformed = abap_false
+                       AND incompletetrueup = abap_false.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
 
-                WHEN /esrcc/cl_calculate_chargeout=>action_finalize_serviceproduct.
-                  IF <ls_result>-Stewardship_status = '04' AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>finalize_recalchargeout.
+                  IF <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_approved
+                     AND <ls_result>-chain_id IS INITIAL AND
+                     trueuperformed = abap_false.
+
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
-                WHEN /esrcc/cl_calculate_chargeout=>action_reopen_serviceproduct.
-                  IF <ls_result>-Stewardship_status = '05' AND <ls_result>-chain_id IS INITIAL.
+                WHEN /esrcc/if_calculate_chargeout=>reopen_recalchargeout.
+                  IF <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_finalized
+                     AND <ls_result>-chain_id IS INITIAL
+                     AND trueuperformed = abap_false.
+
+                    <ls_result>-selectionallowed = abap_true.
+                  ENDIF.
+                WHEN /esrcc/if_calculate_chargeout=>calculate_recalseqchargeout.
+                  IF wf_flag = abap_false.
+                    IF <ls_result>-chain_id IS NOT INITIAL AND
+                       trueuperformed = abap_false AND
+                       incompletetrueup = abap_false AND
+                       <ls_result>-chain_sequence = 1 AND
+                       ( <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_allowed OR
+                         <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_approved OR
+                         <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_rejected OR
+                         <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_failed ).
+                      <ls_result>-selectionallowed = abap_true.
+                    ENDIF.
+                  ELSE.
+                    MESSAGE e016(/esrcc/execcockpit) INTO <ls_result>-messagerecalculation.
+                    <ls_result>-messagetyperecalculation = 'I'.
+                  ENDIF.
+
+                WHEN /esrcc/if_calculate_chargeout=>finalize_recalseqchargeout.
+                  IF <ls_result>-chain_id IS NOT INITIAL AND
+                     <ls_result>-chain_sequence = 1 AND
+                     trueuperformed = abap_false AND
+                     errorseq = abap_false AND
+                     <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_approved.
+                    <ls_result>-selectionallowed = abap_true.
+                  ENDIF.
+                WHEN /esrcc/if_calculate_chargeout=>reopen_recalseqchargeout.
+                  IF <ls_result>-chain_id IS NOT INITIAL AND
+                     <ls_result>-chain_sequence = 1 AND
+                     trueuperformed = abap_false AND
+                     <ls_result>-Recalculation_Status = /esrcc/if_calculate_chargeout=>recalculation_finalized.
                     <ls_result>-selectionallowed = abap_true.
                   ENDIF.
                 WHEN OTHERS.
               ENDCASE.
             ENDIF.
 *Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'SCM'
-                                                                               status = <ls_result>-Stewardship_status.
+            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = /esrcc/if_calculate_chargeout=>trueuprecal
+                                                                               status = <ls_result>-Recalculation_Status.
             IF sy-subrc = 0.
-              <ls_result>-stewardshipstatusdescr  = <ls_processstatus>-description.
-              <ls_result>-stewardshipcriticality  = <ls_processstatus>-color.
+              <ls_result>-Recalculationstatusdescr  = <ls_processstatus>-description.
+              <ls_result>-Recalculationcriticallity  = <ls_processstatus>-color.
             ENDIF.
 
-**********************************************************************************************************************************************
-*  Charge-out to Receiver Status----------------------------------------------------------
-            IF <ls_result>-chargeout_status IS INITIAL.
-              READ TABLE lt_procctrl ASSIGNING <ls_procctrl> WITH KEY    sysid       = <ls_result>-sysid
-                                                                         ryear         = <ls_result>-ryear
-                                                                         fplv          = <ls_result>-fplv
-                                                                         legalentity = <ls_result>-legalentity
-                                                                         ccode      = <ls_result>-ccode
-                                                                         costobject = <ls_result>-costobject
-                                                                         costcenter = <ls_result>-costcenter
-                                                                         billingfreq = <ls_result>-billingfreq
-                                                                         billingperiod = <ls_result>-billingperiod
-                                                                         process    = 'SCM' BINARY SEARCH.
-              IF sy-subrc = 0 AND <ls_procctrl>-status = '05'.  "Stewardship Finalized
-                <ls_result>-chargeout_status = '01'.  "Calculate Charge-Out
-              ELSE.
-                <ls_result>-chargeout_status = '00'.  "Not Possible
-              ENDIF.
-
-            ENDIF.
-
-            IF <ls_result>-chargeout_status = '07'.   "Costbase calculation failed.
-              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messagechargeout.
-              <ls_result>-messagetypechargeout = 'I'.
-            ENDIF.
-
-            chargeout_authority_check(
-              EXPORTING
-                action = _action
-              CHANGING
-                result = <ls_result>
-            ).
-
-*Derive the selection allowed field.
-            IF <ls_result>-messagetypechargeout <> 'E'.
-              CASE _action.
-                WHEN /esrcc/cl_calculate_chargeout=>action_calculat_chargeout.
-                  IF ( <ls_result>-Chargeout_status = '01' OR
-                            <ls_result>-Chargeout_status = '04' OR
-                            <ls_result>-Chargeout_status = '06' OR
-                            <ls_result>-Chargeout_status = '07' )
-                      AND <ls_result>-chain_id IS INITIAL.
-                    <ls_result>-selectionallowed = abap_true.
-                  ENDIF.
-
-                WHEN /esrcc/cl_calculate_chargeout=>action_finalize_chargeout.
-                  IF <ls_result>-Chargeout_status = '04' AND <ls_result>-chain_id IS INITIAL.
-                    <ls_result>-selectionallowed = abap_true.
-                  ENDIF.
-                WHEN /esrcc/cl_calculate_chargeout=>action_reopen_chargeout.
-                  IF <ls_result>-Chargeout_status = '05' AND <ls_result>-chain_id IS INITIAL.
-                    <ls_result>-selectionallowed = abap_true.
-                  ENDIF.
-                WHEN OTHERS.
-              ENDCASE.
-            ENDIF.
-*Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'CHR'
-                                                                               status = <ls_result>-chargeout_status.
-            IF sy-subrc = 0.
-              <ls_result>-chargeoutstatusdescr  = <ls_processstatus>-description.
-              <ls_result>-chargeoutcriticality  = <ls_processstatus>-color.
-            ENDIF.
           ENDIF.
         ENDLOOP.
-
-**********************************************************************************************************************************************
-*get the count of finalized cost center & service products per legal entity
-        SELECT DISTINCT
-                 legalentity,
-                 sysid,
-                 ccode,
-                 CAST( COUNT( stewardshipcriticality ) AS CHAR ) AS finalcostcenterscm
-              FROM  @lt_result AS result
-         WHERE stewardshipcriticality = 3
-          AND  ServiceProduct IS INITIAL
-          AND  Costcenter IS NOT INITIAL
-          AND Costobject IS NOT INITIAL
-           GROUP BY legalentity,
-                    sysid,
-                    ccode
-           ORDER BY sysid,
-                    ccode,
-                    legalentity
-           INTO TABLE @DATA(lt_finalcostcentersscm).
-
-*get the count of finalized cost center & service products per legal entity
-        SELECT DISTINCT
-                 legalentity,
-                 sysid,
-                 ccode,
-                 CAST( COUNT( chargeoutcriticality ) AS CHAR ) AS finalcostcenterchr
-              FROM  @lt_result AS result
-         WHERE chargeoutcriticality = 3
-          AND  ServiceProduct IS INITIAL
-          AND  Costcenter IS NOT INITIAL
-          AND Costobject IS NOT INITIAL
-           GROUP BY legalentity,
-                    sysid,
-                    ccode
-           ORDER BY sysid,
-                    ccode,
-                    legalentity
-           INTO TABLE @DATA(lt_finalcostcenterschr).
-
-**********************************************************************************************************************************************
-        SORT lt_result BY sysid Legalentity  ccode costobject costcenter selectionallowed.
-
-        IF _action = /esrcc/cl_calculate_chargeout=>action_calculat_serviceproduct OR
-           _action = /esrcc/cl_calculate_chargeout=>action_finalize_serviceproduct OR
-           _action = /esrcc/cl_calculate_chargeout=>action_reopen_serviceproduct OR
-           _action = /esrcc/cl_calculate_chargeout=>action_calculat_chargeout OR
-           _action = /esrcc/cl_calculate_chargeout=>action_finalize_chargeout OR
-           _action = /esrcc/cl_calculate_chargeout=>action_reopen_chargeout.
-          LOOP AT lt_result ASSIGNING <ls_result> WHERE Costobject IS NOT INITIAL AND ServiceProduct IS INITIAL.
-
-
-*    Set the selection allowed field depending on child fields for legale entity
-            READ TABLE lt_result ASSIGNING FIELD-SYMBOL(<result>)
-                                 WITH KEY sysid       = <ls_result>-sysid
-                                          Legalentity = <ls_result>-Legalentity
-                                          ccode       = <ls_result>-ccode
-                                          costobject  = <ls_result>-Costobject
-                                          costcenter  = <ls_result>-Costcenter
-                                          selectionallowed = abap_true BINARY SEARCH.
-            IF sy-subrc = 0.
-              <ls_result>-selectionallowed = abap_true.
-            ENDIF.
-
-          ENDLOOP.
-        ENDIF.
+*
+***********************************************************************************************************************************************
+***  Charge-out to Receiver Status----------------------------------------------------------
+*          IF <ls_result>-chargeout_status IS INITIAL.
+*            READ TABLE lt_procctrl ASSIGNING <ls_procctrl> WITH KEY    sysid       = <ls_result>-sysid
+*                                                                       ryear         = <ls_result>-ryear
+*                                                                       poper         = <ls_result>-poper
+**                                                                       fplv          = <ls_result>-fplv
+*                                                                       legalentity = <ls_result>-legalentity
+*                                                                       ccode      = <ls_result>-ccode
+*                                                                       costobject = <ls_result>-costobject
+*                                                                       costcenter = <ls_result>-costcenter
+*                                                                       process    = /esrcc/if_calculate_chargeout=>trueuprecal
+*                                                                       BINARY SEARCH.
+*            IF sy-subrc = 0 AND <ls_procctrl>-status = /esrcc/if_calculate_chargeout=>recalculation_finalized.  "Stewardship Finalized
+*              <ls_result>-chargeout_status = /esrcc/if_calculate_chargeout=>chargeout_allowed.  "Calculate Charge-Out
+*            ELSE.
+*              <ls_result>-chargeout_status = /esrcc/if_calculate_chargeout=>chargeout_notpossible.  "Not Possible
+*            ENDIF.
+*
+**        ENDIF.
+**
+*            IF <ls_result>-chargeout_status = /esrcc/if_calculate_chargeout=>chargeout_failed.   "Costbase calculation failed.
+*              MESSAGE e026(/esrcc/execcockpit) INTO <ls_result>-messagechargeout.
+*              <ls_result>-messagetypechargeout = 'I'.
+*            ENDIF.
+*
+***Derive the status text and color
+*            READ TABLE lt_processstatus ASSIGNING <ls_processstatus>
+*                                        WITH KEY  application = /esrcc/if_calculate_chargeout=>chargeout
+*                                                       status = <ls_result>-chargeout_status.
+*            IF sy-subrc = 0.
+*              <ls_result>-chargeoutstatusdescr  = <ls_processstatus>-description.
+*              <ls_result>-chargeoutcriticality  = <ls_processstatus>-color.
+*            ENDIF.
+*          ENDIF.
+*        ENDLOOP.
 
         SORT lt_result BY sysid Legalentity ccode selectionallowed.
 
@@ -1027,15 +938,15 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
               finalcostcenters = 0.
             ENDIF.
             CONCATENATE ' (' finalcostcenters '/' <totalcostcenters>-totalcostcenter ' )'
-            INTO <ls_result>-costbasestatusdescr.
+            INTO <ls_result>-StdChargeoutstatusdescr.
 *
 *            map status color
             IF finalcostcenters = 0.
-              <ls_result>-costbasecriticallity = 0.
+              <ls_result>-StdChargeoutcriticallity = 0.
             ELSEIF finalcostcenters <> <totalcostcenters>-totalcostcenter.
-              <ls_result>-costbasecriticallity = 2.
+              <ls_result>-StdChargeoutcriticallity = 2.
             ELSEIF finalcostcenters = <totalcostcenters>-totalcostcenter.
-              <ls_result>-costbasecriticallity = 3.
+              <ls_result>-StdChargeoutcriticallity = 3.
             ENDIF.
 
 
@@ -1051,64 +962,64 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
               finalcostcenters = 0.
             ENDIF.
             CONCATENATE ' (' finalcostcenters '/' <totalcostcenters>-totalcostcenter ' )'
-            INTO <ls_result>-stewardshipstatusdescr.
+            INTO <ls_result>-Recalculationstatusdescr.
 *
 *            map status color
             IF finalcostcenters = 0.
-              <ls_result>-stewardshipcriticality = 0.
+              <ls_result>-Recalculationcriticallity = 0.
             ELSEIF finalcostcenters <> <totalcostcenters>-totalcostcenter.
-              <ls_result>-stewardshipcriticality = 2.
+              <ls_result>-Recalculationcriticallity = 2.
             ELSEIF finalcostcenters = <totalcostcenters>-totalcostcenter.
-              <ls_result>-stewardshipcriticality = 3.
+              <ls_result>-Recalculationcriticallity = 3.
             ENDIF.
 
-            READ TABLE lt_finalcostcenterschr ASSIGNING <finalcostcenters>
-                                               WITH KEY  sysid       = <ls_result>-sysid
-                                                         ccode       = <ls_result>-ccode
-                                                         legalentity = <ls_result>-legalentity
-                                                         BINARY SEARCH.
+*            READ TABLE lt_finalcostcenterschr ASSIGNING <finalcostcenters>
+*                                               WITH KEY  sysid       = <ls_result>-sysid
+*                                                         ccode       = <ls_result>-ccode
+*                                                         legalentity = <ls_result>-legalentity
+*                                                         BINARY SEARCH.
+*            IF sy-subrc = 0.
+*              finalcostcenters = <finalcostcenters>-finalcostcenter.
+*            ELSE.
+*              finalcostcenters = 0.
+*            ENDIF.
+*            CONCATENATE ' (' finalcostcenters '/' <totalcostcenters>-totalcostcenter ' )'
+*            INTO <ls_result>-chargeoutstatusdescr.
+**
+**            map status color
+*            IF finalcostcenters = 0.
+*              <ls_result>-chargeoutcriticality = 0.
+*            ELSEIF finalcostcenters <> <totalcostcenters>-totalcostcenter.
+*              <ls_result>-chargeoutcriticality = 2.
+*            ELSEIF finalcostcenters = <totalcostcenters>-totalcostcenter.
+*              <ls_result>-chargeoutcriticality = 3.
+*            ENDIF.
+
+*Derive the status text and color
+            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = /esrcc/if_calculate_chargeout=>stdchargeout
+                                                                                    status = <ls_result>-StdChargeout_Status.
             IF sy-subrc = 0.
-              finalcostcenters = <finalcostcenters>-finalcostcenter.
-            ELSE.
-              finalcostcenters = 0.
-            ENDIF.
-            CONCATENATE ' (' finalcostcenters '/' <totalcostcenters>-totalcostcenter ' )'
-            INTO <ls_result>-chargeoutstatusdescr.
-*
-*            map status color
-            IF finalcostcenters = 0.
-              <ls_result>-chargeoutcriticality = 0.
-            ELSEIF finalcostcenters <> <totalcostcenters>-totalcostcenter.
-              <ls_result>-chargeoutcriticality = 2.
-            ELSEIF finalcostcenters = <totalcostcenters>-totalcostcenter.
-              <ls_result>-chargeoutcriticality = 3.
+              CONCATENATE <ls_processstatus>-description <ls_result>-StdChargeoutstatusdescr INTO  <ls_result>-StdChargeoutstatusdescr.
             ENDIF.
 
 *Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'CBS'
-                                                                                    status = <ls_result>-costbase_status.
+            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = /esrcc/if_calculate_chargeout=>trueuprecal
+                                                                                    status = <ls_result>-Recalculation_Status.
             IF sy-subrc = 0.
-              CONCATENATE <ls_processstatus>-description <ls_result>-costbasestatusdescr INTO  <ls_result>-costbasestatusdescr.
+              CONCATENATE <ls_processstatus>-description <ls_result>-Recalculationstatusdescr INTO  <ls_result>-Recalculationstatusdescr.
             ENDIF.
 
 *Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'SCM'
-                                                                                    status = <ls_result>-stewardship_status.
-            IF sy-subrc = 0.
-              CONCATENATE <ls_processstatus>-description <ls_result>-stewardshipstatusdescr INTO  <ls_result>-stewardshipstatusdescr.
-            ENDIF.
-
-*Derive the status text and color
-            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = 'CHR'
-                                                                                    status = <ls_result>-chargeout_status.
-            IF sy-subrc = 0.
-              CONCATENATE <ls_processstatus>-description <ls_result>-chargeoutstatusdescr INTO  <ls_result>-chargeoutstatusdescr.
-            ENDIF.
+*            READ TABLE lt_processstatus ASSIGNING <ls_processstatus> WITH KEY  application = /esrcc/if_calculate_chargeout=>chargeout
+*                                                                                    status = <ls_result>-chargeout_status.
+*            IF sy-subrc = 0.
+*              CONCATENATE <ls_processstatus>-description <ls_result>-chargeoutstatusdescr INTO  <ls_result>-chargeoutstatusdescr.
+*            ENDIF.
 
           ENDIF.
 
 *    Set the selection allowed field depending on child fields for legale entity
-          READ TABLE lt_result ASSIGNING <result>
+          READ TABLE lt_result ASSIGNING FIELD-SYMBOL(<result>)
                                WITH KEY sysid = <ls_result>-sysid
                                         Legalentity = <ls_result>-Legalentity
                                         ccode = <ls_result>-ccode
@@ -1135,180 +1046,4 @@ CLASS /ESRCC/CL_C_EXECUTIONCOCKPIT IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-
-  METHOD chargeout_authority_check.
-
-*    Authorisation Check
-    IF action = /esrcc/cl_calculate_chargeout=>action_calculat_chargeout.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '01'.
-      IF sy-subrc <> 0.
-        MESSAGE e008(/esrcc/execcockpit) INTO result-messagechargeout.
-        result-messagetypechargeout = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '01'.
-        IF sy-subrc <> 0.
-          MESSAGE e008(/esrcc/execcockpit) INTO result-messagechargeout.
-          result-messagetypechargeout = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_finalize_chargeout.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '02'.
-      IF sy-subrc <> 0.
-        MESSAGE e014(/esrcc/execcockpit) INTO result-messagechargeout.
-        result-messagetypechargeout = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '02'.
-        IF sy-subrc <> 0.
-          MESSAGE e014(/esrcc/execcockpit) INTO result-messagechargeout.
-          result-messagetypechargeout = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_reopen_chargeout.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '06'.
-      IF sy-subrc <> 0.
-        MESSAGE e015(/esrcc/execcockpit) INTO result-messagechargeout.
-        result-messagetypechargeout = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '06'.
-        IF sy-subrc <> 0.
-          MESSAGE e015(/esrcc/execcockpit) INTO result-messagechargeout.
-          result-messagetypechargeout = 'E'.
-        ENDIF.
-      ENDIF.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD costbase_authority_check.
-
-*    Authorisation Check
-    IF action = /esrcc/cl_calculate_chargeout=>action_calculate_costbase.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '01'.
-      IF sy-subrc <> 0.
-        MESSAGE e006(/esrcc/execcockpit) INTO result-messagecostbase.
-        result-messagetypecostbase = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '01'.
-        IF sy-subrc <> 0.
-          MESSAGE e006(/esrcc/execcockpit) INTO result-messagecostbase.
-          result-messagetypecostbase = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_finalize_costbase.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '02'.
-      IF sy-subrc <> 0.
-        MESSAGE e010(/esrcc/execcockpit) INTO result-messagecostbase.
-        result-messagetypecostbase = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '02'.
-        IF sy-subrc <> 0.
-          MESSAGE e010(/esrcc/execcockpit) INTO result-messagecostbase.
-          result-messagetypecostbase = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_reopen_costbase.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '06'.
-      IF sy-subrc <> 0.
-        MESSAGE e011(/esrcc/execcockpit) INTO result-messagecostbase.
-        result-messagetypecostbase = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '06'.
-        IF sy-subrc <> 0.
-          MESSAGE e011(/esrcc/execcockpit) INTO result-messagecostbase.
-          result-messagetypecostbase = 'E'.
-        ENDIF.
-      ENDIF.
-    ENDIF.
-
-  ENDMETHOD.
-
-
-  METHOD serviceproduct_authority_check.
-
-*    Authorisation Check
-    IF action = /esrcc/cl_calculate_chargeout=>action_calculat_serviceproduct.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '01'.
-      IF sy-subrc <> 0.
-        MESSAGE e007(/esrcc/execcockpit) INTO result-messageservice.
-        result-messagetypeservice = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '01'.
-        IF sy-subrc <> 0.
-          MESSAGE e007(/esrcc/execcockpit) INTO result-messageservice.
-          result-messagetypeservice = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_finalize_serviceproduct.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '02'.
-      IF sy-subrc <> 0.
-        MESSAGE e012(/esrcc/execcockpit) INTO result-messageservice.
-        result-messagetypeservice = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '02'.
-        IF sy-subrc <> 0.
-          MESSAGE e012(/esrcc/execcockpit) INTO result-messageservice.
-          result-messagetypeservice = 'E'.
-        ENDIF.
-      ENDIF.
-    ELSEIF action = /esrcc/cl_calculate_chargeout=>action_reopen_serviceproduct.
-      AUTHORITY-CHECK OBJECT '/ESRCC/LE'
-          ID '/ESRCC/LE' FIELD result-legalentity
-          ID 'ACTVT'  FIELD '06'.
-      IF sy-subrc <> 0.
-        MESSAGE e013(/esrcc/execcockpit) INTO result-messageservice.
-        result-messagetypeservice = 'E'.
-      ELSE.
-        AUTHORITY-CHECK OBJECT '/ESRCC/CO'
-            ID '/ESRCC/OBJ' FIELD result-costobject
-            ID '/ESRCC/CN'  FIELD result-costcenter
-            ID 'ACTVT'  FIELD '06'.
-        IF sy-subrc <> 0.
-          MESSAGE e013(/esrcc/execcockpit) INTO result-messageservice.
-          result-messagetypeservice = 'E'.
-        ENDIF.
-      ENDIF.
-    ENDIF.
-
-  ENDMETHOD.
 ENDCLASS.

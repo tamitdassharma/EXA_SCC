@@ -11,12 +11,15 @@
     description.value: 'receivingentitydescription'
   },
   presentationVariant: [{ sortOrder: [{ by: 'Fplv' }, 
-                                      { by: 'Ryear' }, 
-                                      { by: 'Sysid' },
+                                      { by: 'Ryear' },
+                                      { by: 'Poper' },                                       
                                       { by: 'Legalentity' },
                                       { by: 'Ccode' },
                                       { by: 'Costobject' },
-                                      { by: 'Costcenter' }] }]
+                                      { by: 'Serviceproduct' },                                      
+                                      { by: 'Receivingentity' },
+                                      { by: 'ReceiverCostObject' },
+                                      { by: 'ReceiverCostCenter' }] }]
 }
 annotate view /ESRCC/C_CHGINVOICE with
 {
@@ -40,7 +43,7 @@ annotate view /ESRCC/C_CHGINVOICE with
     purpose: #STANDARD,
     type: #FIELDGROUP_REFERENCE,
     parentId: 'general',
-    label: 'Invoice Details',
+    label: 'Invoice/Posting Details',
     targetQualifier: 'InvData'
     },
     {
@@ -66,10 +69,10 @@ annotate view /ESRCC/C_CHGINVOICE with
     position:  5,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 5 }]
+  @UI.selectionField: [{ position: 10 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' }}]
 //                                        additionalBinding: [{ element: 'costdataset', localElement: 'Fplv' }] }]
-  @Consumption.filter.mandatory: true
+//  @Consumption.filter.mandatory: true
   @UI.textArrangement: #TEXT_ONLY
   @Consumption.filter.selectionType: #SINGLE
   Fplv;
@@ -86,47 +89,47 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 10 ,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 10 }]
+  @UI.selectionField: [{ position: 5 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' } }]
   @Consumption.filter.mandatory: true
 //  @Consumption.filter.selectionType: #SINGLE
   Ryear;
 
-  @UI.lineItem: [ {
-    position: 14 ,
-    importance: #MEDIUM,
-    label: '',
-    cssDefault:{width: '5rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 14 ,
-    qualifier: 'OrgData'
-  } ]
-  @UI.selectionField: [{ position: 14 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
-  @Consumption.filter.mandatory: false
-  @UI.textArrangement: #TEXT_ONLY
-  Billingfrequqncy;
-  @UI.lineItem: [ {
-    position: 15 ,
-    importance: #MEDIUM,
-    label: '',
-    cssDefault:{width: '5rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 15 ,
-    qualifier: 'OrgData'
-  } ]
-  @UI.selectionField: [{ position: 15 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQUENCY_F4', element: 'Billingperiod' },
-                                          additionalBinding: [{ element: 'Billingfreq', localElement: 'Billingfrequqncy' }] }]
-  @Consumption.filter.mandatory: false
-  @UI.textArrangement: #TEXT_ONLY
-  Billingperiod;
+//  @UI.lineItem: [ {
+//    position: 14 ,
+//    importance: #MEDIUM,
+//    label: '',
+//    cssDefault:{width: '5rem'}
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 14 ,
+//    qualifier: 'OrgData'
+//  } ]
+//  @UI.selectionField: [{ position: 14 }]
+//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
+//  @Consumption.filter.mandatory: false
+//  @UI.textArrangement: #TEXT_ONLY
+//  billingfrequqncy;
+//  @UI.lineItem: [ {
+//    position: 15 ,
+//    importance: #MEDIUM,
+//    label: '',
+//    cssDefault:{width: '5rem'}
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 15 ,
+//    qualifier: 'OrgData'
+//  } ]
+//  @UI.selectionField: [{ position: 15 }]
+//  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQUENCY_F4', element: 'Billingperiod' },
+//                                          additionalBinding: [{ element: 'Billingfreq', localElement: 'Billingfrequqncy' }] }]
+//  @Consumption.filter.mandatory: false
+//  @UI.textArrangement: #TEXT_ONLY
+//  billingperiod;
   @UI.lineItem: [ {
     position: 20 ,
     importance: #MEDIUM,
@@ -142,23 +145,7 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.selectionField: [{ position: 20 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
   Poper;
-  @UI.lineItem: [ {
-    position: 25 ,
-    importance: #MEDIUM,
-    label: '',
-    cssDefault:{width: '5rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 25 ,
-    qualifier: 'ChgData'
-  } ]
-  @UI.selectionField: [{ position: 150 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROCESSTYPE', element: 'ProcessType' }}]
-  @UI.textArrangement: #TEXT_ONLY
-  ProcessType;
-
+  
   @UI.lineItem: [ {
     position: 30 ,
     importance: #MEDIUM,
@@ -203,8 +190,8 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 50 ,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
   @UI.selectionField: [{ position: 40 }]
   @UI.textArrangement: #TEXT_LAST
   Ccode;
@@ -238,13 +225,14 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 70 ,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
   @UI.selectionField: [{ position: 60 }]
   @UI.textArrangement: #TEXT_LAST
   Costcenter;
+  
   @UI.lineItem: [ {
-    position: 85 ,
+    position: 75 ,
     importance: #MEDIUM,
     label: '',
     cssDefault:{width: '15rem'}
@@ -252,13 +240,47 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.fieldGroup: [
   {
     importance: #HIGH,
-    position: 85 ,
+    position: 75 ,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICETYPE_F4', element: 'ServiceType' }}]
-  @UI.selectionField: [{ position: 70 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }}]
+  @UI.selectionField: [{ position: 65 }]
   @UI.textArrangement: #TEXT_LAST
-  Servicetype;
+  Profitcenter;
+  
+  @UI.lineItem: [ {
+    position: 76 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 76 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }}]
+  @UI.selectionField: [{ position: 66 }]
+  @UI.textArrangement: #TEXT_LAST
+  Businessdivision;
+  
+  @UI.lineItem: [ {
+    position: 77 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 77 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }}]
+  @UI.selectionField: [{ position: 67 }]
+  @UI.textArrangement: #TEXT_LAST
+  FunctionalArea;
   @UI.lineItem: [ {
     position: 80 ,
     importance: #MEDIUM,
@@ -275,6 +297,22 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.selectionField: [{ position: 70 }]
   @UI.textArrangement: #TEXT_LAST
   Serviceproduct;
+  @UI.lineItem: [ {
+    position: 85 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 85 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICETYPE_F4', element: 'ServiceType' }}]
+  @UI.selectionField: [{ position: 70 }]
+  @UI.textArrangement: #TEXT_LAST
+  Servicetype;
   @UI.lineItem: [ {
     position: 86 ,
     importance: #MEDIUM,
@@ -304,6 +342,19 @@ annotate view /ESRCC/C_CHGINVOICE with
   } ]
   ContractId;
   @UI.lineItem: [ {
+    position: 88 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #MEDIUM,
+    position: 88 ,
+    qualifier: 'OrgData'
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' } }]
+  ReceiverSysId;
+  @UI.lineItem: [ {
     position: 90,
     importance: #MEDIUM,
     label: '',
@@ -331,8 +382,8 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 100,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
   @UI.selectionField: [{ position: 90 }]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCompanyCode;
@@ -366,8 +417,8 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 120 ,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
   @UI.selectionField: [{ position: 110 }]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCostCenter;
@@ -388,20 +439,24 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.textArrangement: #TEXT_ONLY
   Chargeout;
   @UI.lineItem: [ {
-    position: 140,
+    position: 140 ,
     importance: #MEDIUM,
-    label: ''
+    label: '',
+    cssDefault:{width: '10rem'}
   } ]
   @UI.fieldGroup: [
   {
     importance: #HIGH,
     position: 140 ,
-    qualifier: 'OrgData'
+    qualifier: 'ChgData'
   } ]
-  @EndUserText.label: 'Actual Consumption'
-  Reckpi;
+  @UI.selectionField: [{ position: 150 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_INVPROCESSTYPE', element: 'ChargeoutType' }}]
+  @UI.textArrangement: #TEXT_ONLY
+  Chargeamountytpe;
+  
   @UI.lineItem: [ {
-    position: 150,
+    position: 150 ,
     importance: #MEDIUM,
     label: ''
   } ]
@@ -409,23 +464,50 @@ annotate view /ESRCC/C_CHGINVOICE with
   {
     importance: #HIGH,
     position: 150 ,
-    qualifier: 'OrgData'
-  } ]
-  @EndUserText.label: 'Transfer Price per Unit'
-  TransferPrice;
-  @UI.lineItem: [ {
-    position: 160,
-    importance: #MEDIUM,
-    label: ''
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 160 ,
-    qualifier: 'OrgData'
-  } ]
-  @EndUserText.label: 'Key Share (%)'
-  Reckpishare;
+    qualifier: 'ChgData'
+  } ]  
+  @EndUserText.label: 'Re-Calculation Period'
+  Recalrefpoper;
+  
+//  @UI.lineItem: [ {
+//    position: 140,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 140 ,
+//    qualifier: 'OrgData'
+//  } ]
+//  @EndUserText.label: 'Actual Consumption'
+//  Reckpi;
+//  @UI.lineItem: [ {
+//    position: 150,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 150 ,
+//    qualifier: 'OrgData'
+//  } ]
+//  @EndUserText.label: 'Transfer Price per Unit'
+//  TransferPrice;
+//  @UI.lineItem: [ {
+//    position: 160,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 160 ,
+//    qualifier: 'OrgData'
+//  } ]
+//  @EndUserText.label: 'Key Share (%)'
+//  Reckpishare;
   @UI.lineItem: [ {
     position: 170,
     importance: #MEDIUM,
@@ -437,12 +519,12 @@ annotate view /ESRCC/C_CHGINVOICE with
     position: 170 ,
     qualifier: 'OrgData'
   } ]
-  @EndUserText.label: 'Charge-out Amount'
+  @EndUserText.label: 'Total Charge-out Amount'
   TotalChargeout;
   @UI.lineItem: [{ hidden: true }]
   InvoiceUUID;
   @UI.lineItem: [ {
-    position: 180,
+    position: 800,
     importance: #MEDIUM,
     label: '',
     cssDefault:{width: '20rem'}
@@ -450,13 +532,13 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.fieldGroup: [
   {
     importance: #HIGH,
-    position: 180 ,
+    position: 800 ,
     qualifier: 'InvData'
   } ]
   @UI.selectionField: [{ position: 130 }]
   InvoiceNumber;
   @UI.lineItem: [ {
-    position: 190,
+    position: 810,
     importance: #MEDIUM,
     label: '',
     cssDefault:{width: '20rem'},
@@ -485,10 +567,50 @@ annotate view /ESRCC/C_CHGINVOICE with
     label: 'Invoice (Pdf)'
   } ]
   Stream;
+  
+   @UI.lineItem: [ {
+    position: 300,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 300 ,
+    qualifier: 'InvData'
+  } ]
+  PostingDate;
+  
+  @UI.lineItem: [ {
+    position: 310,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 310 ,
+    qualifier: 'InvData'
+  } ]
+  PostingPeriod;
+  
+  @UI.lineItem: [ {
+    position: 320,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.fieldGroup: [
+  {
+    importance: #HIGH,
+    position: 320 ,
+    qualifier: 'InvData'
+  } ]
+  @EndUserText.label: 'Write Back (ERP)'
+  ErpFlag;
 
   //Admin
   @UI.lineItem: [ {
-    position: 250 ,
+    position: 950 ,
     importance: #MEDIUM,
     label: ''
   } ]
@@ -500,7 +622,7 @@ annotate view /ESRCC/C_CHGINVOICE with
   } ]
   CreatedBy;
   @UI.lineItem: [ {
-    position: 260 ,
+    position: 960 ,
     importance: #MEDIUM,
     label: ''
   } ]
@@ -512,7 +634,7 @@ annotate view /ESRCC/C_CHGINVOICE with
   } ]
   CreatedAt;
   @UI.lineItem: [ {
-    position: 270 ,
+    position: 970 ,
     importance: #MEDIUM,
     label: ''
   } ]
@@ -524,7 +646,7 @@ annotate view /ESRCC/C_CHGINVOICE with
   } ]
   LastChangedBy;
   @UI.lineItem: [ {
-    position: 280 ,
+    position: 980 ,
     importance: #MEDIUM,
     label: ''
   } ]
@@ -579,20 +701,20 @@ annotate view /ESRCC/C_CHGINVOICE with
   Mimetype;
   @UI.hidden: true
   legalentitycountry;
-  //  @UI.hidden: true
-  //  receivingentitycountry;
-  //  @UI.hidden: true
-  //  legalentitycountryname;
+  @UI.hidden: true
+  receivingentitycountry;
+  @UI.hidden: true
+  legalentitycountryname;
   @UI.hidden: true
   receivingentitycountryname;
   //  @UI.hidden: true
   //  currencytypetext;
   @UI.hidden: true
   invoicestatusdescription;
-  @UI.hidden: true
-  billingfrequencydescription;
-  @UI.hidden: true
-  billingperioddescription;
+//  @UI.hidden: true
+//  billingfrequencydescription;
+//  @UI.hidden: true
+//  billingperioddescription;
   @UI.hidden: true
   RecCcodedescription;
   @UI.hidden: true
@@ -600,7 +722,7 @@ annotate view /ESRCC/C_CHGINVOICE with
   @UI.hidden: true
   RecCostCenterdescription;
   @UI.hidden: true
-  ProcessTypedescription;
+  ChargeoutTypedescription;
   @UI.hidden: true
   currencytypetext;
   @UI.lineItem: [ {
@@ -612,4 +734,16 @@ annotate view /ESRCC/C_CHGINVOICE with
   ParentUUID;
   @UI.hidden: true
   RootUUID;
+  @UI.hidden: true
+  profitcenterdescription;
+  @UI.hidden: true
+  businessdescription;
+  @UI.hidden: true
+  functionalareadescription;
+  @UI.hidden: true
+  Currency;
+  @UI.hidden: true
+  oecdDescription;
+  @UI.hidden: true
+  Transactiongroupdescription;
 }

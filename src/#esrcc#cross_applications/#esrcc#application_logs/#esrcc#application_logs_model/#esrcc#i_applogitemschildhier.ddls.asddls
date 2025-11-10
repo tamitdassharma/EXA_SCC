@@ -17,6 +17,7 @@ define view entity /ESRCC/I_AppLogItemsChildHier
       2                              as hier_level,
       cast('expand' as abap.char(8)) as drilldown_state,
       log_header_uuid                as LogHeaderUuid,
+      serial_number                  as SerialNumber,
       message_id                     as MessageId,
       message_number                 as MessageNumber,
       case message_type

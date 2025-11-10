@@ -1,0 +1,15 @@
+CLASS /esrcc/extract_data_check DEFINITION
+  PUBLIC
+  INHERITING FROM cl_apj_jt_check_base
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS /esrcc/extract_data_check IMPLEMENTATION.
+ENDCLASS.

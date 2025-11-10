@@ -1,0 +1,5 @@
+define service /ESRCC/UI_REGIONS {
+  expose /ESRCC/C_REGION_S as RegionAll;
+  expose /ESRCC/C_REGIONS as Regions;
+  expose /ESRCC/C_REGIONTEXT as RegionText;
+}

@@ -1,0 +1,107 @@
+managed with additional save implementation in class /ESRCC/BP_I_HIER1_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Hier1_S alias HierarchyAll
+draft table /esrcc/d_hier1_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Hierarchy { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Hier1 alias Hierarchy
+persistent table /esrcc/hier1
+draft table /esrcc/d_hier1
+etag master LocalLastChangedAt
+lock dependent by _HierarchyAll
+authorization dependent by _HierarchyAll
+
+{
+  field ( mandatory : create )
+  Hierarchy;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Hierarchy;
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyHier1P [1];
+
+  mapping for /esrcc/hier1
+    {
+      Hierarchy          = HIERARCHY;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _HierarchyAll { with draft; }
+  association _HierarchyText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_Hier1Text alias HierarchyText
+persistent table /esrcc/hier1_t
+draft table /esrcc/d_hier1_t
+etag master LocalLastChangedAt
+lock dependent by _HierarchyAll
+authorization dependent by _HierarchyAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Hierarchy,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/hier1_t
+    {
+      Spras              = SPRAS;
+      Hierarchy          = HIERARCHY;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _HierarchyAll { with draft; }
+  association _Hierarchy { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

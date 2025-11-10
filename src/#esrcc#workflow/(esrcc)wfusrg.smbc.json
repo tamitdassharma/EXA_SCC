@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "UserGroupAll",
     "name": "Workflow User Groups",
-    "configurationGroup": "/ESRCC/BC_GROUP8",
+    "configurationGroup": "/ESRCC/BC_GROUP10",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -28,19 +28,16 @@
       {
         "entitySet": "UserGroup",
         "tableType": "gridTable",
-        "selectionMode": "auto",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
-        "entitySet": "UserGroupAll",
-        "selectionMode": "auto"
+        "entitySet": "UserGroupAll"
       },
       {
         "entitySet": "UserMapping",
         "tableType": "gridTable",
-        "selectionMode": "auto",
         "creationModeName": "creationRow",
         "enableFullScreen": true
       }

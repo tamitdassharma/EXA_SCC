@@ -1,0 +1,4 @@
+@EndUserText.label: 'Royalty Calculation'
+define service /ESRCC/UI_ROYALTYCALULATION {
+  expose /ESRCC/C_LICENCSE_CAL as royaltycalculation;
+}

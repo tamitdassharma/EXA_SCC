@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyCstObjctP
+{
+  field ( mandatory ) Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
+}

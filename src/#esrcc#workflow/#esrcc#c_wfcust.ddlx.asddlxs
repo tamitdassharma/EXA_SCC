@@ -33,7 +33,8 @@ annotate view /ESRCC/C_WfCust with
     position: 2
   } ]
 
-  @UI.lineItem: [ { position: 1, cssDefault.width: '14rem' } ]
+  @UI.lineItem: [ { position: 1, cssDefault.width: '14rem' },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_APPLICATION_TYPE', element: 'ApplicationType'} }]
   Application;

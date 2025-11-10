@@ -4,11 +4,12 @@
 @Metadata.allowExtensions: true
 define root view entity /ESRCC/C_OPENTASKCOSTBASE 
  provider contract transactional_query
- as projection on /ESRCC/I_MANAGECOSTBASE {
+ as projection on /ESRCC/I_COSTBASEANALYTICS {
   key Ryear,
   key Poper,
   @ObjectModel.text.element: [ 'costdatasetdescription' ]
   key Fplv,
+  key Ledger,
   key SysID,
   @ObjectModel.text.element: [ 'legalentitydescription' ]
   key Legalentity,
@@ -31,9 +32,13 @@ define root view entity /ESRCC/C_OPENTASKCOSTBASE
   @ObjectModel.text.element: [ 'FunctionalAreaDescription' ]
   Functionalarea,
   @ObjectModel.text.element: [ 'costtypedescription' ]
-  Costtype,  
+  Costtype,
+  @Semantics.amount.currencyCode: 'Localcurr'
+  @DefaultAggregation: #SUM  
   Hsl,
   Localcurr,
+  @Semantics.amount.currencyCode: 'Groupcurr'
+  @DefaultAggregation: #SUM
   Ksl,
   Groupcurr,
   Vendor,

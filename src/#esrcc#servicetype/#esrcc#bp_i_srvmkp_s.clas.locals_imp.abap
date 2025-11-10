@@ -1,7 +1,8 @@
 CLASS lcl_custom_validation DEFINITION.
   PUBLIC SECTION.
     TYPES:
-      ts_markup TYPE STRUCTURE FOR READ RESULT /esrcc/i_srvmkp_s\\servicemarkup,
+      ts_markup        TYPE STRUCTURE FOR READ RESULT /esrcc/i_srvmkp_s\\servicemarkup,
+      tt_markup_create TYPE TABLE FOR CREATE /esrcc/i_srvmkp_s\\servicemarkupall\_servicemarkup,
       BEGIN OF ts_control,
         origcost      TYPE if_abap_behv=>t_xflag,
         passcost      TYPE if_abap_behv=>t_xflag,
@@ -17,6 +18,14 @@ CLASS lcl_custom_validation DEFINITION.
         IMPORTING
           entity  TYPE ts_markup
           control TYPE ts_control.
+
+    CLASS-METHODS:
+      precheck_cba_markup
+        IMPORTING
+          entities TYPE tt_markup_create
+        CHANGING
+          reported TYPE any
+          failed   TYPE any.
 
   PRIVATE SECTION.
     DATA config_util_ref TYPE REF TO /esrcc/cl_config_util.
@@ -69,6 +78,26 @@ CLASS lcl_custom_validation IMPLEMENTATION.
       ).
     ENDIF.
   ENDMETHOD.
+
+  METHOD precheck_cba_markup.
+    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+      EXPORTING
+        paths              = VALUE #( ( path = 'ServiceMarkupAll' ) )
+        source_entity_name = '/ESRCC/C_SRVMKP'
+        is_transition      = abap_true
+      CHANGING
+        reported_entity    = reported
+        failed_entity      = failed ) ).
+
+    LOOP AT entities INTO DATA(entity).
+      LOOP AT entity-%target INTO DATA(target).
+        lo_validation->validate_service_markup(
+          entity  = CORRESPONDING #( target )
+          control = VALUE #( validfrom = if_abap_behv=>mk-on )
+        ).
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
 ENDCLASS.
 
 
@@ -77,15 +106,14 @@ CLASS lhc_rap_tdat_cts DEFINITION.
     CLASS-METHODS:
       get
         RETURNING
-          VALUE(result) TYPE REF TO if_mbc_cp_rap_table_cts.
+          VALUE(result) TYPE REF TO if_mbc_cp_rap_tdat_cts.
 
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts IMPLEMENTATION.
   METHOD get.
-    result = mbc_cp_api=>rap_table_cts( table_entity_relations = VALUE #(
-                                         ( entity = 'ServiceMarkup' table = '/ESRCC/SRVMKP' )
-                                       ) ).
+    result = mbc_cp_api=>rap_tdat_cts( tdat_name = '/ESRCC/SRVMKP'
+                                       table_entity_relations = VALUE #( ( entity = 'ServiceMarkup' table = '/ESRCC/SRVMKP' ) ) ) ##NO_TEXT.
   ENDMETHOD.
 ENDCLASS.
 CLASS lhc_/esrcc/i_srvmkp_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -100,62 +128,67 @@ CLASS lhc_/esrcc/i_srvmkp_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
         REQUEST requested_authorizations FOR servicemarkupall
         RESULT result,
       precheck_cba_servicemarkup FOR PRECHECK
-        IMPORTING entities FOR CREATE servicemarkupall\_servicemarkup.
+        IMPORTING entities FOR CREATE servicemarkupall\_servicemarkup,
+      selectcustomizingtransptreq FOR MODIFY
+        IMPORTING keys FOR ACTION servicemarkupall~selectcustomizingtransptreq RESULT result.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_srvmkp_s IMPLEMENTATION.
   METHOD get_instance_features.
-    DATA: selecttransport_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled,
-          edit_flag            TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
+    IF lhc_rap_tdat_cts=>get( )->is_editable( ).
+      DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
+    ELSE.
+      edit_flag = if_abap_behv=>fc-o-enabled.
+    ENDIF.
 
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-        iv_objectname = '/ESRCC/SRVMKP'
-        iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    DATA(transport_service) = cl_bcfg_cd_reuse_api_factory=>get_transport_service_instance(
-      iv_objectname = '/ESRCC/SRVMKP'
-      iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table ).
-    IF transport_service->is_transport_allowed( ) = abap_false.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(selecttransport_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
+
     READ ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
     ENTITY servicemarkupall
       ALL FIELDS WITH CORRESPONDING #( keys )
-      RESULT DATA(all).
-    IF all[ 1 ]-%is_draft = if_abap_behv=>mk-off.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    result = VALUE #( (
-               %tky = all[ 1 ]-%tky
+      RESULT DATA(entities)
+      FAILED failed.
+
+    result = VALUE #( FOR row IN entities (
+               %tky = row-%tky
                %action-edit = edit_flag
-               %assoc-_servicemarkup = edit_flag ) ).
+               %assoc-_servicemarkup = edit_flag
+               %action-selectcustomizingtransptreq = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE selecttransport_flag ) ) ).
   ENDMETHOD.
 
   METHOD get_global_authorizations.
-    AUTHORITY-CHECK OBJECT 'S_TABU_NAM' ID 'TABLE' FIELD '/ESRCC/I_SRVMKP' ID 'ACTVT' FIELD '02'.
-    DATA(is_authorized) = COND #( WHEN sy-subrc = 0 THEN if_abap_behv=>auth-allowed
-                                  ELSE if_abap_behv=>auth-unauthorized ).
+    DATA(is_authorized) = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_SRVMKP' ).
     result-%update      = is_authorized.
     result-%action-edit = is_authorized.
+    result-%action-selectcustomizingtransptreq = is_authorized.
   ENDMETHOD.
 
   METHOD precheck_cba_servicemarkup.
-    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+    lcl_custom_validation=>precheck_cba_markup(
       EXPORTING
-        paths              = VALUE #( ( path = 'ServiceMarkupAll' ) )
-        source_entity_name = '/ESRCC/C_SRVMKP'
-        is_transition      = abap_true
+        entities = entities
       CHANGING
-        reported_entity    = reported-servicemarkup
-        failed_entity      = failed-servicemarkup ) ).
+        failed   = failed-servicemarkup
+        reported = reported-servicemarkup ).
+  ENDMETHOD.
 
-    LOOP AT entities[ 1 ]-%target INTO DATA(entity).
-      lo_validation->validate_service_markup(
-        entity  = CORRESPONDING #( entity )
-        control = VALUE #( validfrom = if_abap_behv=>mk-on )
-      ).
-    ENDLOOP.
+  METHOD selectcustomizingtransptreq.
+    MODIFY ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
+      ENTITY servicemarkupall
+        UPDATE FIELDS ( transportrequestid hidetransport )
+        WITH VALUE #( FOR key IN keys
+                        ( %tky               = key-%tky
+                          transportrequestid = key-%param-transportrequestid
+                          hidetransport      = abap_false ) ).
+
+    READ ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
+      ENTITY servicemarkupall
+        ALL FIELDS WITH CORRESPONDING #( keys )
+        RESULT DATA(entities).
+
+    result = VALUE #( FOR entity IN entities
+                        ( %tky   = entity-%tky
+                          %param = entity ) ).
   ENDMETHOD.
 
 ENDCLASS.
@@ -168,13 +201,15 @@ ENDCLASS.
 
 CLASS lsc_/esrcc/i_srvmkp_s IMPLEMENTATION.
   METHOD save_modified.
-    READ TABLE update-servicemarkupall INDEX 1 INTO DATA(all).
-    IF all-transportrequestid IS NOT INITIAL.
-      lhc_rap_tdat_cts=>get( )->record_changes(
-                                  transport_request = all-transportrequestid
-                                  create            = REF #( create )
-                                  update            = REF #( update )
-                                  delete            = REF #( delete ) ).
+    IF lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_true.
+      READ TABLE update-servicemarkupall INDEX 1 INTO DATA(all).
+      IF all-transportrequestid IS NOT INITIAL.
+        lhc_rap_tdat_cts=>get( )->record_changes(
+                                    transport_request = all-transportrequestid
+                                    create            = REF #( create )
+                                    update            = REF #( update )
+                                    delete            = REF #( delete ) ).
+      ENDIF.
     ENDIF.
   ENDMETHOD.
   METHOD cleanup_finalize.
@@ -219,6 +254,11 @@ CLASS lhc_/esrcc/i_srvmkp DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys FOR ACTION servicemarkup~reopen RESULT result.
     METHODS updatecomment FOR DETERMINE ON SAVE
       IMPORTING keys FOR servicemarkup~updatecomment.
+    METHODS copy FOR MODIFY
+      IMPORTING keys FOR ACTION servicemarkup~copy.
+
+    METHODS validatetransportrequest FOR VALIDATE ON SAVE
+      IMPORTING keys FOR servicemarkup~validatetransportrequest.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
@@ -323,21 +363,17 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
         RESULT DATA(entities).
 
     DATA(lo_auth) = NEW /esrcc/cl_authorization( ).
-    result = VALUE #( FOR wa IN entities
-                      LET submit   = lo_auth->regulate_action_submit( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
-                          finalize = lo_auth->regulate_action_finalize( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
-                          reopen   = lo_auth->regulate_action_reopen( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
-                          update   = lo_auth->regulate_action_update( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
-                          delete   = lo_auth->regulate_action_delete( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
-                      IN ( %tky             = wa-%tky
-                           %action-submit   = submit
-                           %action-finalize = finalize
-                           %action-reopen   = reopen
-                           %update          = update
-                           %delete          = delete ) ).
+    result = VALUE #( FOR wa IN entities ( %tky             = wa-%tky
+                                           %action-copy     = lo_auth->regulate_action_copy( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
+                                           %action-submit   = lo_auth->regulate_action_submit( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
+                                           %action-finalize = lo_auth->regulate_action_finalize( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
+                                           %action-reopen   = lo_auth->regulate_action_reopen( is_draft = wa-%is_draft wf_status = wa-workflowstatus )
+                                           %update          = lo_auth->regulate_action_update( wf_status = wa-workflowstatus )
+                                           %delete          = lo_auth->regulate_action_delete( is_draft = wa-%is_draft wf_status = wa-workflowstatus ) ) ).
   ENDMETHOD.
 
   METHOD get_global_authorizations.
+    result-%action-copy = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_SRVMKP' ).
   ENDMETHOD.
 
   METHOD finalize.
@@ -361,23 +397,10 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
         MAPPED mapped.
 
     result = VALUE #( FOR entity IN entities ( %tky = entity-%tky %param = entity ) ).
-    reported-%other = VALUE #( ( /esrcc/cl_config_util=>message_on_action( ) ) ).
+    reported-%other = VALUE #( ( /esrcc/cl_config_msg_handler=>inform_on_action( ) ) ).
   ENDMETHOD.
 
   METHOD submit.
-
-  TRY.
-          CALL METHOD cl_numberrange_runtime=>number_get
-            EXPORTING
-              nr_range_nr = '01'
-              object      = '/ESRCC/WF'
-            IMPORTING
-              number      = DATA(number)
-              returncode  = DATA(lv_rcode).
-        CATCH cx_number_ranges         .
-      ENDTRY.
-      RETURN.
-
     READ ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
         ENTITY servicemarkup
         ALL FIELDS WITH CORRESPONDING #( keys )
@@ -392,7 +415,7 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
                             ( %tky                      = entity-%tky
                               workflowid                = ''
                               commentid                 = COND #( WHEN entity-commentid IS INITIAL THEN cl_uuid_factory=>create_system_uuid( )->create_uuid_c32( ) ELSE entity-commentid )
-                              comments                  = VALUE #( keys[ %tky = entity-%tky ]-%param-comments OPTIONAL )
+                              comments                  = VALUE #( keys[ KEY draft %tky = entity-%tky ]-%param-comments OPTIONAL )
                               workflowstatus            = /esrcc/cl_wf_utility=>wf_status-in_process
                               workflowstatuscriticality = criticality
                               workflowinternalstatus    = /esrcc/cl_wf_utility=>wf_status-in_process ) )
@@ -407,7 +430,7 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
                                                %is_draft = entity-%is_draft
                                                %param-%tky = entity-%tky ) ).
 
-    reported-%other = VALUE #( ( /esrcc/cl_config_util=>message_on_action( ) ) ).
+    reported-%other = VALUE #( ( /esrcc/cl_config_msg_handler=>inform_on_action( ) ) ).
   ENDMETHOD.
 
   METHOD updateinternalworkflowstatus.
@@ -458,9 +481,7 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD triggerworkflow.
-    DATA:
-      failed_leading_objects TYPE /esrcc/tt_wf_leadingobject,
-      messages               TYPE /esrcc/tt_message.
+    DATA leading_objects_failed TYPE /esrcc/tt_wf_leadingobject_err.
 
     READ ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
         ENTITY servicemarkup
@@ -472,94 +493,40 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
       RETURN.
     ENDIF.
 
+    DATA(lo_wf_handler) = NEW /esrcc/cl_wf_handler_std( application_type = /esrcc/cl_wf_utility=>app-bc_product_markup ).
     DATA(workflow_internal_status) = ''.
-    /esrcc/cl_wf_utility=>is_wf_on(
-      EXPORTING
-        iv_apptype   = /esrcc/cl_wf_utility=>app-bc_product_markup
-      IMPORTING
-        ev_wf_active = DATA(wf_active)
-    ).
+    IF lo_wf_handler->is_wf_on( ) = abap_true.
 
-    IF wf_active = abap_true.
-*      CALL FUNCTION '/ESRCC/FM_WF_START'
-*        EXPORTING
-*          it_leading_object        = CORRESPONDING /esrcc/tt_wf_leadingobject( entities MAPPING serviceproduct = serviceproduct valid_from = validfrom EXCEPT * )
-*          iv_apptype               = /esrcc/cl_wf_utility=>app-bc_product_markup
-*        IMPORTING
-*          et_failed_leading_object = failed_leading_objects
-*          et_message               = messages.
-*
-*      " Set status to error for failed entities
+      lo_wf_handler->/esrcc/if_wf_handler~trigger_workflow(
+        EXPORTING
+          leading_objects       = CORRESPONDING /esrcc/tt_wf_leadingobject( entities MAPPING serviceproduct = serviceproduct valid_from = validfrom EXCEPT * )
+        IMPORTING
+          leading_objects_error = leading_objects_failed
+      ).
+
+      " Update status of failed entities
       DATA(criticality) = /esrcc/cl_wf_utility=>wf_status_criticality( status = /esrcc/cl_wf_utility=>wf_status-failed ).
-*      LOOP AT failed_leading_objects INTO DATA(leading_object).
-*        MODIFY entities
-*            FROM VALUE #( workflowstatus = /esrcc/cl_wf_utility=>wf_status-failed
-*                          workflowstatuscriticality = criticality )
-*            TRANSPORTING workflowstatus workflowstatuscriticality
-*            WHERE serviceproduct = leading_object-serviceproduct.
-*      ENDLOOP.
+      MODIFY ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
+        ENTITY servicemarkup
+        UPDATE FIELDS ( workflowstatus workflowstatuscriticality )
+        WITH VALUE #( FOR failed IN leading_objects_failed
+                        ( serviceproduct            = failed-leading_object-serviceproduct
+                          validfrom                 = failed-leading_object-valid_from
+                          workflowstatus            = /esrcc/cl_wf_utility=>wf_status-failed
+                          workflowstatuscriticality = criticality ) )
+        FAILED DATA(failed_mod)
+        MAPPED DATA(mapped_mod).
 
-*** Begin of new
-      LOOP AT entities INTO DATA(entity1).
-        TRY.
-            DATA(cp_wf_handle) = cl_uuid_factory=>create_system_uuid( )->create_uuid_x16( ).
-          CATCH cx_uuid_error.
-        ENDTRY.
-
-        MODIFY ENTITIES OF i_cpwf_inst
-             ENTITY CPWFInstance
-             EXECUTE registerWorkflow
-             FROM VALUE #( ( %key-CpWfHandle = cp_wf_handle
-                             %param-RetentionTime = '30'
-                             %param-PaWfDefId = 'eu10.dev-abap-cloud.sccworkflowconfiguration.businessConfigurationReviewProcess'
-                             %param-CallbackClass = '/ESRCC/CL_SWF_CPWF_CALLBACK'
-                             %param-Consumer = 'DEFAULT' ) ).
-
-        TYPES: BEGIN OF ty_context,
-                 rule_id          TYPE /esrcc/chargeout_rule_id,
-                 stewardship_uuid TYPE sysuuid_x16,
-                 service_product  TYPE /esrcc/srvproduct,
-                 valid_from       TYPE /esrcc/validfrom,
-                 application_type TYPE /esrcc/application_type_de,
-               END OF ty_context.
-
-        DATA(wf_context) = VALUE TY_context(
-             service_product  = entity1-serviceproduct
-             valid_from       = entity1-validfrom
-             application_type = 'CPM' ).
-
-        TRY.
-            DATA(cpwf_api_instance) = cl_swf_cpwf_api_factory_a4c=>get_api_instance( ).
-          CATCH cx_swf_cpwf_api.
-        ENDTRY.
-
-        DATA(lo_json) = cpwf_api_instance->get_json_converter(
-                                    iv_camel_case                = abap_true
-                                    iv_capital_letter            = abap_false
-                                    iv_suppress_empty_components = abap_true
-                                    iv_uppercase                 = abap_false
-                                  ).
-
-        DATA(wf_context_json) = lo_json->serialize( wf_context ).
-
-        MODIFY ENTITIES OF i_cpwf_inst
-             ENTITY CPWFInstance
-             EXECUTE setPayload
-             FROM VALUE #( ( %key-CpWfHandle = cp_wf_handle
-                             %param-context = wf_context_json ) ).
-      ENDLOOP.
-*** End of new
-
+      " Reset internal status
       MODIFY ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
           ENTITY servicemarkup
-          UPDATE FIELDS ( workflowinternalstatus workflowstatus workflowstatuscriticality )
+          UPDATE FIELDS ( workflowinternalstatus )
           WITH VALUE #( FOR entity IN entities
-                          ( %tky                      = entity-%tky
-                            workflowstatus            = entity-workflowstatus
-                            workflowstatuscriticality = entity-workflowstatuscriticality
-                            workflowinternalstatus    = workflow_internal_status ) )
-          FAILED DATA(failed_mod)
-          MAPPED DATA(mapped_mod).
+                          ( %tky                   = entity-%tky
+                            workflowinternalstatus = workflow_internal_status ) )
+          FAILED failed_mod
+          MAPPED mapped_mod.
+
     ELSE.
       criticality = /esrcc/cl_wf_utility=>wf_status_criticality( status = /esrcc/cl_wf_utility=>wf_status-approved ).
       MODIFY ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
@@ -599,7 +566,7 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
                                                %is_draft = entity-%is_draft
                                                %param-%tky = entity-%tky ) ).
 
-    reported-%other = VALUE #( ( /esrcc/cl_config_util=>message_on_action( ) ) ).
+    reported-%other = VALUE #( ( /esrcc/cl_config_msg_handler=>inform_on_action( ) ) ).
   ENDMETHOD.
 
   METHOD updatecomment.
@@ -614,6 +581,88 @@ CLASS lhc_/esrcc/i_srvmkp IMPLEMENTATION.
         iv_comments = entity-comments
       ).
     ENDLOOP.
+  ENDMETHOD.
+
+  METHOD copy.
+    DATA:
+      new_main TYPE TABLE FOR CREATE /esrcc/i_srvmkp_s\_servicemarkup.
+
+    IF lines( keys ) > 1.
+      INSERT mbc_cp_api=>message( )->get_select_only_one_entry( ) INTO TABLE reported-%other.
+      failed-servicemarkup = VALUE #( FOR fkey IN keys ( %tky = fkey-%tky ) ).
+      RETURN.
+    ENDIF.
+
+    READ ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
+      ENTITY servicemarkup
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(ref_main)
+      FAILED DATA(read_failed).
+
+    LOOP AT ref_main ASSIGNING FIELD-SYMBOL(<ref_main>).
+      DATA(key)     = keys[ KEY draft %tky = <ref_main>-%tky ].
+      DATA(key_cid) = key-%cid.
+
+      APPEND VALUE #(
+        %tky-singletonid = 1
+        %is_draft = <ref_main>-%is_draft
+        %target = VALUE #( ( %cid           = key_cid
+                             %is_draft      = <ref_main>-%is_draft
+                             %data          = CORRESPONDING #( <ref_main> EXCEPT serviceproduct validfrom validto singletonid )
+                             serviceproduct = key-%param-serviceproduct
+                             validfrom      = key-%param-validfrom
+                             validto        = key-%param-validto ) ) ) TO new_main.
+    ENDLOOP.
+
+*   Pre-check validation before create
+    lcl_custom_validation=>precheck_cba_markup(
+      EXPORTING
+        entities = new_main
+      CHANGING
+        failed   = failed-servicemarkup
+        reported = reported-servicemarkup ).
+
+    IF failed-servicemarkup IS INITIAL.
+      MODIFY ENTITIES OF /esrcc/i_srvmkp_s IN LOCAL MODE
+        ENTITY servicemarkupall CREATE BY \_servicemarkup
+        FIELDS (
+                 serviceproduct
+                 validfrom
+                 origcost
+                 passcost
+                 intraorigcost
+                 intrapasscost
+                 validto
+               ) WITH new_main
+        MAPPED DATA(mapped_create)
+        FAILED failed
+        REPORTED reported.
+    ENDIF.
+
+    mapped-servicemarkup = mapped_create-servicemarkup.
+    INSERT LINES OF read_failed-servicemarkup INTO TABLE failed-servicemarkup.
+
+    IF failed-servicemarkup IS INITIAL.
+      reported-servicemarkup = VALUE #( FOR created IN mapped-servicemarkup (
+                                     %cid            = created-%cid
+                                     %action-copy    = if_abap_behv=>mk-on
+                                     %msg            = mbc_cp_api=>message( )->get_item_copied( )
+                                     %path-servicemarkupall = VALUE #( %is_draft = created-%is_draft singletonid = 1 ) ) ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_srvmkp_s.
+    IF lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_true.
+      SELECT SINGLE transportrequestid FROM /esrcc/d_srvmk_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+      lhc_rap_tdat_cts=>get( )->validate_changes(
+                                  transport_request = transportrequestid
+                                  table             = '/ESRCC/SRVMKP'
+                                  keys              = REF #( keys )
+                                  reported          = REF #( reported )
+                                  failed            = REF #( failed )
+                                  change            = REF #( change-servicemarkup ) ).
+    ENDIF.
   ENDMETHOD.
 
 ENDCLASS.

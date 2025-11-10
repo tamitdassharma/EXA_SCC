@@ -1,0 +1,5 @@
+define service /ESRCC/UI_LICENSE {
+  expose /ESRCC/C_LICENSE_S as LicenseAll;
+  expose /ESRCC/C_LICENSE as License;
+  expose /ESRCC/C_LICENSETEXT as LicenseText;
+}

@@ -1,0 +1,266 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Licensor & Licensee',
+    typeNamePlural: 'Licensor & Licensee',
+    title: {
+      type: #STANDARD,
+      value: 'LicensorLegalEntity'
+    }
+  }
+}
+annotate view /ESRCC/C_LicMap with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: 'GeneralCollection',
+    type: #COLLECTION,
+    parentId: 'CE',
+    label: 'General Information',
+    position: 1
+  },
+  {
+    id: 'General',
+    purpose: #STANDARD,
+    parentId: 'GeneralCollection',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Other Information',
+    position: 30
+  },
+  {
+    id: 'Licensor',
+    purpose: #STANDARD,
+    parentId: 'GeneralCollection',
+    type: #FIELDGROUP_REFERENCE,
+    targetQualifier: 'Licensor',
+    label: 'Licensor Information',
+    position: 10
+  },
+  {
+    id: 'Licensee',
+    purpose: #STANDARD,
+    parentId: 'GeneralCollection',
+    type: #FIELDGROUP_REFERENCE,
+    targetQualifier: 'Licensee',
+    label: 'Licensee Information',
+    position: 20
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 20
+  } ]
+
+  @UI.hidden: true
+  @UI.lineItem: [ { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
+  Uuid;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensor', position: 10 }]
+  @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'LicensorLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicensorCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicensorCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicensorCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'LicensorCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicensorSysid;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensor', position: 20 }]
+  @UI.lineItem: [ { position: 2 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'LegalEntity' },
+                                       additionalBinding: [{ localElement: 'LicensorSysid', element: 'Sysid' },
+                                                           { localElement: 'LicensorCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicensorCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicensorCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'LicensorCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicensorLegalEntity;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensor', position: 30 }]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'CompanyCode' },
+                                       additionalBinding: [{ localElement: 'LicensorSysid', element: 'Sysid' },
+                                                           { localElement: 'LicensorLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicensorCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicensorCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'LicensorCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicensorCompanyCode;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensor', position: 40 }]
+  @UI.lineItem: [ { position: 4, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costobject' },
+                                       additionalBinding: [{ localElement: 'LicensorSysid', element: 'Sysid' },
+                                                           { localElement: 'LicensorLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicensorCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicensorCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'LicensorCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicensorCostObject;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensor', position: 50 }]
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ localElement: 'LicensorSysid', element: 'Sysid' },
+                                                           { localElement: 'LicensorLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicensorCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicensorCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicensorCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicensorCostCenter;
+
+  @UI.identification: [ { position: 7 } ]
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_License_F4', element: 'License' }, useForValidation: true }]
+  License;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 10 }]
+  @UI.lineItem: [ { position: 8 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Sysid' },
+                                       additionalBinding: [{ localElement: 'LicenseeLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicenseeCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicenseeCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicenseeCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'LicenseeCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicenseeSysid;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 20 }]
+  @UI.lineItem: [ { position: 9 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'LegalEntity' },
+                                       additionalBinding: [{ localElement: 'LicenseeSysid', element: 'Sysid' },
+                                                           { localElement: 'LicenseeCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicenseeCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicenseeCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'LicenseeCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicenseeLegalEntity;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 30 }]
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'CompanyCode' },
+                                       additionalBinding: [{ localElement: 'LicenseeSysid', element: 'Sysid' },
+                                                           { localElement: 'LicenseeLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicenseeCostObject', element: 'Costobject' },
+                                                           { localElement: 'LicenseeCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'LicenseeCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicenseeCompanyCode;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 40 }]
+  @UI.lineItem: [ { position: 11, cssDefault.width: '11.5rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costobject' },
+                                       additionalBinding: [{ localElement: 'LicenseeSysid', element: 'Sysid' },
+                                                           { localElement: 'LicenseeLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicenseeCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicenseeCostCenter', element: 'Costcenter' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'LicenseeCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicenseeCostObject;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 50 }]
+  @UI.lineItem: [ { position: 12 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: {  name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
+                                       additionalBinding: [{ localElement: 'LicenseeSysid', element: 'Sysid' },
+                                                           { localElement: 'LicenseeLegalEntity', element: 'LegalEntity' },
+                                                           { localElement: 'LicenseeCompanyCode', element: 'CompanyCode' },
+                                                           { localElement: 'LicenseeCostObject', element: 'Costobject' },
+                                                           { localElement: 'InvoiceCurrency', element: 'Currency', usage: #RESULT },
+                                                           { localElement: 'LicenseeCostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
+                                       useForValidation: true }]
+  LicenseeCostCenter;
+
+  @UI.fieldGroup: [{ qualifier: 'Licensee', position: 60 }]
+  @UI.lineItem: [ { position: 13, cssDefault.width: '10rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Currency', element: 'Currency' }, useForValidation: true } ]
+  @EndUserText.label: 'Invoicing Currency'
+  InvoiceCurrency;
+
+  @UI.identification: [ { position: 14 } ]
+  @UI.lineItem: [ { position: 14 } ]
+  ErpSalesOrder;
+
+  @UI.identification: [ { position: 15 } ]
+  @UI.lineItem: [ { position: 15 } ]
+  AgreementId;
+
+  @UI.identification: [ { position: 16 } ]
+  @UI.lineItem: [ { position: 16 } ]
+  Active;
+
+  @UI.lineItem: [ { position: 17 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 18, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [{ position: 19 }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 20, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Licensor Cost Object UUID'
+  LicensorCostObjectUuid;
+
+  @UI.hidden: true
+  @EndUserText.label: 'Licensee Cost Object UUID'
+  LicenseeCostObjectUuid;
+
+  @UI.hidden: true
+  LicensorSysidDescription;
+  @UI.hidden: true
+  LicensorLegalEntityDescription;
+  @UI.hidden: true
+  LicensorCompanyCodeDescription;
+  @UI.hidden: true
+  LicensorCostObjectDescription;
+  @UI.hidden: true
+  LicensorCostCenterDescription;
+
+  @UI.hidden: true
+  LicenseDescription;
+
+  @UI.hidden: true
+  LicenseeSysidDescription;
+  @UI.hidden: true
+  LicenseeLegalEntityDescription;
+  @UI.hidden: true
+  LicenseeCompanyCodeDescription;
+  @UI.hidden: true
+  LicenseeCostObjectDescription;
+  @UI.hidden: true
+  LicenseeCostCenterDescription;
+  @UI.hidden: true
+  InvoiceCurrencyDescription;
+}

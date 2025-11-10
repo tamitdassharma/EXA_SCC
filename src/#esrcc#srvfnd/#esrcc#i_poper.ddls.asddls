@@ -22,15 +22,15 @@ define view entity /ESRCC/I_POPER
 {
       @UI.hidden: true
   key value_position,
-      @ObjectModel.text.element: ['text']
-      @UI.textArrangement: #TEXT_ONLY
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
-  key value_low as Poper,
+//      @ObjectModel.text.element: ['text']
+//      @UI.textArrangement: #TEXT_SEPARATE
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
+  key value_low as Poper
       
-      @UI.hidden: true
-      @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
-      text
+//      @UI.hidden: true
+//      @Semantics.text: true
+//      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
+//      text
       
 }
 where

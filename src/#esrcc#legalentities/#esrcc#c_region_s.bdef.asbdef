@@ -1,0 +1,41 @@
+projection implementation in class /ESRCC/BP_C_REGION_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_Region_S alias RegionAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _Regions { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_Regions alias Regions
+
+{
+  field ( modify )
+  Description;
+
+  use update ( augment );
+  use delete;
+
+  use action Copy;
+
+  use association _RegionAll { with draft; }
+  use association _RegionText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_RegionText alias RegionText
+
+{
+  use update;
+  use delete;
+
+  use association _RegionAll { with draft; }
+  use association _Regions { with draft; }
+}

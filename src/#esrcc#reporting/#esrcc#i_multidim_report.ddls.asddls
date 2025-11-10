@@ -160,6 +160,14 @@ define view entity /ESRCC/I_MULTIDIM_REPORT
       RecPassthroughMarkup,
       @AnalyticsDetails.query.display: #KEY
       @AnalyticsDetails.query.axis: #FREE
+      @Semantics.amount.currencyCode: 'Currency'       
+      TotalStdChargeout,
+      @AnalyticsDetails.query.display: #KEY
+      @AnalyticsDetails.query.axis: #FREE
+      @Semantics.amount.currencyCode: 'Currency'    
+      TotalTrueupAmount,
+      @AnalyticsDetails.query.display: #KEY
+      @AnalyticsDetails.query.axis: #FREE
       @Semantics.amount.currencyCode: 'Currency'
       TotalChargeout
       

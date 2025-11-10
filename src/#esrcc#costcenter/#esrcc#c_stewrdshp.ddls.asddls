@@ -57,6 +57,5 @@ define view entity /ESRCC/C_Stewrdshp
       _WorkflowStatusText.text                      as WorkflowStatusDescription,
 
       _StewardshipAll  : redirected to parent /ESRCC/C_Stewrdshp_S,
-      _ServiceProduct  : redirected to composition child /ESRCC/C_StwdSp,
-      _ServiceReceiver : redirected to composition child /ESRCC/C_StwdSpRec
+      _ServiceProduct  : redirected to composition child /ESRCC/C_StwdSp
 }

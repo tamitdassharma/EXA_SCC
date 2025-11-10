@@ -7,11 +7,11 @@
   },
   "serviceConfiguration": {
     "serviceBinding": "/ESRCC/UI_WFSWITCH_O4",
-    "serviceName": "/ESRCC/UI_WFSWITCH",
+    "serviceName": "/ESRCC/UI_WFSWITCH_O4",
     "serviceVersion": "0001",
     "rootEntitySet": "WorkflowSwitchAll",
     "name": "Workflow Activation",
-    "configurationGroup": "/ESRCC/BC_GROUP8",
+    "configurationGroup": "/ESRCC/BC_GROUP10",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -25,14 +25,12 @@
       {
         "entitySet": "WorkflowSwitch",
         "tableType": "gridTable",
-        "selectionMode": "auto",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
-        "entitySet": "WorkflowSwitchAll",
-        "selectionMode": "auto"
+        "entitySet": "WorkflowSwitchAll"
       }
     ]
   }

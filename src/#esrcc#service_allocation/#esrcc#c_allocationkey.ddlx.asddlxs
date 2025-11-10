@@ -33,7 +33,8 @@ annotate view /ESRCC/C_AllocationKey with
     targetElement: '_AllocationKeyText'
   } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   Allocationkey;
 
   @UI.lineItem: [ { position: 4 } ]

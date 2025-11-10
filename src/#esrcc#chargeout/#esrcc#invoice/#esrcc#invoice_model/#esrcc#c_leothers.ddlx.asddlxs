@@ -36,7 +36,8 @@ annotate view /ESRCC/C_LeOthers with
   } ]
 
   @UI.identification: [ { position: 1, hidden: true } ]
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Legalentity' },
                                        additionalBinding: [{ localElement: 'Sysid', element: 'Sysid' },
@@ -91,12 +92,10 @@ annotate view /ESRCC/C_LeOthers with
 
   @UI.identification: [ { position: 8 } ]
   @UI.lineItem: [ { position: 8 } ]
-  @EndUserText.label: 'Account'
   Account;
 
   @UI.identification: [ { position: 9 } ]
   @UI.lineItem: [ { position: 9 } ]
-  @EndUserText.label: 'Business Partner Number'
   BusinessPartnerNumber;
 
   @UI.lineItem: [ { position: 10 } ]

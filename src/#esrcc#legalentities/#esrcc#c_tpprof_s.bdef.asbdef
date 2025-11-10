@@ -1,0 +1,41 @@
+projection implementation in class /ESRCC/BP_C_TPPROFILE_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_TpProf_S alias TpProfileAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _TpProfile { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_TpProf alias TpProfile
+
+{
+  field ( modify )
+  Description;
+
+  use update ( augment );
+  use delete;
+
+  use action Copy;
+
+  use association _TpProfileAll { with draft; }
+  use association _TpProfileText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_TpProfText alias TpProfileText
+
+{
+  use update;
+  use delete;
+
+  use association _TpProfileAll { with draft; }
+  use association _TpProfile { with draft; }
+}

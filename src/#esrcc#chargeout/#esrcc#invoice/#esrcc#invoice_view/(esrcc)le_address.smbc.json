@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "LeAddressAll",
     "name": "Legal Entity Billing Address",
-    "configurationGroup": "/ESRCC/BC_GROUP7",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -25,9 +25,9 @@
       {
         "entitySet": "LeAddress",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "LeAddressAll"

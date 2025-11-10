@@ -6,8 +6,8 @@
     <ROLLNAME>/ESRCC/BC_GROUP5</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
-    <DDTEXT>Group 5: Charge-out Configurations</DDTEXT>
-    <REPTEXT>Group 5: Charge-out Configurations</REPTEXT>
+    <DDTEXT>Group 05: Charge-out Rule Configurations</DDTEXT>
+    <REPTEXT>Group 05: Charge-out Rule Configurations</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -20,8 +20,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 5: Konfiguration Verrechnungsregeln</DDTEXT>
-     <REPTEXT>Gruppe 5: Konfiguration Verrechnungsregeln</REPTEXT>
+     <DDTEXT>Gruppe 05: Konfiguration Verrechnungsregeln</DDTEXT>
+     <REPTEXT>Gruppe 05: Konfiguration Verrechnungsregeln</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

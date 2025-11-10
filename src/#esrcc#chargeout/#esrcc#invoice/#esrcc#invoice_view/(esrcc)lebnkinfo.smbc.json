@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "BankInformationAll",
     "name": "Bank Accounts & Terms Information",
-    "configurationGroup": "/ESRCC/BC_GROUP7",
+    "configurationGroup": "/ESRCC/BC_GROUP9",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -25,9 +25,9 @@
       {
         "entitySet": "BankInformation",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "BankInformationAll"

@@ -43,7 +43,8 @@ annotate view /ESRCC/C_LE with
       targetElement: '_LegalEntityText'
     } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   Legalentity;
 
   @UI.identification: [ { position: 5, label: 'Country' } ]
@@ -76,6 +77,13 @@ annotate view /ESRCC/C_LE with
   @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_Role', element: 'Role' } } ]
   @Consumption.filter.selectionType: #SINGLE
   Role;
+  
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 8, cssDefault.width: '13rem' } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_TPPROFILE', element: 'TpProfile' } } ]
+  @Consumption.filter.selectionType: #SINGLE
+  TpProfile;
 
   @UI.lineItem: [ { position: 9 } ]
   @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]

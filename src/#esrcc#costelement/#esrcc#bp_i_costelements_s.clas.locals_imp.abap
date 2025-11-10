@@ -1,7 +1,8 @@
 CLASS lcl_custom_validation DEFINITION.
   PUBLIC SECTION.
     TYPES:
-      ts_cost_element TYPE STRUCTURE FOR READ RESULT /esrcc/i_costelements_s\\costelement,
+      ts_cost_element        TYPE STRUCTURE FOR READ RESULT /esrcc/i_costelements_s\\costelement,
+      tt_cost_element_create TYPE TABLE FOR CREATE /esrcc/i_costelements_s\\costelementsall\_costelements,
 
       BEGIN OF ts_control,
         sysid       TYPE if_abap_behv=>t_xflag,
@@ -16,6 +17,14 @@ CLASS lcl_custom_validation DEFINITION.
         IMPORTING
           entity  TYPE ts_cost_element
           control TYPE ts_control.
+
+    CLASS-METHODS:
+      precheck_cba_cost_element
+        IMPORTING
+          entities TYPE tt_cost_element_create
+        CHANGING
+          reported TYPE any
+          failed   TYPE any.
 
   PRIVATE SECTION.
     DATA: config_util_ref TYPE REF TO /esrcc/cl_config_util.
@@ -43,6 +52,59 @@ CLASS lcl_custom_validation IMPLEMENTATION.
       entity = entity
     ).
   ENDMETHOD.
+
+  METHOD precheck_cba_cost_element.
+    TYPES ts_cost_element TYPE STRUCTURE FOR READ RESULT /esrcc/i_costelements_s\\costelement.
+
+    DATA(lo_cost_element) = /esrcc/cl_config_util=>create(
+      EXPORTING
+        paths              = VALUE #( ( path = 'CostElementsAll' ) )
+        source_entity_name = '/ESRCC/C_COSTELEMENTS'
+        is_transition      = abap_true
+      CHANGING
+        reported_entity    = reported
+        failed_entity      = failed
+    ).
+
+    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = lo_cost_element ).
+
+    LOOP AT entities INTO DATA(entity).
+      SELECT DISTINCT
+             celem~sysid,
+             celem~legalentity,
+             celem~companycode,
+             celem~costelement
+          FROM /esrcc/d_cst_elm AS celem
+          INNER JOIN @entity-%target AS tent
+              ON  tent~sysid       = celem~sysid
+              AND tent~legalentity = celem~legalentity
+              AND tent~companycode = celem~companycode
+              AND tent~costelement = celem~costelement
+          WHERE celem~draftentityoperationcode NOT IN ( 'D', 'L' )
+          INTO TABLE @DATA(duplicate_entities).
+
+      LOOP AT entity-%target INTO DATA(target) GROUP BY ( sysid       = target-sysid
+                                                          legalentity = target-legalentity
+                                                          companycode = target-companycode
+                                                          costelement = target-costelement
+                                                          size        = GROUP SIZE )
+          ASCENDING REFERENCE INTO DATA(group_ref).
+
+        lo_validation->validate_cost_element(
+            entity  = CORRESPONDING #( group_ref->* )
+            control = VALUE #( costelement = if_abap_behv=>mk-on )
+          ).
+
+        IF line_exists( duplicate_entities[ sysid       = group_ref->sysid
+                                            legalentity = group_ref->legalentity
+                                            companycode = group_ref->companycode
+                                            costelement = group_ref->costelement ] ) OR
+           group_ref->size > 1.
+          lo_cost_element->set_duplicate_error( entity = CORRESPONDING ts_cost_element( group_ref->* ) ).
+        ENDIF.
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts DEFINITION.
@@ -50,16 +112,15 @@ CLASS lhc_rap_tdat_cts DEFINITION.
     CLASS-METHODS:
       get
         RETURNING
-          VALUE(result) TYPE REF TO if_mbc_cp_rap_table_cts.
+          VALUE(result) TYPE REF TO if_mbc_cp_rap_tdat_cts.
 
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts IMPLEMENTATION.
   METHOD get.
-    result = mbc_cp_api=>rap_table_cts( table_entity_relations = VALUE #(
-                                         ( entity = 'CostElements' table = '/ESRCC/CST_ELMNT' )
-                                         ( entity = 'CostElementsText' table = '/ESRCC/CST_ELMTT' )
-                                       ) ).
+    result = mbc_cp_api=>rap_tdat_cts( tdat_name = '/ESRCC/COSTELEMENTS'
+                                       table_entity_relations = VALUE #( ( entity = 'CostElement' table = '/ESRCC/CST_ELMNT' )
+                                                                         ( entity = 'CostElementsText' table = '/ESRCC/CST_ELMTT' ) ) ) ##NO_TEXT.
   ENDMETHOD.
 ENDCLASS.
 CLASS lhc_/esrcc/i_costelements_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -78,86 +139,60 @@ CLASS lhc_/esrcc/i_costelements_s DEFINITION INHERITING FROM cl_abap_behavior_ha
         REQUEST requested_authorizations FOR costelementsall
         RESULT result,
       precheck_cba_costelements FOR PRECHECK
-        IMPORTING entities FOR CREATE costelementsall\_costelements.
+        IMPORTING entities FOR CREATE costelementsall\_costelements,
+      selectcustomizingtransptreq FOR MODIFY
+        IMPORTING keys FOR ACTION costelementsall~selectcustomizingtransptreq RESULT result.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_costelements_s IMPLEMENTATION.
   METHOD get_instance_features.
-    DATA: selecttransport_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled,
-          edit_flag            TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
+    DATA(selecttransport_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
 
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-        iv_objectname = '/ESRCC/CST_ELMNT'
-        iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    DATA(transport_service) = cl_bcfg_cd_reuse_api_factory=>get_transport_service_instance(
-                                iv_objectname = '/ESRCC/CST_ELMNT'
-                                iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table ).
-    IF transport_service->is_transport_allowed( ) = abap_false.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
     READ ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
     ENTITY costelementsall
       ALL FIELDS WITH CORRESPONDING #( keys )
-      RESULT DATA(all).
-    IF all[ 1 ]-%is_draft = if_abap_behv=>mk-off.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    result = VALUE #( (
-               %tky = all[ 1 ]-%tky
+      RESULT DATA(entities)
+      FAILED failed.
+
+    result = VALUE #( FOR row IN entities (
+               %tky = row-%tky
                %action-edit = edit_flag
-               %assoc-_costelements = edit_flag ) ).
+               %assoc-_costelements = edit_flag
+               %action-selectcustomizingtransptreq = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE selecttransport_flag ) ) ).
   ENDMETHOD.
   METHOD get_global_authorizations.
-    AUTHORITY-CHECK OBJECT 'S_TABU_NAM' ID 'TABLE' FIELD '/ESRCC/I_COSTELEMENTS' ID 'ACTVT' FIELD '02'.
-    DATA(is_authorized) = COND #( WHEN sy-subrc = 0 THEN if_abap_behv=>auth-allowed
-                                  ELSE if_abap_behv=>auth-unauthorized ).
+    DATA(is_authorized) = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_COSTELEMENTS' ).
     result-%update      = is_authorized.
     result-%action-edit = is_authorized.
+    result-%action-selectcustomizingtransptreq = is_authorized.
   ENDMETHOD.
   METHOD precheck_cba_costelements.
-    TYPES ts_cost_element TYPE STRUCTURE FOR READ RESULT /esrcc/i_costelements_s\\costelement.
-
-    DATA(lo_cost_element) = /esrcc/cl_config_util=>create(
+    lcl_custom_validation=>precheck_cba_cost_element(
       EXPORTING
-        paths              = VALUE #( ( path = c_path ) )
-        source_entity_name = c_source_entity
-        is_transition      = abap_true
+        entities = entities
       CHANGING
-        reported_entity    = reported-costelement
-        failed_entity      = failed-costelement
-    ).
+        failed   = failed-costelement
+        reported = reported-costelement ).
+  ENDMETHOD.
 
-    DATA(target_entities) = VALUE #( entities[ 1 ]-%target ).
-    SELECT DISTINCT
-           celem~sysid,
-           celem~legalentity,
-           celem~companycode,
-           celem~costelement
-        FROM /esrcc/d_cst_elm AS celem
-        INNER JOIN @target_entities AS tent
-            ON  tent~sysid       = celem~sysid
-            AND tent~legalentity = celem~legalentity
-            AND tent~companycode = celem~companycode
-            AND tent~costelement = celem~costelement
-        WHERE celem~draftentityoperationcode NOT IN ( 'D', 'L' )
-        INTO TABLE @DATA(duplicate_entities).
+  METHOD selectcustomizingtransptreq.
+    MODIFY ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
+      ENTITY costelementsall
+        UPDATE FIELDS ( transportrequestid hidetransport )
+        WITH VALUE #( FOR key IN keys
+                        ( %tky               = key-%tky
+                          transportrequestid = key-%param-transportrequestid
+                          hidetransport      = abap_false ) ).
 
-    LOOP AT target_entities INTO DATA(entity) GROUP BY ( sysid       = entity-sysid
-                                                         legalentity = entity-legalentity
-                                                         companycode = entity-companycode
-                                                         costelement = entity-costelement
-                                                         size        = GROUP SIZE )
-        ASCENDING REFERENCE INTO DATA(group_ref).
-      IF line_exists( duplicate_entities[ sysid       = group_ref->sysid
-                                          legalentity = group_ref->legalentity
-                                          companycode = group_ref->companycode
-                                          costelement = group_ref->costelement ] ) OR
-         group_ref->size > 1.
-        lo_cost_element->set_duplicate_error( entity = CORRESPONDING ts_cost_element( group_ref->* ) ).
-      ENDIF.
-    ENDLOOP.
+    READ ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
+      ENTITY costelementsall
+        ALL FIELDS WITH CORRESPONDING #( keys )
+        RESULT DATA(entities).
+
+    result = VALUE #( FOR entity IN entities
+                        ( %tky   = entity-%tky
+                          %param = entity ) ).
   ENDMETHOD.
 
 ENDCLASS.
@@ -196,17 +231,23 @@ CLASS lhc_/esrcc/i_costelements DEFINITION INHERITING FROM cl_abap_behavior_hand
       validatedata FOR VALIDATE ON SAVE
         IMPORTING keys FOR costelement~validatedata,
       precheck_update FOR PRECHECK
-        IMPORTING entities FOR UPDATE costelement.
+        IMPORTING entities FOR UPDATE costelement,
+      get_instance_features FOR INSTANCE FEATURES
+        IMPORTING keys REQUEST requested_features FOR costelement RESULT result.
+
+    METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+      IMPORTING REQUEST requested_authorizations FOR costelement RESULT result.
+
+    METHODS copy FOR MODIFY
+      IMPORTING keys FOR ACTION costelement~copy.
+
+    METHODS validatetransportrequest FOR VALIDATE ON SAVE
+      IMPORTING keys FOR costelement~validatetransportrequest.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_costelements IMPLEMENTATION.
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/CST_ELMNT'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
     result-%assoc-_costelementstext = edit_flag.
@@ -262,6 +303,120 @@ CLASS lhc_/esrcc/i_costelements IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 
+  METHOD get_instance_features.
+    result = VALUE #( FOR row IN keys ( %tky = row-%tky
+                                        %action-copy = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ) ) ).
+  ENDMETHOD.
+
+  METHOD get_global_authorizations.
+    result-%action-copy = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_COSTELEMENTS' ).
+  ENDMETHOD.
+
+  METHOD copy.
+    DATA:
+      new_main TYPE TABLE FOR CREATE /esrcc/i_costelements_s\_costelements,
+      new_text TYPE TABLE FOR CREATE /esrcc/i_costelements_s\\costelement\_costelementstext.
+
+    FIELD-SYMBOLS <new_text> LIKE LINE OF new_text.
+
+    IF lines( keys ) > 1.
+      INSERT mbc_cp_api=>message( )->get_select_only_one_entry( ) INTO TABLE reported-%other.
+      failed-costelement = VALUE #( FOR fkey IN keys ( %tky = fkey-%tky ) ).
+      RETURN.
+    ENDIF.
+
+    READ ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
+      ENTITY costelement
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(ref_main)
+      FAILED DATA(read_failed).
+
+    READ ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
+      ENTITY costelement BY \_costelementstext
+      ALL FIELDS WITH CORRESPONDING #( ref_main )
+      RESULT DATA(ref_text).
+
+    LOOP AT ref_main ASSIGNING FIELD-SYMBOL(<ref_main>).
+      DATA(key)     = keys[ KEY draft %tky = <ref_main>-%tky ].
+      DATA(key_cid) = key-%cid.
+
+      APPEND VALUE #(
+        %tky-singletonid = 1
+        %is_draft = <ref_main>-%is_draft
+        %target = VALUE #( ( %cid        = key_cid
+                             %is_draft   = <ref_main>-%is_draft
+                             %data       = CORRESPONDING #( <ref_main> EXCEPT costelementuuid sysid companycode legalentity costelement singletonid )
+                             sysid       = key-%param-sysid
+                             companycode = key-%param-companycode
+                             legalentity = key-%param-legalentity
+                             costelement = key-%param-costelement ) ) ) TO new_main.
+
+      UNASSIGN <new_text>.
+      LOOP AT ref_text ASSIGNING FIELD-SYMBOL(<ref_text>) USING KEY draft WHERE %tky-%is_draft       = key-%tky-%is_draft
+                                                                            AND %tky-costelementuuid = key-%tky-costelementuuid.
+        IF <new_text> IS NOT ASSIGNED.
+          INSERT VALUE #( %cid_ref  = key_cid
+                          %is_draft = key-%is_draft ) INTO TABLE new_text ASSIGNING <new_text>.
+        ENDIF.
+
+        INSERT VALUE #( %cid      = key_cid && <ref_text>-spras
+                        %is_draft = key-%is_draft
+                        %data     = CORRESPONDING #( <ref_text> EXCEPT costelementuuid singletonid ) ) INTO TABLE <new_text>-%target.
+      ENDLOOP.
+    ENDLOOP.
+
+*   Pre-check validation before create
+    lcl_custom_validation=>precheck_cba_cost_element(
+      EXPORTING
+        entities = new_main
+      CHANGING
+        failed   = failed-costelement
+        reported = reported-costelement ).
+
+    IF failed-costelement IS INITIAL.
+      MODIFY ENTITIES OF /esrcc/i_costelements_s IN LOCAL MODE
+        ENTITY costelementsall CREATE BY \_costelements
+        FIELDS (
+                 sysid
+                 legalentity
+                 companycode
+                 costelement
+                 active
+               ) WITH new_main
+        ENTITY costelement CREATE BY \_costelementstext
+        FIELDS (
+                 spras
+                 description
+               ) WITH new_text
+        MAPPED DATA(mapped_create)
+        FAILED failed
+        REPORTED reported.
+    ENDIF.
+
+    mapped-costelement = mapped_create-costelement.
+    INSERT LINES OF read_failed-costelement INTO TABLE failed-costelement.
+
+    IF failed-costelement IS INITIAL AND failed-costelementstext IS INITIAL.
+      reported-costelement = VALUE #( FOR created IN mapped-costelement (
+                                     %cid            = created-%cid
+                                     %action-copy    = if_abap_behv=>mk-on
+                                     %msg            = mbc_cp_api=>message( )->get_item_copied( )
+                                     %path-costelementsall = VALUE #( %is_draft = created-%is_draft singletonid = 1 ) ) ).
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_costelements_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_cst_e_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/CST_ELMNT'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-costelement ) ).
+  ENDMETHOD.
+
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_costelementstext DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -270,18 +425,28 @@ CLASS lhc_/esrcc/i_costelementstext DEFINITION INHERITING FROM cl_abap_behavior_
       get_global_features FOR GLOBAL FEATURES
         IMPORTING
         REQUEST requested_features FOR costelementstext
-        RESULT result.
+        RESULT result,
+      validatetransportrequest FOR VALIDATE ON SAVE
+        IMPORTING keys FOR costelementstext~validatetransportrequest.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_costelementstext IMPLEMENTATION.
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/CST_ELMTT'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
   ENDMETHOD.
+
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_costelements_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_cst_e_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/CST_ELMTT'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-costelementstext ) ).
+  ENDMETHOD.
+
 ENDCLASS.

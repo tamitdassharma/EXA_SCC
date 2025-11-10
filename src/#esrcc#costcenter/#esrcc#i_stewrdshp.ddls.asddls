@@ -10,7 +10,6 @@ define view entity /ESRCC/I_Stewrdshp
   association [1..1] to /ESRCC/I_STATUS             as _WorkflowStatusText on  _WorkflowStatusText.Status = $projection.WorkflowStatus
 
   composition [0..*] of /ESRCC/I_StwdSp             as _ServiceProduct
-  composition [0..*] of /ESRCC/I_StwdSpRec          as _ServiceReceiver
 {
   key stewardship_uuid            as StewardshipUuid,
       valid_from                  as ValidFrom,
@@ -61,7 +60,6 @@ define view entity /ESRCC/I_Stewrdshp
 
       _StewardshipAll,
       _ServiceProduct,
-      _ServiceReceiver,
       _CostObject,
       _CostObjectText,
       _WorkflowStatusText

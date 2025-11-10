@@ -6,7 +6,7 @@ define view entity /ESRCC/I_CoRule
   association        to parent /ESRCC/I_CoRule_S     as _RuleAll                on $projection.SingletonID = _RuleAll.SingletonID
   association        to /ESRCC/I_CHGOUT              as _ChargeOut              on _ChargeOut.Chargeout = $projection.ChargeoutMethod
   association [0..1] to /ESRCC/I_CAPACITY_VERSION    as _CapacityVersionText    on _CapacityVersionText.CapacityVersion = $projection.CapacityVersion
-  association [0..1] to /ESRCC/I_COST_VERSION        as _CostVersionText        on _CostVersionText.CostVersion = $projection.CostVersion
+  //  association [0..1] to /ESRCC/I_COST_VERSION        as _CostVersionText        on _CostVersionText.CostVersion = $projection.CostVersion
   association [0..1] to /ESRCC/I_CONSUMPTION_VERSION as _ConsumptionVersionText on _ConsumptionVersionText.ConsumptionVersion = $projection.ConsumptionVersion
   association [0..1] to /ESRCC/I_KEY_VERSION         as _KeyVersionText         on _KeyVersionText.KeyVersion = $projection.KeyVersion
   association [0..1] to /ESRCC/I_ALLOCATION_KEY_F4   as _AllocationKeyText      on _AllocationKeyText.Allocationkey = $projection.AdhocAllocationKey
@@ -16,7 +16,7 @@ define view entity /ESRCC/I_CoRule
   composition [0..*] of /ESRCC/I_AllocWeightage      as _Weightage
 {
   key rule_id                                    as RuleId,
-      cost_version                               as CostVersion,
+      //      cost_version                               as CostVersion,
       chargeout_method                           as ChargeoutMethod,
       capacity_version                           as CapacityVersion,
       consumption_version                        as ConsumptionVersion,
@@ -54,7 +54,7 @@ define view entity /ESRCC/I_CoRule
         when 'F' then 3
         else 0
       end                                        as WorkflowStatusCriticality,
-      cast('' as /esrcc/status_de )              as WorkflowInternalStatus,
+      ''                                         as WorkflowInternalStatus,
       cast('' as /esrcc/comment )                as Comments,
 
       cast( '' as abap_boolean preserving type ) as HideCostVersion,
@@ -68,7 +68,7 @@ define view entity /ESRCC/I_CoRule
       _RuleText,
       _ChargeOut,
       _CapacityVersionText,
-      _CostVersionText,
+      //      _CostVersionText,
       _ConsumptionVersionText,
       _KeyVersionText,
       _Weightage,

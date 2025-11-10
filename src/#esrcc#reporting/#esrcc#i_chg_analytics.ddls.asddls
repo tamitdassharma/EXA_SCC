@@ -4,6 +4,15 @@
 @Analytics.dataCategory: #CUBE
 define root view entity /ESRCC/I_CHG_ANALYTICS
   as select from /ESRCC/I_ReceiverChargeout as ReceiverChargeout
+  
+  association [0..1] to /ESRCC/I_TRUEUP as _trueup
+                      on _trueup.RootUUID            = $projection.RootUUID
+                     and _trueup.ParentUUID          = $projection.ParentUUID                    
+                     and _trueup.Receiversysid       = $projection.ReceiverSysId
+                     and _trueup.Receivercompanycode = $projection.ReceiverCompanyCode
+                     and _trueup.Receivingentity     = $projection.Receivingentity
+                     and _trueup.Receivercostobject  = $projection.ReceiverCostObject
+                     and _trueup.Receivercostcenter  = $projection.ReceiverCostCenter  
 {
 
   key UUID,
@@ -26,20 +35,24 @@ define root view entity /ESRCC/I_CHG_ANALYTICS
       ReceiverCostObject,
       ReceiverCostCenter,
       ConsumptionUom                                                                                                  as Uom,
-      _ServiceCost._CostCenterCost.Billingfrequqncy,
-      _ServiceCost._CostCenterCost.Billingperiod,
       _ServiceCost._CostCenterCost.Businessdivision,
       _ServiceCost._CostCenterCost.FunctionalArea,
       _ServiceCost._CostCenterCost.Profitcenter,
       _ServiceCost._CostCenterCost.Controllingarea,
       _ServiceCost.Servicetype,
       _ServiceCost.Transactiongroup,
-      _ServiceCost.ContractId,
       _ServiceCost.Chargeout,
+      ContractId,
+      ErpSalesOrder,
       Currency,
       Reckpi,
       Reckpishare,
-      TotalChargeout,
+      case when _trueup.AmountG is not initial then
+      TotalChargeout + cast( _trueup.AmountG as abap.dec(23,2))
+      else TotalChargeout 
+      end as TotalChargeout,
+      cast( _trueup.AmountG as abap.dec(23,2)) as TotalTrueupAmount,
+      TotalChargeout as StdChargeout,
       TotalRecMarkup,
       RecValueaddMarkup,
       RecPassthroughMarkup,
@@ -79,6 +92,7 @@ define root view entity /ESRCC/I_CHG_ANALYTICS
       else 0 end                                                                                                      as RecPassTotalCost,
 
       Status,
+      _ServiceCost._CostCenterCost.ChainId,
       _ServiceCost.OECD,
       @Semantics.text: true
       _ServiceCost._CostCenterCost.legalentitydescription,
@@ -130,4 +144,5 @@ define root view entity /ESRCC/I_CHG_ANALYTICS
 }
 where
       Currencytype   =  'G'
-  and TotalChargeout <> 0
+    
+  

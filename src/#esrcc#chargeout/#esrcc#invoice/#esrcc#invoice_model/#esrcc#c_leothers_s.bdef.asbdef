@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_LeOthers_S alias OtherInformationAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _OtherInformation { create; with draft; }
 }
@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_LeOthers alias OtherInformation
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _OtherInformationAll { with draft; }
 }

@@ -1,0 +1,107 @@
+managed with additional save implementation in class /ESRCC/BP_I_LEDGER_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Ledger_S alias LedgerAll
+draft table /esrcc/d_ledge_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Ledger { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Ledger alias Ledger
+persistent table /esrcc/ledger
+draft table /esrcc/d_ledger
+etag master LocalLastChangedAt
+lock dependent by _LedgerAll
+authorization dependent by _LedgerAll
+
+{
+  field ( mandatory : create )
+  Ledger;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Ledger;
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLedgerP [1];
+
+  mapping for /esrcc/ledger
+    {
+      Ledger             = LEDGER;
+      Active             = ACTIVE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LedgerAll { with draft; }
+  association _LedgerText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_LedgerText alias LedgerText
+persistent table /esrcc/ledger_t
+draft table /esrcc/d_ledgert
+etag master LocalLastChangedAt
+lock dependent by _LedgerAll
+authorization dependent by _LedgerAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Ledger,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/ledger_t
+    {
+      Spras              = SPRAS;
+      Ledger             = LEDGER;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LedgerAll { with draft; }
+  association _Ledger { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

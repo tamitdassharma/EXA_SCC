@@ -7,14 +7,15 @@
 annotate view /ESRCC/C_SrType_S with
 {
   @UI.facet: [ {
-  //    id: 'Transport',
-  //    purpose: #STANDARD,
-  //    type: #IDENTIFICATION_REFERENCE,
-  //    label: 'Transport',
-  //    position: 1
-  //  },
-  //  {
-    id: '/ESRCC/I_SrType',
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1,
+    hidden: #(HideTransport)
+  },
+  {
+  id: '/ESRCC/I_SrType',
     purpose: #STANDARD,
     type: #LINEITEM_REFERENCE,
     label: 'Maintain Service Types',
@@ -31,11 +32,11 @@ annotate view /ESRCC/C_SrType_S with
   {
     position: 2 ,
     importance: #HIGH
-  //  },
-  //  {
-  //    type: #FOR_ACTION,
-  //    dataAction: 'SelectCustomizingTransptReq',
-  //    label: 'Select Transport'
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
   } ]
   TransportRequestID;
 }

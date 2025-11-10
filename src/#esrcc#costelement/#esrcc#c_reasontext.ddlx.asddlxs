@@ -19,6 +19,7 @@ annotate view /ESRCC/C_ReasonText with
     position: 1
   } ]
   @UI.lineItem: [ { position: 1 } ]
+  @UI.textArrangement: #TEXT_LAST
   Spras;
 
   @UI.identification: [ { position: 2 } ]

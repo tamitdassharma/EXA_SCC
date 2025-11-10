@@ -1,0 +1,74 @@
+managed with additional save implementation in class /ESRCC/BP_I_SWITCH_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Switch_S alias SwitchAll
+draft table /esrcc/d_switc_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Switch { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Switch alias Switch
+persistent table /esrcc/switch
+draft table /esrcc/d_switch
+etag master LocalLastChangedAt
+lock dependent by _SwitchAll
+authorization dependent by _SwitchAll
+
+{
+  field ( mandatory : create )
+  Application,
+  SwitchName;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Application,
+  SwitchName;
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopySwitchP [1];
+
+  mapping for /esrcc/switch
+    {
+      Application        = APPLICATION;
+      SwitchName         = SWITCH_NAME;
+      Active             = ACTIVE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _SwitchAll { with draft; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

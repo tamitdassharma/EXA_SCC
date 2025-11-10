@@ -9,7 +9,7 @@
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
-    <UNICODE>X</UNICODE>
+    <UNICODE>5</UNICODE>
    </VSEOCLASS>
    <TPOOL>
     <item>
@@ -38,29 +38,24 @@
       <item>
        <ID>I</ID>
        <KEY>001</KEY>
-       <ENTRY>Kostenträger-Nummer (Quelle)</ENTRY>
-       <LENGTH>28</LENGTH>
+       <ENTRY>Serviceverbräuche</ENTRY>
+       <LENGTH>29</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>002</KEY>
-       <ENTRY>Abrechnungsintervall</ENTRY>
-       <LENGTH>27</LENGTH>
+       <ENTRY>Servicekapazitäten</ENTRY>
+       <LENGTH>26</LENGTH>
       </item>
       <item>
        <ID>I</ID>
        <KEY>003</KEY>
-       <ENTRY>Kostenanteil (%)</ENTRY>
-       <LENGTH>27</LENGTH>
+       <ENTRY>Basiswerte für Allokationsschlüssel</ENTRY>
+       <LENGTH>52</LENGTH>
       </item>
      </TEXTPOOL>
     </item>
    </I18N_TPOOL>
-   <I18N_LINES>
-    <item>
-     <LANGUAGE>D</LANGUAGE>
-    </item>
-   </I18N_LINES>
   </asx:values>
  </asx:abap>
 </abapGit>

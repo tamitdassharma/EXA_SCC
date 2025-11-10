@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_LeBnkInfo_S alias BankInformationAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _BankInformation { create; with draft; }
 }
@@ -20,6 +20,7 @@ define behavior for /ESRCC/C_LeBnkInfo alias BankInformation
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _BankInformationAll { with draft; }
 }

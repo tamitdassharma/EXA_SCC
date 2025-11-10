@@ -6,7 +6,7 @@ define root view entity /ESRCC/I_INDIRECTALLOCKEYVALUE
   association [0..1] to /ESRCC/I_COSCEN_F4         as _CostCenter     on $projection.CostObjectUuid = _CostCenter.CostObjectUuid
   association [0..1] to /ESRCC/I_KEY_VERSION       as _KeyVersionText on $projection.Fplv = _KeyVersionText.KeyVersion
   association [0..1] to /ESRCC/I_ALLOCATION_KEY_F4 as _AllockeyText   on $projection.AllocationKey = _AllockeyText.Allocationkey
-  association        to /ESRCC/I_POPER             as _PoperText      on _PoperText.Poper = $projection.Poper
+//  association        to /ESRCC/I_POPER             as _PoperText      on _PoperText.Poper = $projection.Poper
 {
   key indirect_allocation_uuid as IndirectAllocationUUID,
       ryear                    as Ryear,
@@ -34,7 +34,7 @@ define root view entity /ESRCC/I_INDIRECTALLOCKEYVALUE
 
       _CostCenter,
       _KeyVersionText,
-      _AllockeyText,
-      _PoperText
+      _AllockeyText
+//      _PoperText
 
 }

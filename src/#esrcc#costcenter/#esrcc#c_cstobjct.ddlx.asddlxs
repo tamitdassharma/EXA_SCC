@@ -40,7 +40,8 @@ annotate view /ESRCC/C_CstObjct with
     position: 3,
     targetElement: '_CostObjectText'
   } ]
-
+  
+  @UI.lineItem: [ { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   @UI.hidden: true
   CostObjectUuid;
 
@@ -84,44 +85,72 @@ annotate view /ESRCC/C_CstObjct with
   @UI.lineItem: [ { position: 6 } ]
   @EndUserText.quickInfo: 'Cost Object Number Description'
   Description;
-
+  
   @UI.identification: [ { position: 7 } ]
   @UI.lineItem: [ { position: 7 } ]
-  @UI.textArrangement: #TEXT_LAST
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }, useForValidation: true }]
-  FunctionalArea;
+  Active;
 
   @UI.identification: [ { position: 8 } ]
   @UI.lineItem: [ { position: 8 } ]
   @UI.textArrangement: #TEXT_LAST
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }, useForValidation: true }]
-  ProfitCenter;
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }, useForValidation: true }]
+  FunctionalArea;
 
   @UI.identification: [ { position: 9 } ]
   @UI.lineItem: [ { position: 9 } ]
   @UI.textArrangement: #TEXT_LAST
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }, useForValidation: true }]
-  BusinessDivision;
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROFITCENTER_F4', element: 'ProfitCenter' }, useForValidation: true }]
+  ProfitCenter;
 
   @UI.identification: [ { position: 10 } ]
-  @UI.lineItem: [ { position: 10, cssDefault.width: '9.5rem' } ]
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }, useForValidation: true }]
+  BusinessDivision;
+  
+  @UI.identification: [ { position: 20 } ]
+  @UI.lineItem: [ { position: 20 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy1_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy1;
+  
+  @UI.identification: [ { position: 30 } ]
+  @UI.lineItem: [ { position: 30 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy2_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy2;
+  
+  @UI.identification: [ { position: 40 } ]
+  @UI.lineItem: [ { position: 40 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy3_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy3;
+  
+  @UI.identification: [ { position: 50 } ]
+  @UI.lineItem: [ { position: 50 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy4_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy4;
+  
+  @UI.identification: [ { position: 90 } ]
+  @UI.lineItem: [ { position: 90, cssDefault.width: '9.5rem' } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
   BillingFrequency;
 
-  @UI.lineItem: [ { position: 11 } ]
+  @UI.lineItem: [ { position: 100 } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 1 }]
   CreatedBy;
 
-  @UI.lineItem: [ { position: 12, cssDefault.width: '9.5rem' } ]
+  @UI.lineItem: [ { position: 110, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 2 }]
   CreatedAt;
 
-  @UI.lineItem: [ { position: 13 } ]
+  @UI.lineItem: [ { position: 120} ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 3 }]
   LastChangedBy;
 
-  @UI.lineItem: [ { position: 14, cssDefault.width: '9.5rem' } ]
+  @UI.lineItem: [ { position: 130, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 4 }]
   LastChangedAt;
 
@@ -139,6 +168,14 @@ annotate view /ESRCC/C_CstObjct with
   ProfitCenterDescription;
   @UI.hidden: true
   BusinessDivisionDescription;
+  @UI.hidden: true
+  Hierarchy1Description;
+  @UI.hidden: true
+  Hierarchy2Description;
+  @UI.hidden: true
+  Hierarchy3Description;
+  @UI.hidden: true
+  Hierarchy4Description;
   @UI.hidden: true
   BillingFrequencyDescription;
 }

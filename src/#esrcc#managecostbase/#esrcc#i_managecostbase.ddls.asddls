@@ -41,6 +41,7 @@ define root view entity /ESRCC/I_MANAGECOSTBASE
   key ryear                             as Ryear,
   key poper                             as Poper,
   key fplv                              as Fplv,
+  key ledger                            as Ledger,
   key sysid                             as SysID,
   key ManageCostBase.legalentity        as Legalentity,
   key ManageCostBase.ccode              as Ccode,
@@ -65,7 +66,6 @@ define root view entity /ESRCC/I_MANAGECOSTBASE
       ManageCostBase.costind            as Costind,
       ManageCostBase.usagecal           as Usagecal,
       ManageCostBase.reasonid           as ReasonId,
-      //  ManageCostBase.costdataset as Costdataset,
       ManageCostBase.status             as Status,
       ManageCostBase.workflowid         as WorkflowId,
       oldcostind,
@@ -75,6 +75,7 @@ define root view entity /ESRCC/I_MANAGECOSTBASE
       oldreasonid,
       commentid                         as CommentId,
       cc_guid                           as UniqueId,
+      recalrefpoper                     as Recalrefpoper,
       @Semantics.user.createdBy: true
       created_by                        as CreatedBy,
       @Semantics.systemDateTime.createdAt: true
@@ -115,6 +116,8 @@ define root view entity /ESRCC/I_MANAGECOSTBASE
         when 'E' then 3
         when 'A' then 3
         when 'F' then 3
+        when 'K' then 3
+        when 'O' then 3
         when 'R' then 1
         when 'C' then 1
         else

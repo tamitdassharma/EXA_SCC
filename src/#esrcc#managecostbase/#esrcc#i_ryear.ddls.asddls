@@ -7,6 +7,6 @@
 define root view entity /ESRCC/I_RYEAR
   as select distinct from /esrcc/cb_li 
 {
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key ryear
 }

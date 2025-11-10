@@ -25,6 +25,7 @@ define behavior for /ESRCC/C_CoRule alias Rule
   use update( augment );
   use delete;
 
+  use action Copy;
   use action Submit;
   use action Finalize;
   use action Reopen;
@@ -49,6 +50,7 @@ define behavior for /ESRCC/C_AllocWeightage alias Weightage
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _RuleAll { with draft; }
   use association _Rule { with draft; }

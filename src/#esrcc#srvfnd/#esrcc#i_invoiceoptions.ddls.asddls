@@ -15,11 +15,11 @@ define view entity /ESRCC/I_INVOICEOPTIONS
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_ONLY
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key value_low as InvoiceOption,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       text
 }
 where

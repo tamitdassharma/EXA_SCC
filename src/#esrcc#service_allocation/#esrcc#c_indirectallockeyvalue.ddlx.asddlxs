@@ -3,7 +3,18 @@
   headerInfo: {
     typeName: 'Base Key Value',
     typeNamePlural: 'Base Key Values'
-  }
+  },
+  presentationVariant: [{
+    sortOrder: [{ by: 'Sysid', direction: #ASC },
+                { by: 'LegalEntity', direction: #ASC},
+                { by: 'CompanyCode', direction: #ASC },
+                { by: 'CostObject', direction: #ASC },
+                { by: 'CostCenter', direction: #ASC },
+                { by: 'AllocationKey', direction: #ASC },
+                { by: 'Fplv', direction: #ASC },
+                { by: 'Ryear', direction: #ASC },
+                { by: 'Poper', direction: #ASC }]
+  }]
 }
 annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
 {
@@ -20,7 +31,7 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
     parentId: 'CE',
     position: 10
   },
-  { 
+  {
     id: 'Allocation',
     purpose: #STANDARD,
     type: #FIELDGROUP_REFERENCE,
@@ -57,7 +68,7 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
                                                            { localElement: 'CostObject', element: 'Costobject' },
                                                            { localElement: 'CostCenter', element: 'Costcenter' },
                                                            { localElement: 'CostObjectUuid', element: 'CostObjectUuid', usage: #RESULT }],
-                                       useForValidation: true }]  
+                                       useForValidation: true }]
   Sysid;
 
   @UI.identification: [ { position: 20 } ]
@@ -128,17 +139,17 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
                                        useForValidation: true }]
   Fplv;
 
-  @UI.lineItem: [ { position: 80 } ]
+  @UI.lineItem: [ { position: 80, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 30, qualifier: 'AllocationGroup' }]
   @UI.selectionField: [{ position: 80 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' },
                                        useForValidation: true }]
   Ryear;
 
-  @UI.lineItem: [ { position: 90, cssDefault.width: '4.5rem' } ]
+  @UI.lineItem: [ { position: 90, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 40, qualifier: 'AllocationGroup' }]
   @UI.selectionField: [{ position: 90 }]
-  @UI.textArrangement: #TEXT_ONLY
+  //  @UI.textArrangement: #TEXT_ONLY
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' },
                                        useForValidation: true }]
   @Consumption.filter.multipleSelections: true
@@ -146,7 +157,6 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
 
   @UI.lineItem: [ { position: 100 } ]
   @UI.fieldGroup: [{ position: 50, qualifier: 'AllocationGroup' }]
-  @EndUserText.label: 'Base Key Value'
   @Consumption.filter.hidden: true
   Value;
 
@@ -159,7 +169,7 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
   @UI.fieldGroup: [{ position: 10, qualifier: 'AdminGroup' }]
   @Consumption.filter.hidden: true
   CreatedBy;
-  
+
   @UI.lineItem: [ { position: 130 } ]
   @UI.fieldGroup: [{ position: 20, qualifier: 'AdminGroup' }]
   @Consumption.filter.hidden: true
@@ -169,7 +179,7 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
   @UI.fieldGroup: [{ position: 30, qualifier: 'AdminGroup' }]
   @Consumption.filter.hidden: true
   LastChangedBy;
-  
+
   @UI.lineItem: [ { position: 1450 } ]
   @UI.fieldGroup: [{ position: 40, qualifier: 'AdminGroup' }]
   @Consumption.filter.hidden: true
@@ -179,8 +189,6 @@ annotate view /ESRCC/C_INDIRECTALLOCKEYVALUE with
   FplvDescription;
   @UI.hidden
   AllocationKeyDescription;
-  @UI.hidden
-  PoperDescription;
   @UI.hidden
   SysidDescription;
   @UI.hidden

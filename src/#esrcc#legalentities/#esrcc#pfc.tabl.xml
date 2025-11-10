@@ -12,6 +12,7 @@
     <MAINFLAG>X</MAINFLAG>
     <CONTFLAG>C</CONTFLAG>
     <EXCLASS>4</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/PFC</TABNAME>
@@ -80,12 +81,6 @@
      <DDTEXT>Profit Center</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/PFC</TABNAME>
-     <CCLASS>CUS_DEV_SUP_RO</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

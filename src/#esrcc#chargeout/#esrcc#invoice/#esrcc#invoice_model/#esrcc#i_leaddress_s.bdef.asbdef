@@ -3,64 +3,72 @@ strict;
 with draft;
 
 define behavior for /ESRCC/I_LeAddress_S alias LeAddressAll
-draft table /ESRCC/D_LE_AD_S
+draft table /esrcc/d_le_ad_s
 with unmanaged save
 lock master total etag LastChangedAtMax
-authorization master( global )
+authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _LeAddress { create ( features : instance ); with draft; }
 }
 
 define behavior for /ESRCC/I_LeAddress alias LeAddress
-persistent table /ESRCC/LE_ADDRES
-draft table /ESRCC/D_LE_ADDR
+persistent table /esrcc/le_addres
+draft table /esrcc/d_le_addr
 etag master LocalLastChangedAt
 lock dependent by _LeAddressAll
 authorization dependent by _LeAddressAll
 
 {
   field ( mandatory : create )
-   LegalEntity;
+  LegalEntity;
 
   field ( readonly )
-   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
 
   field ( readonly : update )
-   LegalEntity;
+  LegalEntity;
 
 
-  update( features : global );
-  delete( features : global );
+  update ( features : global );
+  delete ( features : global );
 
-  mapping for /ESRCC/LE_ADDRES
-  {
-    LegalEntity = LEGAL_ENTITY;
-    CustomerNumber = CUSTOMER_NUMBER;
-    ContactPerson = CONTACT_PERSON;
-    Street1 = STREET_1;
-    Street2 = STREET_2;
-    City = CITY;
-    Zip = ZIP;
-    State = STATE;
-    Country = COUNTRY;
-    Telephone = TELEPHONE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLeAddressP [1];
+
+  mapping for /esrcc/le_addres
+    {
+      LegalEntity        = LEGAL_ENTITY;
+      CustomerNumber     = CUSTOMER_NUMBER;
+      ContactPerson      = CONTACT_PERSON;
+      Street1            = STREET_1;
+      Street2            = STREET_2;
+      City               = CITY;
+      Zip                = ZIP;
+      State              = STATE;
+      Country            = COUNTRY;
+      Telephone          = TELEPHONE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _LeAddressAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

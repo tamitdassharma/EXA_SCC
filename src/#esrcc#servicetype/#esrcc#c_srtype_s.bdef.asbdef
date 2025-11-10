@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_SrType_S alias ServiceTypeAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _ServiceType { create ( augment ); with draft; }
 }
@@ -21,9 +21,9 @@ define behavior for /ESRCC/C_SrType alias ServiceType
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _ServiceTypeAll { with draft; }
   use association _ServiceTypeText { create; with draft; }

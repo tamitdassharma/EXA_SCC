@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_ENHS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <TOOL>BADI_DEF</TOOL>
+   <SHORTTEXT>Service Cross Charging BW Enhancement Spot</SHORTTEXT>
+   <BADI_DATA>
+    <ENH_BADI_DATA>
+     <BADI_NAME>/ESRCC/BW_EXTRACTION_BADI</BADI_NAME>
+     <INTERFACE_NAME>/ESRCC/IF_BW_EXTRACTION_BADI</INTERFACE_NAME>
+     <SINGLE_USE>X</SINGLE_USE>
+     <CONTEXT_MODE>N</CONTEXT_MODE>
+     <DEFAULT_CLASS>/ESRCC/BW_EXTRACTION</DEFAULT_CLASS>
+     <BADI_SHORTTEXT>Service Cross Charging BW Extraction BAdI</BADI_SHORTTEXT>
+     <BADI_SHORTTEXT_ID>ETR-265BBE744CCCAFFA</BADI_SHORTTEXT_ID>
+     <USE_FALLBACK_CLASS>X</USE_FALLBACK_CLASS>
+     <AMDP_DBSYS>HDB</AMDP_DBSYS>
+    </ENH_BADI_DATA>
+   </BADI_DATA>
+  </asx:values>
+ </asx:abap>
+</abapGit>

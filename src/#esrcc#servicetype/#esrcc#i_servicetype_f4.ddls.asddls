@@ -10,11 +10,11 @@ define view entity /ESRCC/I_SERVICETYPE_F4
                                                     and srvtypet.spras = $session.system_language
 {
       @ObjectModel.text: { element: ['Description'] }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_SEPARATE
   key srvtyp.srvtype       as ServiceType,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       srvtypet.description as Description
 }

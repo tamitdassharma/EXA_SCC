@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_CLAS" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <VSEOCLASS>
+    <CLSNAME>/ESRCC/CL_WF_HTML</CLSNAME>
+    <LANGU>E</LANGU>
+    <DESCRIPT>HTML generation for Workflow</DESCRIPT>
+    <STATE>1</STATE>
+    <CLSCCINCL>X</CLSCCINCL>
+    <FIXPT>X</FIXPT>
+    <UNICODE>5</UNICODE>
+   </VSEOCLASS>
+   <DESCRIPTIONS_SUB>
+    <SEOSUBCOTX>
+     <CMPNAME>GENERATE_TABLE_COLUMN</CMPNAME>
+     <SCONAME>IV_ADDN_PROP</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Workflow Standard Text Length</DESCRIPT>
+    </SEOSUBCOTX>
+    <SEOSUBCOTX>
+     <CMPNAME>HTML_TAG_END_TABLE</CMPNAME>
+     <SCONAME>RV_TAG</SCONAME>
+     <LANGU>E</LANGU>
+     <DESCRIPT>Workflow Standard Text Length</DESCRIPT>
+    </SEOSUBCOTX>
+   </DESCRIPTIONS_SUB>
+  </asx:values>
+ </asx:abap>
+</abapGit>

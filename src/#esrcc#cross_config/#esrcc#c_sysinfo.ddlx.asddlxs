@@ -41,7 +41,8 @@ annotate view /ESRCC/C_SysInfo with
     targetElement: '_SystemInfoText'
   } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   SystemId;
 
   @UI.identification: [ { position: 3 } ]

@@ -7,9 +7,9 @@
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Group 2: Cost-Base Configurations</DDTEXT>
-    <REPTEXT>Group 2: Cost-Base Configurations</REPTEXT>
-    <SCRTEXT_L>Group 2: Cost-Base Configurations</SCRTEXT_L>
+    <DDTEXT>Group 02: Cost-Base Configurations</DDTEXT>
+    <REPTEXT>Group 02: Cost-Base Configurations</REPTEXT>
+    <SCRTEXT_L>Group 02: Cost-Base Configurations</SCRTEXT_L>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -22,8 +22,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 2: Konfiguration Kostenbasisdaten</DDTEXT>
-     <REPTEXT>Gruppe 2: Konfiguration Kostenbasisdaten</REPTEXT>
+     <DDTEXT>Gruppe 02: Konfiguration Kostenbasisdaten</DDTEXT>
+     <REPTEXT>Gruppe 02: Konfiguration Kostenbasisdaten</REPTEXT>
      <SCRTEXT_L>Gruppe 2: Konfiguration Kostenbasisdaten</SCRTEXT_L>
     </item>
    </DD04_TEXTS>

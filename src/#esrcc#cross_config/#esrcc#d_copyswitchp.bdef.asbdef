@@ -1,0 +1,7 @@
+abstract;
+
+define behavior for /ESRCC/D_CopySwitchP
+{
+  field ( mandatory )
+  Application, SwitchName;
+}

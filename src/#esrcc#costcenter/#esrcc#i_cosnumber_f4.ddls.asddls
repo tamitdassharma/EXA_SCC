@@ -1,5 +1,5 @@
 @AbapCatalog.viewEnhancementCategory: [ #PROJECTION_LIST, #UNION ]
-@AccessControl.authorizationCheck: #CHECK
+@AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Source Cost Object and Number'
 @Metadata.ignorePropagatedAnnotations: true
 @ObjectModel.usageType:{
@@ -19,11 +19,11 @@ define view entity /ESRCC/I_COSNUMBER_F4
       @ObjectModel.text.element: [ 'Description' ]
       @UI.lineItem: [{ position: 3 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key cost_center       as Costcenter,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _Text.description as Description
 }

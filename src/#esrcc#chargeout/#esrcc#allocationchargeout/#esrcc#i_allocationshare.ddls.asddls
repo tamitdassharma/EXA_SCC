@@ -26,6 +26,8 @@ define root view entity /ESRCC/I_ALLOCATIONSHARE
       receivercharegout._ServiceCost._CostCenterCost.Fplv,
       receivercharegout._ServiceCost._CostCenterCost.Ryear,
       receivercharegout._ServiceCost._CostCenterCost.Poper,
+      receivercharegout._ServiceCost._CostCenterCost.ProcessType,
+      receivercharegout._ServiceCost._CostCenterCost.RefPoper,
       cast( receivercharegout._ServiceCost._CostCenterCost.Sysid as /esrcc/provider_sysid )           as Sysid,
       cast( receivercharegout._ServiceCost._CostCenterCost.Ccode as /esrcc/provider_ccode )           as Ccode,
       cast( receivercharegout._ServiceCost._CostCenterCost.Legalentity as /esrcc/provider_entity )    as Legalentity,
@@ -65,7 +67,7 @@ define root view entity /ESRCC/I_ALLOCATIONSHARE
       receivercharegout.receivingentitydescription,
       receivercharegout.costobjectdescription                                                         as RecCostObjectdescription,
       receivercharegout.costcenterdescription                                                         as RecCostCenterdescription,
-
+      receivercharegout._ServiceCost._CostCenterCost.ProcessTypedescription,
       _KeyVersionText,
       _AllocKeyText,
       //      _AllocTypeText,

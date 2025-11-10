@@ -59,9 +59,10 @@ annotate view /ESRCC/C_SrvMkp with
   } ]
 
   @UI.lineItem: [{ position: 2 },
-                 { type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
-                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
-                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+                 { type: #FOR_ACTION, position: 10, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 20, dataAction: 'Submit', label: 'Submit', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 30, dataAction: 'Finalize', label: 'Finalize', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 40, dataAction: 'Reopen', label: 'Re-open', invocationGrouping: #CHANGE_SET }]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
                                        useForValidation: true }]
@@ -95,7 +96,7 @@ annotate view /ESRCC/C_SrvMkp with
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
   WorkflowId;
 
-  @UI.lineItem: [ { position: 10, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.lineItem: [ { position: 10, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
   @UI.textArrangement: #TEXT_ONLY
   @EndUserText.label: 'Workflow Status'
@@ -129,4 +130,6 @@ annotate view /ESRCC/C_SrvMkp with
   ProductDescription;
   @UI.hidden: true
   WorkflowStatusCriticality;
+  @UI.hidden: true
+  WorkflowStatusDescription;
 }

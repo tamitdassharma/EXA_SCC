@@ -1,0 +1,117 @@
+managed with additional save implementation in class /ESRCC/BP_I_ROYCOMP_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_RoyComp_S alias RuleAll
+draft table /esrcc/d_royco_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation Rule~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Rule { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_RoyComp alias Rule
+persistent table /esrcc/roycomp
+draft table /esrcc/d_roycom1
+etag master LocalLastChangedAt
+lock dependent by _RuleAll
+authorization dependent by _RuleAll
+
+{
+  field ( mandatory : create )
+  RuleId;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  RuleId;
+
+  field ( mandatory )
+  RoyaltyComputationMethod;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyRoyCompP [1];
+
+  mapping for /esrcc/roycomp
+    {
+      RuleId                   = RULE_ID;
+      RoyaltyComputationMethod = ROYALTY_COMPUTATION_METHOD;
+      Value                    = VALUE;
+      AmountValue              = AMOUNTVALUE;
+      Currency                 = CURRENCY;
+      CreatedBy                = CREATED_BY;
+      CreatedAt                = CREATED_AT;
+      LastChangedBy            = LAST_CHANGED_BY;
+      LastChangedAt            = LAST_CHANGED_AT;
+      LocalLastChangedAt       = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RuleAll { with draft; }
+  association _RuleText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_RoyCompText alias RuleText
+persistent table /esrcc/roycompt
+draft table /esrcc/d_roycom2
+etag master LocalLastChangedAt
+lock dependent by _RuleAll
+authorization dependent by _RuleAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  RuleId,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/roycompt
+    {
+      Spras              = SPRAS;
+      RuleId             = RULE_ID;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RuleAll { with draft; }
+  association _Rule { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

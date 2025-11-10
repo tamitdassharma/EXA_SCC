@@ -9,15 +9,22 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
-  draft determine action Prepare;
+  draft determine action Prepare
+  {
+    validation RoleAssignment~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _RoleAssignment { create ( features : instance ); with draft; }
 }
@@ -34,10 +41,10 @@ authorization dependent by _RoleAssignmentAll
   Application,
   Approvallevel;
   // Design Requirement: The below key fields are not mandatory
-//    Legalentity,
-//    Sysid,
-//    Costobject,
-//    Costcenter;
+  //    Legalentity,
+  //    Sysid,
+  //    Costobject,
+  //    Costcenter;
 
   field ( readonly )
   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
@@ -50,26 +57,33 @@ authorization dependent by _RoleAssignmentAll
   Costobject,
   Costcenter;
 
+  field ( mandatory )
+  Usergroup;
 
-  update ( features : global );
+  update ( features : global, precheck );
   delete ( features : global );
 
-  mapping for /ESRCC/WFCUST
-  {
-    Application = APPLICATION;
-    Approvallevel = APPROVALLEVEL;
-    Legalentity = LEGALENTITY;
-    Sysid = SYSID;
-    Costobject = COSTOBJECT;
-    Costcenter = COSTCENTER;
-    Usergroup = USERGROUP;
-    Pfcgrole = PFCGROLE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyWfCustP [1];
+
+  mapping for /esrcc/wfcust
+    {
+      Application        = APPLICATION;
+      Approvallevel      = APPROVALLEVEL;
+      Legalentity        = LEGALENTITY;
+      Sysid              = SYSID;
+      Costobject         = COSTOBJECT;
+      Costcenter         = COSTCENTER;
+      Usergroup          = USERGROUP;
+      Pfcgrole           = PFCGROLE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _RoleAssignmentAll { with draft; }
+
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

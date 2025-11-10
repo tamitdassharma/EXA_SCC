@@ -1,0 +1,5 @@
+define service /ESRCC/UI_ROYKEY {
+  expose /ESRCC/C_ROYKEY_S as RoyKeyAll;
+  expose /ESRCC/C_ROYKEY as RoyaltyKey;
+  expose /ESRCC/C_ROYKEYTEXT as RoyaltyKeyText;
+}

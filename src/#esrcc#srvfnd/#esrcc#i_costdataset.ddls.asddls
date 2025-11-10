@@ -15,10 +15,10 @@ define view entity /ESRCC/I_COSTDATASET
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_ONLY
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key value_low as costdataset,
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.8 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.hidden: true
       text
 }

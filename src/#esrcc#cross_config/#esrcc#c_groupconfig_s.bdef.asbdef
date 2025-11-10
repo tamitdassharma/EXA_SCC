@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_GroupConfig_S alias GroupConfigAll
   use action Discard;
   use action Resume;
   use action Prepare;
-  //  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _GroupConfig { create; with draft; }
 }

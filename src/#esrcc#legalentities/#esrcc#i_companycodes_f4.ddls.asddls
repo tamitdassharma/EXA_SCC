@@ -14,19 +14,19 @@ define view entity /ESRCC/I_COMPANYCODES_F4
                                                                       and _SystemText.Spras    = $session.system_language
 {
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @ObjectModel.text.element: [ 'SysidDescription' ]
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' } }]
   key sysid                   as Sysid,
 
       @ObjectModel.text.element: ['ccodedescription']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key ccode                   as Ccode,
 
       @ObjectModel.text.element: ['LegalentityDescription']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' } }]
       legalentity             as Legalentity,
 
@@ -34,7 +34,7 @@ define view entity /ESRCC/I_COMPANYCODES_F4
       controllingarea         as Controllingarea,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       ccodet.description      as ccodedescription,
 

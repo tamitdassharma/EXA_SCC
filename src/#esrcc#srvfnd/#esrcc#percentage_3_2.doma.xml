@@ -11,6 +11,7 @@
     <DECIMALS>000002</DECIMALS>
     <DDTEXT>Percentage (Length 3 with Decimal 2)</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

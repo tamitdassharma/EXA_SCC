@@ -6,8 +6,8 @@ define view entity /ESRCC/C_CoRule
   as projection on /ESRCC/I_CoRule
 {
   key RuleId,
-      @ObjectModel.text.element: ['CostVersionDescription']
-      CostVersion,
+//      @ObjectModel.text.element: ['CostVersionDescription']
+//      CostVersion,
       @ObjectModel.text.element: ['ChargeoutMethodDescription']
       ChargeoutMethod,
       @ObjectModel.text.element: ['CapacityVersionDescription']
@@ -40,8 +40,8 @@ define view entity /ESRCC/C_CoRule
       _CapacityVersionText.text                   as CapacityVersionDescription,
       @Semantics.text: true
       _ConsumptionVersionText.text                as ConsumptionVersionDescription,
-      @Semantics.text: true
-      _CostVersionText.text                       as CostVersionDescription,
+//      @Semantics.text: true
+//      _CostVersionText.text                       as CostVersionDescription,
       @Semantics.text: true
       _KeyVersionText.text                        as KeyVersionDescription,
       @Semantics.text: true

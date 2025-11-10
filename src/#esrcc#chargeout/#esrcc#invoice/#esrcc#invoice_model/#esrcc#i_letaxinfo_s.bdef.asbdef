@@ -9,15 +9,19 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _TaxInformation { create ( features : instance ); with draft; }
 }
@@ -43,18 +47,22 @@ authorization dependent by _TaxInformationAll
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/LETAXINFO
-  {
-    LegalEntity = LEGAL_ENTITY;
-    VatNumber = VAT_NUMBER;
-    TaxRegistationNumber = TAX_REGISTATION_NUMBER;
-    TaxPercentage = TAX_PERCENTAGE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLeTaxInfoP [1];
+
+  mapping for /esrcc/letaxinfo
+    {
+      LegalEntity          = LEGAL_ENTITY;
+      VatNumber            = VAT_NUMBER;
+      TaxRegistationNumber = TAX_REGISTATION_NUMBER;
+      TaxPercentage        = TAX_PERCENTAGE;
+      CreatedBy            = CREATED_BY;
+      CreatedAt            = CREATED_AT;
+      LastChangedBy        = LAST_CHANGED_BY;
+      LastChangedAt        = LAST_CHANGED_AT;
+      LocalLastChangedAt   = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _TaxInformationAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

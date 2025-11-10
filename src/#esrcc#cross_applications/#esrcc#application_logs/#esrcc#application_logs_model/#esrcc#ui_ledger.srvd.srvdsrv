@@ -1,0 +1,5 @@
+define service /ESRCC/UI_LEDGER {
+  expose /ESRCC/C_LEDGER_S as LedgerAll;
+  expose /ESRCC/C_LEDGER as Ledger;
+  expose /ESRCC/C_LEDGERTEXT as LedgerText;
+}

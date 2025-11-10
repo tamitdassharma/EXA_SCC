@@ -86,11 +86,11 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     position: 10 ,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 10 }]
+  @UI.selectionField: [{ position: 30 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' }}]
   @UI.textArrangement: #TEXT_ONLY
-  @Consumption.filter.selectionType: #SINGLE
-  @Consumption.filter.mandatory: true
+//  @Consumption.filter.selectionType: #SINGLE
+//  @Consumption.filter.mandatory: true
   Fplv;
 
   @UI.lineItem: [
@@ -104,7 +104,7 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     position: 20 ,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 20 }]
+  @UI.selectionField: [{ position: 10 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' }}]
   @Consumption.filter.selectionType: #SINGLE
   @Consumption.filter.mandatory: true
@@ -120,7 +120,7 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     position: 30 ,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 30 }]
+  @UI.selectionField: [{ position: 20 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
 //  @Consumption.filter.selectionType: #SINGLE
 //  @Consumption.filter.mandatory: true
@@ -160,8 +160,8 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     label: '',
     cssDefault:{width: '15rem'}
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'legalentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'legalentity' }]}]
   @UI.selectionField: [{ position: 60 }]
   @UI.fieldGroup: [
   {
@@ -199,8 +199,8 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     position: 80 ,
     qualifier: 'OrgData'
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'costobject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'costobject'}]}]
   @UI.selectionField: [{ position: 80 }]
   @UI.textArrangement: #TEXT_LAST
   Costcenter;
@@ -217,8 +217,8 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
     qualifier: 'OrgData'
   } ]
   @UI.selectionField: [{ position: 90 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
-                                        additionalBinding: [{ element: 'OECD', localElement: 'OECD'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' }}]
+//                                        additionalBinding: [{ element: 'OECD', localElement: 'OECD'}]}]
   @UI.textArrangement: #TEXT_LAST
   Serviceproduct;
 
@@ -246,8 +246,8 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
   cssDefault:{width: '20rem'}
   } ]
   @UI.selectionField: [{ position: 110 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Receivingentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Receivingentity' }]}]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCompanyCode;
 
@@ -280,10 +280,31 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
   cssDefault:{width: '20rem'}
   } ]
   @UI.selectionField: [{ position: 130 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'ReceiverCostObject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'ReceiverCostObject'}]}]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCostCenter;
+  
+  @UI.lineItem: [ {
+    position: 135 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROCESSTYPE', element: 'ProcessType' }}]
+  @UI.selectionField: [{ position: 140 }]
+  @UI.textArrangement: #TEXT_ONLY
+  ProcessType;
+  
+  @UI.lineItem: [ {
+    position: 136 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
+  @UI.selectionField: [{ position: 25 }]
+  @EndUserText.label: 'Re-Calculation Period'
+  RefPoper;
 
   @UI.lineItem: [ {
     position: 140 ,
@@ -294,7 +315,7 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
   @UI.textArrangement: #TEXT_ONLY
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_KEY_VERSION', element: 'KeyVersion' } }]
   @UI.dataPoint: { qualifier: 'keyversion', title: 'Base Value Version for Allocation Keys' }
-  keyversion;
+  keyversion; 
 
   @UI.lineItem: [ {
     position: 150 ,
@@ -429,6 +450,8 @@ annotate view /ESRCC/C_ALLOCATIONSHARE with
   ReceivingCountryName;
   @UI.hidden: true
   oecdDescription;
+  @UI.hidden: true
+  ProcessTypedescription;
 
 
 }

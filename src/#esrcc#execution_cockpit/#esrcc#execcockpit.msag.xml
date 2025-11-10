@@ -18,25 +18,25 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>001</MSGNR>
-     <TEXT>Service Markup&apos;s not maintained or configured as 0.</TEXT>
+     <TEXT>Service Product Markup&apos;s not maintained or configured as 0.</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>002</MSGNR>
-     <TEXT>Charge-out rule for service not maintained</TEXT>
+     <TEXT>Charge-Out rule for service product not maintained</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>003</MSGNR>
-     <TEXT>Charge-out configuration for service not maintained</TEXT>
+     <TEXT>Charge-Out configuration for service product not maintained</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>004</MSGNR>
-     <TEXT>Receivers for service not found</TEXT>
+     <TEXT>Receivers for service product &amp;1 not found</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
@@ -174,25 +174,49 @@
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>027</MSGNR>
-     <TEXT>No consumption or Indirect key base values found for any receiver.</TEXT>
+     <TEXT>No consumption or Indirect key base values found for any receiver</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>028</MSGNR>
-     <TEXT>No consumption found for any receiver</TEXT>
+     <TEXT>No consumption found for any receiver of service &amp;1</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>029</MSGNR>
-     <TEXT>Indirect key base values not found for any receiver</TEXT>
+     <TEXT>Indirect key base values not found for any receiver of service &amp;1</TEXT>
     </T100>
     <T100>
      <SPRSL>E</SPRSL>
      <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
      <MSGNR>030</MSGNR>
      <TEXT>UoM between capacity and consumption of receivers is different</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>031</MSGNR>
+     <TEXT>Service Products for cost object not found</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>032</MSGNR>
+     <TEXT>True-ups already performed for period &amp;1</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>033</MSGNR>
+     <TEXT>Standard Charge-out not finalized</TEXT>
+    </T100>
+    <T100>
+     <SPRSL>E</SPRSL>
+     <ARBGB>/ESRCC/EXECCOCKPIT</ARBGB>
+     <MSGNR>034</MSGNR>
+     <TEXT>Please finalize all performed Recalculations</TEXT>
     </T100>
    </T100>
   </asx:values>

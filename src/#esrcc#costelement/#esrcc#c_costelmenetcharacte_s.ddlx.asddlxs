@@ -7,6 +7,14 @@
 annotate view /ESRCC/C_CostElmenetCharacte_S with
 {
   @UI.facet: [ {
+    id: 'Transport', 
+    purpose: #STANDARD, 
+    type: #IDENTIFICATION_REFERENCE, 
+    label: 'Transport', 
+    position: 1 , 
+    hidden: #(HideTransport)
+  },
+  {
     id: '/ESRCC/I_CostElmenetCharacte', 
     purpose: #STANDARD, 
     type: #PRESENTATIONVARIANT_REFERENCE,
@@ -26,6 +34,11 @@ annotate view /ESRCC/C_CostElmenetCharacte_S with
   @UI.identification: [ {
     position: 2 , 
     importance: #HIGH
+  }, 
+  {
+    type: #FOR_ACTION, 
+    dataAction: 'SelectCustomizingTransptReq', 
+    label: 'Select Transport'
   } ]
   TransportRequestID;
 }

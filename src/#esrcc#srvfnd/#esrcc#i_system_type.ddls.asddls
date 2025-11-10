@@ -11,7 +11,7 @@ define view entity /ESRCC/I_SYSTEM_TYPE
 {
       @ObjectModel.text.element: ['text']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key value_low as SystemType,
 
       @Semantics.language: true
@@ -19,7 +19,7 @@ define view entity /ESRCC/I_SYSTEM_TYPE
   key language  as Language,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       text
 }

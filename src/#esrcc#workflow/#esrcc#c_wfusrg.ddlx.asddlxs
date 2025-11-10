@@ -32,7 +32,8 @@ annotate view /ESRCC/C_WfUsrG with
     targetElement: '_UserMapping'
   } ]
 
-  @UI.lineItem: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   Usergroup;
 
   @UI.lineItem: [ { position: 20 } ]

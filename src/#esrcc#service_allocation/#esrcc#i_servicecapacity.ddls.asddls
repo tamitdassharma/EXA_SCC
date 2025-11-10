@@ -10,7 +10,7 @@ define root view entity /ESRCC/I_ServiceCapacity
 
   association        to I_UnitOfMeasureText        as _Uom             on  $projection.Uom = _Uom.UnitOfMeasure_E
                                                                        and _Uom.Language   = $session.system_language
-  association [1..1] to /ESRCC/I_POPER             as _PoperText       on  _PoperText.Poper = $projection.Poper
+//  association [1..1] to /ESRCC/I_POPER             as _PoperText       on  _PoperText.Poper = $projection.Poper
   association [1..1] to /ESRCC/I_COSCEN_F4         as _CostCenter      on  $projection.CostObjectUuid = _CostCenter.CostObjectUuid
 {
   key capacity_uuid         as CapacityUuid,
@@ -42,6 +42,6 @@ define root view entity /ESRCC/I_ServiceCapacity
       _ServiceProduct,
       _CapacityVersion,
       _Uom,
-      _PoperText,
+//      _PoperText,
       _CostCenter
 }

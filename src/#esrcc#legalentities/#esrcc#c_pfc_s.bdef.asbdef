@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_Pfc_S alias ProfitCenterAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _ProfitCenter { create ( augment ); with draft; }
 }
@@ -19,11 +19,12 @@ define behavior for /ESRCC/C_Pfc alias ProfitCenter
 
 {
   field ( modify )
-   Description;
+  Description;
 
-
-  use update( augment );
+  use update ( augment );
   use delete;
+
+  use action Copy;
 
   use association _ProfitCenterAll { with draft; }
   use association _PfcText { create; with draft; }

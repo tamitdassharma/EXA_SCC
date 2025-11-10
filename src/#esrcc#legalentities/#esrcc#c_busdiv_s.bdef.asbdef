@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_BusDiv_S alias BusinessDivisionAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _BusinessDivision { create ( augment ); with draft; }
 }
@@ -19,11 +19,12 @@ define behavior for /ESRCC/C_BusDiv alias BusinessDivision
 
 {
   field ( modify )
-   Description;
+  Description;
 
-
-  use update( augment );
+  use update ( augment );
   use delete;
+
+  use action Copy;
 
   use association _BusinessDivisionAll { with draft; }
   use association _BusinessDivisioText { create; with draft; }

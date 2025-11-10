@@ -1,0 +1,107 @@
+managed with additional save implementation in class /ESRCC/BP_I_LICTYPE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LicType_S alias LicenseTypeAll
+draft table /esrcc/d_licty_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _LicenseType { create ( features : instance, precheck); with draft; }
+}
+
+define behavior for /ESRCC/I_LicType alias LicenseType
+persistent table /esrcc/lictype
+draft table /esrcc/d_lictype
+etag master LocalLastChangedAt
+lock dependent by _LicenseTypeAll
+authorization dependent by _LicenseTypeAll
+
+{
+  field ( mandatory : create )
+  LicenseType;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  LicenseType;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLicTypeP [1];
+
+  mapping for /esrcc/lictype
+    {
+      LicenseType        = LICENSE_TYPE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LicenseTypeAll { with draft; }
+  association _LicenseTypeText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_LicTypeText alias LicenseTypeText
+persistent table /esrcc/lictyept
+draft table /esrcc/d_lictyep
+etag master LocalLastChangedAt
+lock dependent by _LicenseTypeAll
+authorization dependent by _LicenseTypeAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  LicenseType,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/lictyept
+    {
+      Spras              = SPRAS;
+      LicenseType        = LICENSE_TYPE;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LicenseTypeAll { with draft; }
+  association _LicenseType { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

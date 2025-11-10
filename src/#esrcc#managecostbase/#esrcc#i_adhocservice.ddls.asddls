@@ -22,7 +22,7 @@ define view entity /ESRCC/I_ADHOCSERVICE
       serviceproductdescription,
       chargeout_method,
       key_version,
-      cost_version,
+//      cost_version,
       adhoc_allocation_key,
       @Semantics.text: true
       ruledescription,

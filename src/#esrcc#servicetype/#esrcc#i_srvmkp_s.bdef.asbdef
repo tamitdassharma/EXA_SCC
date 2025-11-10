@@ -9,18 +9,22 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare
   {
     validation ServiceMarkup~ValidateData;
   }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _ServiceMarkup { create ( features : instance, precheck ); with draft; }
 }
@@ -51,24 +55,26 @@ authorization dependent by _ServiceMarkupAll
   update ( features : instance, precheck );
   delete ( features : instance );
 
-  mapping for /ESRCC/SRVMKP
-  {
-    Serviceproduct = SERVICEPRODUCT;
-    Validfrom = VALIDFROM;
-    Origcost = ORIGCOST;
-    Passcost = PASSCOST;
-    IntraOrigcost = INTRA_ORIGCOST;
-    IntraPasscost = INTRA_PASSCOST;
-    Validto = VALIDTO;
-    WorkflowId = WORKFLOW_ID;
-    WorkflowStatus = WORKFLOW_STATUS;
-    CommentId = COMMENT_ID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopySrvMkpP [1];
+
+  mapping for /esrcc/srvmkp
+    {
+      Serviceproduct     = SERVICEPRODUCT;
+      Validfrom          = VALIDFROM;
+      Origcost           = ORIGCOST;
+      Passcost           = PASSCOST;
+      IntraOrigcost      = INTRA_ORIGCOST;
+      IntraPasscost      = INTRA_PASSCOST;
+      Validto            = VALIDTO;
+      WorkflowId         = WORKFLOW_ID;
+      WorkflowStatus     = WORKFLOW_STATUS;
+      CommentId          = COMMENT_ID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _ServiceMarkupAll { with draft; }
 
@@ -82,4 +88,5 @@ authorization dependent by _ServiceMarkupAll
   determination TriggerWorkflow on save { field WorkflowStatus; }
 
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

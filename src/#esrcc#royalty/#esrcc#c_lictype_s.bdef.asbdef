@@ -1,0 +1,42 @@
+projection implementation in class /ESRCC/BP_C_LICTYPE_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_LicType_S alias LicenseTypeAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _LicenseType { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_LicType alias LicenseType
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use action Copy;
+
+  use association _LicenseTypeAll { with draft; }
+  use association _LicenseTypeText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_LicTypeText alias LicenseTypeText
+
+{
+  use update;
+  use delete;
+
+  use association _LicenseTypeAll { with draft; }
+  use association _LicenseType { with draft; }
+}

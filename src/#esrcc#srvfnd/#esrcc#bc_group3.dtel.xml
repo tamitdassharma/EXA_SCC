@@ -7,9 +7,8 @@
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
     <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Group 3: Service Catalogue Configuration</DDTEXT>
-    <REPTEXT>Group 3: Service Catalogue Configuration</REPTEXT>
-    <SCRTEXT_L>Group 3: Service Catalogue Configuration</SCRTEXT_L>
+    <DDTEXT>Group 03: Service Catalogue Configuration</DDTEXT>
+    <REPTEXT>Group 03: Service Catalogue Configuration</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -22,9 +21,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 3: Konfiguration Servicekatalog</DDTEXT>
-     <REPTEXT>Gruppe 3: Konfiguration Servicekatalog</REPTEXT>
-     <SCRTEXT_L>Gruppe 3: Konfiguration Servicekatalog</SCRTEXT_L>
+     <DDTEXT>Gruppe 03: Konfiguration Servicekatalog</DDTEXT>
+     <REPTEXT>Gruppe 03: Konfiguration Servicekatalog</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

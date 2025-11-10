@@ -44,7 +44,7 @@ CLASS /esrcc/cl_abap_dictionary DEFINITION
       IMPORTING
         iv_value               TYPE any
       RETURNING
-        VALUE(rv_data_element) TYPE string .
+        VALUE(rv_data_element) TYPE sxco_ad_object_name .
   PROTECTED SECTION.
   PRIVATE SECTION.
     DATA:
@@ -61,7 +61,7 @@ ENDCLASS.
 
 
 
-CLASS /ESRCC/CL_ABAP_DICTIONARY IMPLEMENTATION.
+CLASS /esrcc/cl_abap_dictionary IMPLEMENTATION.
 
 
   METHOD constructor.

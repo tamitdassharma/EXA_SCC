@@ -12,11 +12,11 @@ define view entity /ESRCC/I_PROFITCENTER_F4
       @ObjectModel.text.element: ['profitcenterdescription']
       @UI.textArrangement: #TEXT_SEPARATE
       @Search.defaultSearchElement: true
-      @Search.fuzzinessThreshold: 0.7
+      @Search.fuzzinessThreshold: 0.9
   key profit_center             as ProfitCenter,
 
       @Semantics.text: true
       @Search.defaultSearchElement: true
-      @Search.fuzzinessThreshold: 0.7
+      @Search.fuzzinessThreshold: 0.9
       profitcentert.description as profitcenterdescription
 }

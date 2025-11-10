@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "SystemInfoAll",
     "name": "System Information",
-    "configurationGroup": "/ESRCC/BC_GROUP9",
+    "configurationGroup": "/ESRCC/BC_GROUP11",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -28,9 +28,9 @@
       {
         "entitySet": "SystemInfo",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "SystemInfoAll"

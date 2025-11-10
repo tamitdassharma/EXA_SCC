@@ -41,14 +41,16 @@ annotate view /ESRCC/C_SrvPro with
     parentId: '/ESRCC/I_SrvPro'
   } ]
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   Serviceproduct;
 
   @UI.lineItem: [ { position: 2 } ]
   Description;
 
-  @UI.identification: [ {  position: 3  } ]
-  @UI.lineItem: [ {  position: 3  } ]
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{entity: {name: '/ESRCC/I_SERVICETYPE_F4', element: 'ServiceType' }, useForValidation: true }]
   Servicetype;

@@ -1,0 +1,4 @@
+@EndUserText.label: 'True Up Open Task'
+define service /ESRCC/UI_TRUEUP_OPENTASK {
+  expose /ESRCC/C_TRUEUP_OPENTASK as trueupopentask;
+}

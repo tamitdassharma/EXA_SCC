@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_SrvMkp_S alias ServiceMarkupAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _ServiceMarkup { create; with draft; }
 }
@@ -20,6 +21,7 @@ define behavior for /ESRCC/C_SrvMkp alias ServiceMarkup
   use update;
   use delete;
 
+  use action Copy;
   use action Submit;
   use action Finalize;
   use action Reopen;

@@ -66,44 +66,46 @@ annotate view /ESRCC/C_ApplicationLogsHier with
   LegalEntity;
   @UI.selectionField: [{ position: 90 }]
   @UI.lineItem: [{ position: 90 }]
-  @Consumption.valueHelpDefinition: [{
-      entity: {
-          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
-          element: 'Sysid'
-      },
-      useForValidation: true,
-      additionalBinding: [{
-          localElement: 'LegalEntity',
-          element: 'Legalentity',
-          usage: #FILTER_AND_RESULT
-      },
-      {
-          localElement: 'CompanyCode',
-          element: 'Ccode',
-          usage: #FILTER_AND_RESULT
-      }]
-  }]
+//  @Consumption.valueHelpDefinition: [{
+//      entity: {
+//          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+//          element: 'Sysid'
+//      },
+//      useForValidation: true,
+//      additionalBinding: [{
+//          localElement: 'LegalEntity',
+//          element: 'Legalentity',
+//          usage: #FILTER_AND_RESULT
+//      },
+//      {
+//          localElement: 'CompanyCode',
+//          element: 'Ccode',
+//          usage: #FILTER_AND_RESULT
+//      }]
+//  }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }}]
   SystemId;
   @UI.selectionField: [{ position: 100 }]
   @UI.lineItem: [{ position: 100 }]
-  @Consumption.valueHelpDefinition: [{
-      entity: {
-          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
-          element: 'Ccode'
-      },
-  //              distinctValues: true,
-      useForValidation: true,
-      additionalBinding: [{
-          localElement: 'LegalEntity',
-          element: 'Legalentity',
-          usage: #FILTER_AND_RESULT
-      },
-      {
-          localElement: 'SystemId',
-          element: 'Sysid',
-          usage: #FILTER_AND_RESULT
-      }]
-  }]
+//  @Consumption.valueHelpDefinition: [{
+//      entity: {
+//          name: '/ESRCC/I_LEGALENTITY_CCODE_F4',
+//          element: 'Ccode'
+//      },
+//  //              distinctValues: true,
+//      useForValidation: true,
+//      additionalBinding: [{
+//          localElement: 'LegalEntity',
+//          element: 'Legalentity',
+//          usage: #FILTER_AND_RESULT
+//      },
+//      {
+//          localElement: 'SystemId',
+//          element: 'Sysid',
+//          usage: #FILTER_AND_RESULT
+//      }]
+//  }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' }}]
   CompanyCode;
   @UI.selectionField: [{ position: 110 }]
   @UI.lineItem: [{ position: 110 }]
@@ -120,6 +122,8 @@ annotate view /ESRCC/C_ApplicationLogsHier with
   @UI.lineItem: [{ position: 20, criticality: 'MessageTypeCriticality', criticalityRepresentation: #WITH_ICON }]
   @Consumption.filter.hidden: true
   MessageType;
+  @UI.hidden: true
+  SerialNumber;
   @UI.lineItem: [{ hidden: true }]
   @UI.hidden: true
   MessageTypeCriticality;
@@ -211,7 +215,7 @@ annotate view /ESRCC/C_ApplicationLogsHier with
   @Consumption.filter.hidden: true
   Usagecal;
   @UI.hidden: true
-  rootuuid;
+  RootUUID;
   @UI.hidden: true
   ApplicationDescription;
   @UI.hidden: true

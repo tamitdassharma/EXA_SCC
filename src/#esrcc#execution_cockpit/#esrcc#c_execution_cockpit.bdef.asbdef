@@ -10,16 +10,21 @@ authorization master ( instance )
   //  create;
   update;
   //  delete
-  action performcostbase;
-  action performchargeout;
-  action performStewardship;
-  action Finalizecostbase;
-  action Finalizestewardship;
-  action Finalizechargeout;
-  action reopencostbase;
-  action reopenstewardship;
-  action reopenchargeout;
-  action automate_sequentialchargeout;
-  action reopen_sequentialchargeout;
+  action perform_stdchargeout parameter /ESRCC/C_EXECPARAM result [1] $self;
+  action Finalize_stdchargeout;
+  action reopen_stdchargeout;
+
+  action perform_stdseqchargeout parameter /ESRCC/C_EXECPARAM result [1] $self;
+  action Finalize_stdseqchargeout;
+  action reopen_stdseqchargeout;
+
+  action perform_recalchargeout parameter /ESRCC/C_EXECPARAM result [1] $self;
+  action Finalize_recalchargeout;
+  action reopen_recalchargeout;
+
+  action perform_recalseqchargeout parameter /ESRCC/C_EXECPARAM result [1] $self;
+  action finalize_recalseqchargeout;
+  action reopen_recalseqchargeout;
+
 
 }

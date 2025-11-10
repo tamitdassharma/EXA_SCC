@@ -1,0 +1,108 @@
+managed with additional save implementation in class /ESRCC/BP_I_ROYKEY_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_RoyKey_S alias RoyKeyAll
+draft table /esrcc/d_royke_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _RoyaltyKey { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_RoyKey alias RoyaltyKey
+persistent table /esrcc/roykey
+draft table /esrcc/d_roykey
+etag master LocalLastChangedAt
+lock dependent by _RoyKeyAll
+authorization dependent by _RoyKeyAll
+
+{
+  field ( mandatory : create )
+  RoyaltyBaseKey;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  RoyaltyBaseKey;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyRoyKeyP [1];
+
+  mapping for /esrcc/roykey
+    {
+      RoyaltyBaseKey     = ROYALTY_BASE_KEY;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RoyKeyAll { with draft; }
+  association _RoyaltyKeyText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}
+
+define behavior for /ESRCC/I_RoyKeyText alias RoyaltyKeyText
+persistent table /esrcc/roykeyt
+draft table /esrcc/d_roykeyt
+etag master LocalLastChangedAt
+lock dependent by _RoyKeyAll
+authorization dependent by _RoyKeyAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  RoyaltyBaseKey,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/roykeyt
+    {
+      Spras              = SPRAS;
+      RoyaltyBaseKey     = ROYALTY_BASE_KEY;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RoyKeyAll { with draft; }
+  association _RoyaltyKey { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

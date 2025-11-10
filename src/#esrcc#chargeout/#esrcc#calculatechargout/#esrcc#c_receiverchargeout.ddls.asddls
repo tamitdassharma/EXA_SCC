@@ -62,6 +62,8 @@ define view entity /ESRCC/C_ReceiverChargeout
       Status,
       Workflowid,
       CommentId,
+      ContractId,
+      ErpSalesOrder,
       Currency,
       @Semantics.text: true
       receivingentitydescription,

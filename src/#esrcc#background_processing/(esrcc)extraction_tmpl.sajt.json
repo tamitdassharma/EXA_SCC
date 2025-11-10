@@ -1,0 +1,45 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Extraction Job Template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "/ESRCC/EXTRACTION_CAT"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "EXT_OBJ",
+        "value": ""
+      },
+      {
+        "name": "PKG_SIZE",
+        "value": ""
+      },
+      {
+        "name": "REP_YEAR",
+        "value": ""
+      },
+      {
+        "name": "SIMULATE",
+        "value": "X"
+      }
+    ],
+    "valueRangesParameters": [
+      {
+        "name": "ENTITY",
+        "valueRanges": []
+      },
+      {
+        "name": "PERIOD",
+        "valueRanges": []
+      },
+      {
+        "name": "PKG_CODE",
+        "valueRanges": []
+      }
+    ]
+  }
+}

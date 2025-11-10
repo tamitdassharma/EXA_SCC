@@ -3,7 +3,23 @@
   headerInfo: {
     typeName: 'Service Consumption',
     typeNamePlural: 'Service Consumptions'
-  }
+  },
+  presentationVariant: [{
+    sortOrder: [{ by: 'Sysid', direction: #ASC },
+                { by: 'ReceivingEntity', direction: #ASC},
+                { by: 'ReceivingCompany', direction: #ASC },
+                { by: 'Costobject', direction: #ASC },
+                { by: 'Costcenter', direction: #ASC },
+                { by: 'ProviderSysid', direction: #ASC },
+                { by: 'ProviderEntity', direction: #ASC},
+                { by: 'ProviderCompany', direction: #ASC },
+                { by: 'ProviderCostobject', direction: #ASC },
+                { by: 'ProviderCostcenter', direction: #ASC },
+                { by: 'Fplv', direction: #ASC },
+                { by: 'Ryear', direction: #ASC },
+                { by: 'Poper', direction: #ASC },
+                { by: 'ServiceProduct', direction: #ASC }]
+  }]
 }
 annotate view /ESRCC/C_DIRALOCCONSUMPTN with
 {
@@ -198,20 +214,20 @@ annotate view /ESRCC/C_DIRALOCCONSUMPTN with
   @UI.textArrangement: #TEXT_ONLY
   Fplv;
 
-  @UI.lineItem: [ { position: 120, importance: #MEDIUM } ]
+  @UI.lineItem: [ { position: 120, importance: #MEDIUM, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 20, qualifier: 'ConsumptionGroup' }]
   @UI.selectionField: [{ position: 120 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' },
                                        useForValidation: true }]
   Ryear;
 
-  @UI.lineItem: [ { position: 130, importance: #MEDIUM, cssDefault.width: '4.5rem' } ]
+  @UI.lineItem: [ { position: 130, importance: #MEDIUM, cssDefault.width: '5rem' } ]
   @UI.fieldGroup: [{ position: 30, qualifier: 'ConsumptionGroup' }]
   @UI.selectionField: [{ position: 130 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' },
                                        useForValidation: true }]
   @Consumption.filter.multipleSelections: true
-  @UI.textArrangement: #TEXT_ONLY
+//  @UI.textArrangement: #TEXT_ONLY
   Poper;
 
   @UI.lineItem: [ { position: 140, importance: #MEDIUM } ]
@@ -228,7 +244,6 @@ annotate view /ESRCC/C_DIRALOCCONSUMPTN with
   Consumption;
 
   @Consumption.valueHelpDefinition: [ { entity: { name: 'I_UnitOfMeasure', element: 'UnitOfMeasure' } } ]
-  @EndUserText.label: 'Unit of Measure'
   @Consumption.filter.hidden: true
   Uom;
 
@@ -275,7 +290,7 @@ annotate view /ESRCC/C_DIRALOCCONSUMPTN with
   @UI.hidden: true
   ProviderCostCenterDescription;
   @UI.hidden: true
-  PoperDescription;
+  poperdescription;
   @UI.hidden: true
   FplvDescription;
 }

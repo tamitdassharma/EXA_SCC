@@ -17,8 +17,7 @@ authorization master ( global )
   Costobject,
   Costcenter;
 
-  field ( readonly : update )
-  CapacityUuid;
+  field ( mandatory ) Planning, uom;
 
   field ( readonly )
   CreatedAt,
@@ -27,7 +26,7 @@ authorization master ( global )
   LastChangedBy,
   LocalLastChangedAt;
 
-  field ( numbering : managed )
+  field ( numbering : managed, readonly : update )
   CapacityUuid;
 
   create ( precheck );
@@ -35,19 +34,19 @@ authorization master ( global )
   delete ( precheck );
 
   mapping for /esrcc/srv_cpcty
-  {
-    CapacityUuid = CAPACITY_UUID;
-    Ryear = RYEAR;
-    Poper = POPER;
-    Fplv = FPLV;
-    ServiceProduct = SERVICE_PRODUCT;
-    CostObjectUuid = COST_OBJECT_UUID;
-    Uom = UOM;
-    Planning = PLANNING;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+    {
+      CapacityUuid       = CAPACITY_UUID;
+      Ryear              = RYEAR;
+      Poper              = POPER;
+      Fplv               = FPLV;
+      ServiceProduct     = SERVICE_PRODUCT;
+      CostObjectUuid     = COST_OBJECT_UUID;
+      Uom                = UOM;
+      Planning           = PLANNING;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 }

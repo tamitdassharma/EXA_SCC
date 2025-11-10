@@ -1,38 +1,17 @@
 CLASS lhc_managecostbase DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
 
-    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
-      IMPORTING keys REQUEST requested_authorizations FOR managecostbase RESULT result.
-
-    METHODS changeitems FOR MODIFY
-      IMPORTING keys FOR ACTION managecostbase~changeitems RESULT result.
-
-    METHODS changevalueadd FOR MODIFY
-      IMPORTING keys FOR ACTION managecostbase~changevalueadd RESULT result.
-
-    METHODS discardall FOR MODIFY
-      IMPORTING keys FOR ACTION managecostbase~discardall RESULT result.
-
-    METHODS submit FOR MODIFY
-      IMPORTING keys FOR ACTION managecostbase~submit RESULT result.
-
     METHODS get_instance_features FOR INSTANCE FEATURES
       IMPORTING keys REQUEST requested_features FOR managecostbase RESULT result.
 
-    METHODS precheck_changevalueadd FOR PRECHECK
-      IMPORTING keys FOR ACTION managecostbase~changevalueadd.
+    METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
+      IMPORTING keys REQUEST requested_authorizations FOR managecostbase RESULT result.
 
-    METHODS precheck_changeitems FOR PRECHECK
-      IMPORTING keys FOR ACTION managecostbase~changeitems.
+    METHODS read FOR READ
+      IMPORTING keys FOR READ managecostbase RESULT result.
 
-    METHODS precheck_discardall FOR PRECHECK
-      IMPORTING keys FOR ACTION managecostbase~discardall.
-
-    METHODS precheck_submit FOR PRECHECK
-      IMPORTING keys FOR ACTION managecostbase~submit.
-
-    METHODS triggerworkflow FOR DETERMINE ON SAVE
-      IMPORTING keys FOR managecostbase~triggerworkflow.
+    METHODS lock FOR LOCK
+      IMPORTING keys FOR LOCK managecostbase.
 
     METHODS adhocchargeout FOR MODIFY
       IMPORTING keys FOR ACTION managecostbase~adhocchargeout.
@@ -40,16 +19,47 @@ CLASS lhc_managecostbase DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS precheck_adhocchargeout FOR PRECHECK
       IMPORTING keys FOR ACTION managecostbase~adhocchargeout.
 
+    METHODS changeitems FOR MODIFY
+      IMPORTING keys FOR ACTION managecostbase~changeitems RESULT result.
+
+    METHODS precheck_changeitems FOR PRECHECK
+      IMPORTING keys FOR ACTION managecostbase~changeitems.
+
+    METHODS changevalueadd FOR MODIFY
+      IMPORTING keys FOR ACTION managecostbase~changevalueadd RESULT result.
+
+    METHODS precheck_changevalueadd FOR PRECHECK
+      IMPORTING keys FOR ACTION managecostbase~changevalueadd.
+
+    METHODS discardall FOR MODIFY
+      IMPORTING keys FOR ACTION managecostbase~discardall RESULT result.
+
+    METHODS precheck_discardall FOR PRECHECK
+      IMPORTING keys FOR ACTION managecostbase~discardall.
+
     METHODS simulatechargout FOR MODIFY
       IMPORTING keys FOR ACTION managecostbase~simulatechargout RESULT result.
+
+    METHODS submit FOR MODIFY
+      IMPORTING keys FOR ACTION managecostbase~submit RESULT result.
+
+    METHODS precheck_submit FOR PRECHECK
+      IMPORTING keys FOR ACTION managecostbase~submit.
 
 ENDCLASS.
 
 CLASS lhc_managecostbase IMPLEMENTATION.
 
+  METHOD get_instance_features.
+  ENDMETHOD.
+
   METHOD get_instance_authorizations.
+  ENDMETHOD.
 
+  METHOD read.
+  ENDMETHOD.
 
+  METHOD lock.
   ENDMETHOD.
 
   METHOD changeitems.
@@ -57,35 +67,44 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     DATA ls_param   TYPE /esrcc/c_usagecalculation.
     DATA lt_costbase TYPE TABLE OF /esrcc/cb_li.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/cb_li AS costbase
+             INNER JOIN @keys AS keys
+             ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+             INTO TABLE @DATA(costbases).
 
+*
     ls_param = CORRESPONDING #( keys[ 1 ]-%param ).
 
-    MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-        ENTITY managecostbase
-         UPDATE FIELDS ( oldstatus oldreasonid oldusagecal usagecal status ReasonId )
-              WITH VALUE #( FOR costbase IN costbases WHERE ( status <> 'F' AND status <> 'W' )
-                              (
-                                 %key = costbase-%key
-                                 oldusagecal = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldusagecal IS INITIAL ) ) ) THEN costbase-usagecal ELSE costbase-oldusagecal )
-                                 oldreasonid = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldreasonid IS INITIAL ) ) ) THEN costbase-reasonid ELSE costbase-oldreasonid )
-                                 oldstatus   = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldstatus IS INITIAL ) ) ) THEN costbase-Status ELSE costbase-oldstatus )
-                                 usagecal = COND #( WHEN costbase-Usagecal <> ls_param-usagecal then ls_param-usagecal else costbase-Usagecal )
-                                 ReasonId = COND #( WHEN costbase-ReasonId <> ls_param-reasonid then ls_param-reasonid else costbase-ReasonId )
-                                 status = COND #( WHEN costbase-Usagecal <> ls_param-usagecal then 'D' else costbase-status )
-                               ) )
-                              FAILED   FINAL(fail_mod)
-                              REPORTED FINAL(rep_mod)
-                              MAPPED FINAL(map_mod).
+    /esrcc/cl_utility_core=>get_utc_date_time_ts(
+      IMPORTING
+        time_stamp = DATA(lastchangedat)
+*        date       =
+*        time       =
+    ).
 
-    result = VALUE #( FOR costbase IN costbases
-            ( %tky   = costbase-%tky
-              %param = costbase ) ).
+
+    lt_costbase = VALUE #( FOR costbase IN costbases WHERE ( status <> 'F' AND status <> 'W' )
+                         ( VALUE #( BASE CORRESPONDING #( costbase )
+                           oldusagecal = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldusagecal IS INITIAL ) ) ) THEN costbase-usagecal ELSE costbase-oldusagecal )
+                           oldreasonid = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldreasonid IS INITIAL ) ) ) THEN costbase-reasonid ELSE costbase-oldreasonid )
+                           oldstatus   = COND #( WHEN ( ( costbase-Usagecal <> ls_param-usagecal ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldstatus IS INITIAL ) ) ) THEN costbase-Status ELSE costbase-oldstatus )
+                           usagecal    = COND #( WHEN costbase-Usagecal <> ls_param-usagecal THEN ls_param-usagecal ELSE costbase-Usagecal )
+                           ReasonId    = COND #( WHEN costbase-ReasonId <> ls_param-reasonid THEN ls_param-reasonid ELSE costbase-ReasonId )
+                           status      = COND #( WHEN costbase-Usagecal <> ls_param-usagecal THEN 'D' ELSE costbase-status )
+                           last_changed_by = sy-uname
+                           last_changed_at = lastchangedat
+                          ) ) ).
+
+    MODIFY /esrcc/cb_li FROM TABLE @lt_costbase.
 
   ENDMETHOD.
 
@@ -94,51 +113,71 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     DATA ls_param   TYPE /esrcc/c_costind.
     DATA lt_costbase TYPE TABLE OF /esrcc/cb_li.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/cb_li AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
+*
     ls_param = CORRESPONDING #( keys[ 1 ]-%param ).
 
-    MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-        ENTITY managecostbase
-         UPDATE FIELDS ( oldstatus oldcostind costind status )
-              WITH VALUE #( FOR costbase IN costbases WHERE ( status <> 'F' AND status <> 'W' )
-                              (
-                                 %key = costbase-%key
-                                 oldcostind  = COND #( WHEN ( ( costbase-costind <> ls_param-costind ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldcostind IS INITIAL ) ) ) THEN costbase-costind ELSE costbase-oldcostind )
-                                 oldstatus   = COND #( WHEN ( ( costbase-costind <> ls_param-costind ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldstatus IS INITIAL ) ) ) THEN costbase-Status ELSE costbase-oldstatus )
-                                 costind = COND #( WHEN costbase-costind <> ls_param-costind then ls_param-costind else costbase-costind )
-                                 status = COND #( WHEN costbase-costind <> ls_param-costind then 'D' else costbase-status )
-                               ) )
-                              FAILED   FINAL(fail_mod)
-                              REPORTED FINAL(rep_mod)
-                              MAPPED FINAL(map_mod).
+    /esrcc/cl_utility_core=>get_utc_date_time_ts(
+      IMPORTING
+        time_stamp = DATA(lastchangedat)
+*        date       =
+*        time       =
+    ).
 
-    result = VALUE #( FOR costbase IN costbases
-            ( %tky   = costbase-%tky
-              %param = costbase ) ).
+    lt_costbase = VALUE #( FOR costbase IN costbases WHERE ( status <> 'F' AND status <> 'W' )
+                         ( VALUE #( BASE CORRESPONDING #( costbase )
+                           oldcostind  = COND #( WHEN ( ( costbase-costind <> ls_param-costind ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldcostind IS INITIAL ) ) ) THEN costbase-costind ELSE costbase-oldcostind )
+                           oldstatus   = COND #( WHEN ( ( costbase-costind <> ls_param-costind ) AND ( costbase-status <> 'D' OR ( costbase-status = 'D' AND costbase-oldstatus IS INITIAL ) ) ) THEN costbase-Status ELSE costbase-oldstatus )
+                           costind     = COND #( WHEN costbase-costind <> ls_param-costind THEN ls_param-costind ELSE costbase-costind )
+                           status      = COND #( WHEN costbase-costind <> ls_param-costind THEN 'D' ELSE costbase-status )
+                           last_changed_by = sy-uname
+                           last_changed_at = lastchangedat
+                          ) ) ).
+
+    MODIFY /esrcc/cb_li FROM TABLE @lt_costbase.
 
   ENDMETHOD.
 
   METHOD discardall.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    DATA lt_costbase TYPE TABLE OF /esrcc/cb_li.
 
-    MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-        ENTITY managecostbase
-         UPDATE FIELDS ( oldreasonid oldcostind oldcostdataset oldusagecal costind usagecal status ReasonId )
-              WITH VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
-                              (
-                                 %key = costbase-%key
+    SELECT costbase~* FROM /esrcc/cb_li AS costbase
+             INNER JOIN @keys AS keys
+             ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+             INTO TABLE @DATA(costbases).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts(
+      IMPORTING
+        time_stamp = DATA(lastchangedat)
+*        date       =
+*        time       =
+    ).
+
+    lt_costbase = VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
+                          ( VALUE #( BASE CORRESPONDING #( costbase )
                                  costind = COND #( WHEN costbase-oldcostind IS INITIAL THEN costbase-costind ELSE costbase-oldcostind )
                                  usagecal = COND #( WHEN costbase-oldusagecal IS INITIAL THEN costbase-usagecal ELSE costbase-oldusagecal )
                                  status = COND #( WHEN costbase-oldstatus IS INITIAL THEN costbase-status ELSE costbase-oldstatus )
@@ -147,14 +186,11 @@ CLASS lhc_managecostbase IMPLEMENTATION.
                                  oldcostdataset = ''
                                  oldusagecal = ''
                                  oldreasonid = ''
-                               ) )
-                              FAILED   FINAL(fail_mod)
-                              REPORTED FINAL(rep_mod)
-                              MAPPED FINAL(map_mod).
+                                 last_changed_by = sy-uname
+                                 last_changed_at = lastchangedat
+                               )  ) ).
 
-    result = VALUE #( FOR costbase IN costbases
-            ( %tky   = costbase-%tky
-              %param = costbase ) ).
+    MODIFY /esrcc/cb_li FROM TABLE @lt_costbase.
 
   ENDMETHOD.
 
@@ -163,13 +199,22 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     DATA lt_leading_object TYPE /esrcc/tt_wf_leadingobject.
     DATA ls_comment  TYPE /esrcc/comments.
     DATA lt_comments TYPE TABLE OF /esrcc/comments.
+    DATA lt_costbase TYPE TABLE OF /esrcc/cb_li.
 
     " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/cb_li AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear         = keys~ryear
+             AND costbase~Poper       = keys~poper
+             AND costbase~fplv        = keys~fplv
+             AND costbase~Ledger      = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode       = keys~Ccode
+             AND costbase~Costobject  = keys~Costobject
+             AND costbase~Costcenter  = keys~Costcenter
+             AND costbase~Belnr       = keys~Belnr
+             AND costbase~Buzei       = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     lt_leading_object = CORRESPONDING #( costbases ).
 
@@ -202,16 +247,19 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ).
     ENDLOOP.
 
+    /esrcc/cl_utility_core=>get_utc_date_time_ts(
+      IMPORTING
+        time_stamp = DATA(lastchangedat)
+*        date       =
+*        time       =
+    ).
+
 
 * check if workflow is on or not
     IF wf_active = abap_true.
 
-      MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-       ENTITY managecostbase
-        UPDATE FIELDS ( oldcostind oldcostdataset oldusagecal costind usagecal status WorkflowId CommentId )
-             WITH VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
-                             (
-                                %key = costbase-%key
+      lt_costbase = VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
+                             ( VALUE #( BASE CORRESPONDING #( costbase )
                                 oldcostind = ''
                                 oldcostdataset = ''
                                 oldusagecal = ''
@@ -220,31 +268,27 @@ CLASS lhc_managecostbase IMPLEMENTATION.
                                 status = 'P'
                                 WorkflowId = ''
                                 CommentId = costbase-CommentId
-                              ) )
-                             FAILED failed
-                             REPORTED reported
-                             MAPPED mapped.
+                                last_changed_by = sy-uname
+                                last_changed_at = lastchangedat
+                              ) ) ).
+
 
     ELSE.
 
-      MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-       ENTITY managecostbase
-        UPDATE FIELDS ( oldcostind oldcostdataset oldusagecal costind usagecal status WorkflowId CommentId )
-             WITH VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
-                             (
-                                %key = costbase-%key
-                                oldcostind = ''
-                                oldcostdataset = ''
-                                oldusagecal = ''
-                                costind = costbase-costind
-                                usagecal = costbase-usagecal
-                                status = 'A'
-                                WorkflowId = ''
-                                CommentId = costbase-CommentId
-                              ) )
-                             FAILED failed
-                             REPORTED reported
-                             MAPPED mapped.
+
+      lt_costbase = VALUE #( FOR costbase IN costbases WHERE ( status = 'D' )
+                              ( VALUE #( BASE CORRESPONDING #( costbase )
+                                 oldcostind = ''
+                                 oldcostdataset = ''
+                                 oldusagecal = ''
+                                 costind = costbase-costind
+                                 usagecal = costbase-usagecal
+                                 status = 'A'
+                                 WorkflowId = ''
+                                 CommentId = costbase-CommentId
+                                 last_changed_by = sy-uname
+                                 last_changed_at = lastchangedat
+                               )  ) ).
 
     ENDIF.
 
@@ -255,24 +299,25 @@ CLASS lhc_managecostbase IMPLEMENTATION.
           iv_apptype        = 'CBL'.
     ENDIF.
 
-    result = VALUE #( FOR costbase IN costbases
-             ( %tky   = costbase-%tky
-               %param = costbase ) ).
-
-  ENDMETHOD.
-
-  METHOD get_instance_features.
+    MODIFY /esrcc/cb_li FROM TABLE @lt_costbase.
 
   ENDMETHOD.
 
   METHOD precheck_changevalueadd.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -285,26 +330,62 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ID '/ESRCC/CN' FIELD <costbase>-costcenter
         ID 'ACTVT'      FIELD '02'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                           %msg = new_message(
                                      id    = '/ESRCC/MANAGECOSTBAS'
                                      number = '000'
                                      v1     = <costbase>-legalentity
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                           failed-managecostbase.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                             %msg = new_message(
                                        id    = '/ESRCC/MANAGECOSTBAS'
                                        number = '000'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -313,40 +394,94 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     LOOP AT costbases ASSIGNING <costbase>.
 
       IF <costbase>-status = 'F'.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                         %msg = new_message(
                         id   = '/ESRCC/MANAGECOSTBAS'
                         number = '001'
                         v1   = <costbase>-belnr
                         severity  = if_abap_behv_message=>severity-error )
                        ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
 
       IF <costbase>-status = 'W'.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                         %msg = new_message(
                         id   = '/ESRCC/MANAGECOSTBAS'
                         number = '002'
                         v1   = <costbase>-belnr
                         severity  = if_abap_behv_message=>severity-error )
                        ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
 
       IF <costbase>-UniqueId IS NOT INITIAL.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                          %msg = new_message(
                          id   = '/ESRCC/MANAGECOSTBAS'
                          number = '009'
                          v1   = <costbase>-belnr
                          severity  = if_abap_behv_message=>severity-error )
                         ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -357,11 +492,19 @@ CLASS lhc_managecostbase IMPLEMENTATION.
   METHOD precheck_changeitems.
 
     " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -374,26 +517,62 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ID '/ESRCC/CN' FIELD <costbase>-costcenter
         ID 'ACTVT'      FIELD '02'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                           %msg = new_message(
                                      id    = '/ESRCC/MANAGECOSTBAS'
                                      number = '000'
                                      v1     = <costbase>-legalentity
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                           failed-managecostbase.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                             %msg = new_message(
                                        id    = '/ESRCC/MANAGECOSTBAS'
                                        number = '000'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -402,40 +581,94 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     LOOP AT costbases ASSIGNING <costbase>.
 
       IF <costbase>-status = 'F'.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                         %msg = new_message(
                         id   = '/ESRCC/MANAGECOSTBAS'
                         number = '001'
                         v1   = <costbase>-belnr
                         severity  = if_abap_behv_message=>severity-error )
                        ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
 
       IF <costbase>-status = 'W'.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                         %msg = new_message(
                         id   = '/ESRCC/MANAGECOSTBAS'
                         number = '002'
                         v1   = <costbase>-belnr
                         severity  = if_abap_behv_message=>severity-error )
                        ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
 
       IF <costbase>-UniqueId IS NOT INITIAL.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                          %msg = new_message(
                          id   = '/ESRCC/MANAGECOSTBAS'
                          number = '009'
                          v1   = <costbase>-belnr
                          severity  = if_abap_behv_message=>severity-error )
                         ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -446,11 +679,19 @@ CLASS lhc_managecostbase IMPLEMENTATION.
   METHOD precheck_discardall.
 
     " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -463,26 +704,62 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ID '/ESRCC/CN' FIELD <costbase>-costcenter
         ID 'ACTVT'      FIELD '02'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                           %msg = new_message(
                                      id    = '/ESRCC/MANAGECOSTBAS'
                                      number = '012'
                                      v1     = <costbase>-legalentity
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                           failed-managecostbase.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                             %msg = new_message(
                                        id    = '/ESRCC/MANAGECOSTBAS'
                                        number = '012'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -490,14 +767,32 @@ CLASS lhc_managecostbase IMPLEMENTATION.
 
     LOOP AT costbases ASSIGNING <costbase> WHERE Status <> 'D'.
 
-      APPEND VALUE #( %tky = <costbase>-%tky
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                       %msg = new_message(
                       id   = '/ESRCC/MANAGECOSTBAS'
                       number = '004'
                       v1   = <costbase>-belnr
                       severity  = if_abap_behv_message=>severity-error )
                      ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                       failed-managecostbase.
 
     ENDLOOP.
@@ -507,11 +802,19 @@ CLASS lhc_managecostbase IMPLEMENTATION.
   METHOD precheck_submit.
 
     " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -524,26 +827,62 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ID '/ESRCC/CN' FIELD <costbase>-costcenter
         ID 'ACTVT'      FIELD '02'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei
                           %msg = new_message(
                                      id    = '/ESRCC/MANAGECOSTBAS'
                                      number = '000'
                                      v1     = <costbase>-legalentity
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                          Poper       = <costbase>-poper
+                          fplv        = <costbase>-fplv
+                          ledger      = <costbase>-Ledger
+                          Legalentity = <costbase>-Legalentity
+                          Ccode       = <costbase>-Ccode
+                          Costobject  = <costbase>-Costobject
+                          Costcenter  = <costbase>-Costcenter
+                          Belnr       = <costbase>-Belnr
+                          Buzei       = <costbase>-Buzei ) TO
                           failed-managecostbase.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                        Poper       = <costbase>-poper
+                        fplv        = <costbase>-fplv
+                        ledger      = <costbase>-Ledger
+                        Legalentity = <costbase>-Legalentity
+                        Ccode       = <costbase>-Ccode
+                        Costobject  = <costbase>-Costobject
+                        Costcenter  = <costbase>-Costcenter
+                        Belnr       = <costbase>-Belnr
+                        Buzei       = <costbase>-Buzei
                             %msg = new_message(
                                        id    = '/ESRCC/MANAGECOSTBAS'
                                        number = '000'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                        Poper       = <costbase>-poper
+                        fplv        = <costbase>-fplv
+                        ledger      = <costbase>-Ledger
+                        Legalentity = <costbase>-Legalentity
+                        Ccode       = <costbase>-Ccode
+                        Costobject  = <costbase>-Costobject
+                        Costcenter  = <costbase>-Costcenter
+                        Belnr       = <costbase>-Belnr
+                        Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -551,150 +890,175 @@ CLASS lhc_managecostbase IMPLEMENTATION.
 
     LOOP AT costbases ASSIGNING <costbase> WHERE status <> 'D'.
 
-      APPEND VALUE #( %tky = <costbase>-%tky
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                       %msg = new_message(
                       id   = '/ESRCC/MANAGECOSTBAS'
                       number = '003'
                       v1   = <costbase>-belnr
                       severity  = if_abap_behv_message=>severity-error )
                      ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                       failed-managecostbase.
-
+      EXIT.
     ENDLOOP.
 
   ENDMETHOD.
 
-  METHOD triggerWorkflow.
-*************************************************************************************
-*Do not delete relevant for cloud version, please un-comment the code in cloud version
+*  METHOD triggerWorkflow.
 **************************************************************************************
-
-  DATA: CpWfHandle    TYPE /esrcc/sww_wiid.
-  DATA: costbase_tmp  TYPE /esrcc/i_managecostbase.
-  DATA: costbases_tmp TYPE TABLE OF /esrcc/i_managecostbase.
-
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
-
-    LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>) WHERE status = 'P'
-                                                           AND WorkflowId IS INITIAL.
-
-
-
-
-
-
-
-      READ TABLE costbases_tmp ASSIGNING FIELD-SYMBOL(<costbases_tmp>) WITH KEY fplv = <costbase>-fplv
-                                                                               ryear = <costbase>-ryear
-                                                                               Legalentity = <costbase>-Legalentity
-                                                                               ccode = <costbase>-ccode
-                                                                               sysid = <costbase>-sysid
-                                                                               costobject = <costbase>-costobject
-                                                                               Costcenter = <costbase>-costcenter.
-      IF sy-subrc <> 0.
-
-        TRY.
-          CALL METHOD cl_numberrange_runtime=>number_get
-            EXPORTING
-              nr_range_nr = '01'
-              object      = '/ESRCC/WF'
-            IMPORTING
-              number      = DATA(number)
-              returncode  = DATA(lv_rcode).
-        CATCH cx_number_ranges         .
-      ENDTRY.
-
-       <costbase>-WorkflowId = number.
-
-        DATA(wf_context) = VALUE /esrcc/s_wf_bpa_object(
-               fplv = <costbase>-fplv
-               ryear = <costbase>-ryear
-               sysid = <costbase>-sysid
-               legalentity = <costbase>-legalentity
-               ccode = <costbase>-ccode
-               costobject = <costbase>-costobject
-               costnumber = <costbase>-costcenter
-               application = 'CBL'
-               workflowid = <costbase>-WorkflowId
-             ).
-
-        MODIFY ENTITIES OF i_cpwf_inst
-             ENTITY CPWFInstance
-             EXECUTE registerWorkflowStart
-             FROM VALUE #( (
-                             %key-CpWfHandle = <costbase>-WorkflowId
-                             %param-RetentionTime = '30'
-                             %param-PaWfDefId = 'eu10.dev-abap-cloud.sccworkflow1.SCCWorkflow'
-                             %param-CallbackClass = '/ESRCC/CL_SWF_CPWF_CALLBACK'
-                             %param-Consumer = 'DEFAULT' ) ).
-
-        TRY.
-            DATA(cpwf_api_instance) = cl_swf_cpwf_api_factory_a4c=>get_api_instance( ).
-          CATCH cx_swf_cpwf_api.
-        ENDTRY.
-
-        DATA(lo_json) = cpwf_api_instance->get_json_converter(
-*                              it_name_mapping              =
-                                    iv_camel_case                = abap_false
-                                    iv_capital_letter            = abap_false
-*                              it_uppercase_word            =
-                                    iv_suppress_empty_components = abap_true
-                                    iv_uppercase                 = abap_false
-                                  ).
-
-        DATA(wf_context_json) = lo_json->serialize( wf_context ).
-
-
-        MODIFY ENTITIES OF i_cpwf_inst
-             ENTITY CPWFInstance
-             EXECUTE setPayload
-             FROM VALUE #( ( %key-CpWfHandle = <costbase>-WorkflowId
-                             %param-context = wf_context_json ) ).
-
-        costbase_tmp = CORRESPONDING #( <costbase> ).
-        APPEND costbase_tmp TO costbases_tmp.
-
-      ELSE.
-        <costbase>-WorkflowId = <costbases_tmp>-WorkflowId.
-      ENDIF.
-
-    ENDLOOP.
-
-    MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
-       ENTITY managecostbase
-        UPDATE FIELDS ( WorkflowId Status )
-             WITH VALUE #( FOR costbase IN costbases WHERE ( status = 'P' )
-                             (
-                                %key = costbase-%key
-                                WorkflowId = costbase-WorkflowId
-                                status = 'W'
-                              ) )
-                             FAILED   FINAL(fail_mod)
-                              REPORTED FINAL(rep_mod)
-                              MAPPED FINAL(map_mod).
-
-
-  ENDMETHOD.
+**Do not delete relevant for cloud version, please un-comment the code in cloud version
+***************************************************************************************
+*
+**  DATA: CpWfHandle TYPE /esrcc/sww_wiid.
+**    DATA: costbase_tmp TYPE /esrcc/i_managecostbase.
+**    DATA: costbases_tmp TYPE TABLE OF /esrcc/i_managecostbase.
+**
+**    " Return result to UI
+**    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
+**        ENTITY managecostbase
+**        ALL FIELDS
+**        WITH CORRESPONDING #( keys )
+**        RESULT DATA(costbases).
+**
+**    LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>) WHERE status = 'P'
+**                                                           AND WorkflowId IS INITIAL.
+**
+**
+**
+**
+**
+**
+**
+**      READ TABLE costbases_tmp ASSIGNING FIELD-SYMBOL(<costbases_tmp>) WITH KEY fplv = <costbase>-fplv
+**                                                                               ryear = <costbase>-ryear
+**                                                                               Legalentity = <costbase>-Legalentity
+**                                                                               ccode = <costbase>-ccode
+**                                                                               sysid = <costbase>-sysid
+**                                                                               costobject = <costbase>-costobject
+**                                                                               Costcenter = <costbase>-costcenter.
+**      IF sy-subrc <> 0.
+**
+**        TRY.
+**          CALL METHOD cl_numberrange_runtime=>number_get
+**            EXPORTING
+**              nr_range_nr = '01'
+**              object      = '/ESRCC/WF'
+**            IMPORTING
+**              number      = DATA(number)
+**              returncode  = DATA(lv_rcode).
+**        CATCH cx_number_ranges         .
+**      ENDTRY.
+**
+**       <costbase>-WorkflowId = number.
+**
+**        DATA(wf_context) = VALUE /esrcc/s_wf_bpa_object(
+**               fplv = <costbase>-fplv
+**               ryear = <costbase>-ryear
+**               sysid = <costbase>-sysid
+**               legalentity = <costbase>-legalentity
+**               ccode = <costbase>-ccode
+**               costobject = <costbase>-costobject
+**               costnumber = <costbase>-costcenter
+**               application = 'CBL'
+**               workflowid = <costbase>-WorkflowId
+**             ).
+**
+**        MODIFY ENTITIES OF i_cpwf_inst
+**             ENTITY CPWFInstance
+**             EXECUTE registerWorkflowStart
+**             FROM VALUE #( (
+**                             %key-CpWfHandle = <costbase>-WorkflowId
+**                             %param-RetentionTime = '30'
+**                             %param-PaWfDefId = 'eu10.dev-abap-cloud.sccworkflow1.SCCWorkflow'
+**                             %param-CallbackClass = '/ESRCC/CL_SWF_CPWF_CALLBACK'
+**                             %param-Consumer = 'DEFAULT' ) ).
+**
+**        TRY.
+**            DATA(cpwf_api_instance) = cl_swf_cpwf_api_factory_a4c=>get_api_instance( ).
+**          CATCH cx_swf_cpwf_api.
+**        ENDTRY.
+**
+**        DATA(lo_json) = cpwf_api_instance->get_json_converter(
+***                              it_name_mapping              =
+**                                    iv_camel_case                = abap_false
+**                                    iv_capital_letter            = abap_false
+***                              it_uppercase_word            =
+**                                    iv_suppress_empty_components = abap_true
+**                                    iv_uppercase                 = abap_false
+**                                  ).
+**
+**        DATA(wf_context_json) = lo_json->serialize( wf_context ).
+**
+**
+**        MODIFY ENTITIES OF i_cpwf_inst
+**             ENTITY CPWFInstance
+**             EXECUTE setPayload
+**             FROM VALUE #( ( %key-CpWfHandle = <costbase>-WorkflowId
+**                             %param-context = wf_context_json ) ).
+**
+**        costbase_tmp = CORRESPONDING #( <costbase> ).
+**        APPEND costbase_tmp TO costbases_tmp.
+**
+**      ELSE.
+**        <costbase>-WorkflowId = <costbases_tmp>-WorkflowId.
+**      ENDIF.
+**
+**    ENDLOOP.
+**
+**    MODIFY ENTITIES OF /esrcc/i_managecostbase  IN LOCAL MODE
+**       ENTITY managecostbase
+**        UPDATE FIELDS ( WorkflowId Status )
+**             WITH VALUE #( FOR costbase IN costbases WHERE ( status = 'P' )
+**                             (
+**                                %key = costbase-%key
+**                                WorkflowId = costbase-WorkflowId
+**                                status = 'W'
+**                              ) )
+**                             FAILED   FINAL(fail_mod)
+**                              REPORTED FINAL(rep_mod)
+**                              MAPPED FINAL(map_mod).
+*
+*
+*  ENDMETHOD.
 
   METHOD adhocchargeout.
 
     DATA ls_param    TYPE /esrcc/c_adhocchargeout.
     DATA lt_receiver TYPE /esrcc/tt_receivers.
     DATA lt_cbli     TYPE TABLE OF /esrcc/cb_li.
-    DATA lo_badi     TYPE REF TO /esrcc/badi_cockpit.
+    DATA lo_badi     TYPE REF TO /esrcc/badi_stdchargeout.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+            INNER JOIN @keys AS keys
+            ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+            INTO TABLE @DATA(costbases).
 
     lt_cbli = CORRESPONDING #( costbases ).
 
@@ -725,7 +1089,7 @@ CLASS lhc_managecostbase IMPLEMENTATION.
 
     READ TABLE costbases ASSIGNING FIELD-SYMBOL(<costbase>) INDEX 1.
     IF sy-subrc = 0.
-      APPEND VALUE #(     %tky = <costbase>-%tky
+      APPEND VALUE #(     %key = keys[ 1 ]-%key
                           %msg = new_message(
                           id   = '/ESRCC/MANAGECOSTBAS'
                           number = '006'
@@ -740,12 +1104,19 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     DATA ls_param    TYPE /esrcc/c_adhocchargeout.
     DATA lt_receiver TYPE /esrcc/tt_receivers.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_managecostbase IN LOCAL MODE
-        ENTITY managecostbase
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT costbase~* FROM /esrcc/i_managecostbase AS costbase
+             INNER JOIN @keys AS keys
+             ON costbase~Ryear = keys~ryear
+             AND costbase~Poper = keys~poper
+             AND costbase~fplv  = keys~fplv
+             AND costbase~Ledger = keys~ledger
+             AND costbase~Legalentity = keys~Legalentity
+             AND costbase~Ccode = keys~Ccode
+             AND costbase~Costobject = keys~Costobject
+             AND costbase~Costcenter = keys~Costcenter
+             AND costbase~Belnr = keys~Belnr
+             AND costbase~Buzei = keys~Buzei
+             INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -758,26 +1129,62 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ID '/ESRCC/CN' FIELD <costbase>-costcenter
         ID 'ACTVT'      FIELD '01'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                           %msg = new_message(
                                      id    = '/ESRCC/MANAGECOSTBAS'
                                      number = '011'
                                      v1     = <costbase>-legalentity
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                           failed-managecostbase.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                             %msg = new_message(
                                        id    = '/ESRCC/MANAGECOSTBAS'
                                        number = '011'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                         failed-managecostbase.
         EXIT.
       ENDIF.
@@ -785,14 +1192,33 @@ CLASS lhc_managecostbase IMPLEMENTATION.
 
     CHECK failed-managecostbase IS INITIAL.
 
-    LOOP AT costbases ASSIGNING <costbase> WHERE status <> 'A'.
-      APPEND VALUE #( %tky = <costbase>-%tky
+    LOOP AT costbases ASSIGNING <costbase> WHERE status <> 'A'
+                                             AND status <> 'R'.
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                       %msg = new_message(
                       id   = '/ESRCC/MANAGECOSTBAS'
                       number = '005'
                       severity  = if_abap_behv_message=>severity-error )
                      ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                       failed-managecostbase.
       EXIT.
     ENDLOOP.
@@ -800,13 +1226,31 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     CHECK failed-managecostbase IS INITIAL.
 
     LOOP AT costbases ASSIGNING <costbase> WHERE Usagecal = 'E'.
-      APPEND VALUE #( %tky = <costbase>-%tky
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                       %msg = new_message(
                       id   = '/ESRCC/MANAGECOSTBAS'
                       number = '008'
                       severity  = if_abap_behv_message=>severity-error )
                      ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                       failed-managecostbase.
       EXIT.
     ENDLOOP.
@@ -814,29 +1258,80 @@ CLASS lhc_managecostbase IMPLEMENTATION.
     CHECK failed-managecostbase IS INITIAL.
 
     LOOP AT costbases ASSIGNING <costbase> WHERE UniqueId IS NOT INITIAL.
-      APPEND VALUE #( %tky = <costbase>-%tky
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei
                       %msg = new_message(
                       id   = '/ESRCC/MANAGECOSTBAS'
                       number = '009'
                       severity  = if_abap_behv_message=>severity-error )
                      ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( Ryear       = <costbase>-ryear
+                      Poper       = <costbase>-poper
+                      fplv        = <costbase>-fplv
+                      ledger      = <costbase>-Ledger
+                      Legalentity = <costbase>-Legalentity
+                      Ccode       = <costbase>-Ccode
+                      Costobject  = <costbase>-Costobject
+                      Costcenter  = <costbase>-Costcenter
+                      Belnr       = <costbase>-Belnr
+                      Buzei       = <costbase>-Buzei ) TO
                       failed-managecostbase.
       EXIT.
     ENDLOOP.
+
+*    CHECK failed-managecostbase IS INITIAL.
+*
+*    LOOP AT costbases ASSIGNING <costbase> WHERE ValueSource = /esrcc/if_calculate_chargeout=>scc_valuesource.
+*
+*      APPEND VALUE #( Ryear       = <costbase>-ryear
+*                      Poper       = <costbase>-poper
+*                      fplv        = <costbase>-fplv
+*                      ledger      = <costbase>-Ledger
+*                      Legalentity = <costbase>-Legalentity
+*                      Ccode       = <costbase>-Ccode
+*                      Costobject  = <costbase>-Costobject
+*                      Costcenter  = <costbase>-Costcenter
+*                      Belnr       = <costbase>-Belnr
+*                      Buzei       = <costbase>-Buzei
+*                      %msg = new_message(
+*                      id   = '/ESRCC/MANAGECOSTBAS'
+*                      number = '015'
+*                      severity  = if_abap_behv_message=>severity-error )
+*                     ) TO reported-managecostbase.
+*      APPEND VALUE #( Ryear       = <costbase>-ryear
+*                      Poper       = <costbase>-poper
+*                      fplv        = <costbase>-fplv
+*                      ledger      = <costbase>-Ledger
+*                      Legalentity = <costbase>-Legalentity
+*                      Ccode       = <costbase>-Ccode
+*                      Costobject  = <costbase>-Costobject
+*                      Costcenter  = <costbase>-Costcenter
+*                      Belnr       = <costbase>-Belnr
+*                      Buzei       = <costbase>-Buzei ) TO
+*                      failed-managecostbase.
+*      EXIT.
+*    ENDLOOP.
 
     CHECK failed-managecostbase IS INITIAL.
 
     SORT costbases BY ryear poper fplv sysid Legalentity Ccode Costobject Costcenter.
     DELETE ADJACENT DUPLICATES FROM costbases COMPARING ryear poper fplv sysid Legalentity Ccode Costobject Costcenter.
     IF lines( costbases ) > 1.
-      APPEND VALUE #( %tky = <costbase>-%tky
-                         %msg = new_message(
-                         id   = '/ESRCC/MANAGECOSTBAS'
-                         number = '007'
-                         severity  = if_abap_behv_message=>severity-error )
+      APPEND VALUE #( %cid = keys[ 1 ]-%cid_ref
+                      %msg = new_message(
+                      id   = '/ESRCC/MANAGECOSTBAS'
+                      number = '007'
+                      severity  = if_abap_behv_message=>severity-error )
                         ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( %cid = keys[ 1 ]-%cid_ref ) TO
                       failed-managecostbase.
     ENDIF.
 
@@ -850,13 +1345,13 @@ CLASS lhc_managecostbase IMPLEMENTATION.
         ) )->write_to( REF #( lt_receiver ) ).
 
     IF lt_receiver IS INITIAL.
-      APPEND VALUE #(     %tky = keys[ 1 ]-%tky
+      APPEND VALUE #(     %cid = keys[ 1 ]-%cid_ref
                           %msg = new_message(
                           id   = '/ESRCC/MANAGECOSTBAS'
                           number = '010'
                           severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-managecostbase.
-      APPEND VALUE #( %tky = <costbase>-%tky ) TO
+      APPEND VALUE #( %cid = keys[ 1 ]-%cid_ref ) TO
                       failed-managecostbase.
 
     ELSE.
@@ -869,26 +1364,26 @@ CLASS lhc_managecostbase IMPLEMENTATION.
                                                                 costcenter = keys[ 1 ]-costcenter.
         IF sy-subrc = 0.
           APPEND VALUE #(
-                           %cid = keys[ 1 ]-%tky
+                           %cid = keys[ 1 ]-%cid_ref
                            %msg = new_message(
                            id   = '/ESRCC/MANAGECOSTBAS'
                            number = '014'
                            severity  = if_abap_behv_message=>severity-error )
                           ) TO reported-managecostbase.
-          APPEND VALUE #( %cid = keys[ 1 ]-%tky ) TO
+          APPEND VALUE #( %cid = keys[ 1 ]-%cid_ref ) TO
                           failed-managecostbase.
           RETURN.
         ENDIF.
       ENDIF.
       SELECT SUM( sharepercent ) FROM @lt_receiver AS receivers INTO @DATA(totalsharepercent).
       IF totalsharepercent = 0.
-        APPEND VALUE #(     %tky = keys[ 1 ]-%tky
+        APPEND VALUE #(     %cid = keys[ 1 ]-%cid_ref
                             %msg = new_message(
                             id   = '/ESRCC/MANAGECOSTBAS'
                             number = '013'
                             severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-managecostbase.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( %cid = keys[ 1 ]-%cid_ref ) TO
                       failed-managecostbase.
 
       ENDIF.
@@ -981,7 +1476,7 @@ CLASS lhc_managecostbase IMPLEMENTATION.
       IF totalvalue > 0.
         lv_sharepercent = ( <receiver>-sharevalue / totalvalue ) * 100.
         <receiver>-sharepercent = lv_sharepercent.
-      ELSEIF
+      ELSEIF <receiver>-sharepercent <> 0.
         lv_sharepercent = <receiver>-sharepercent.
       ENDIF.
       costabsolutepass     = ( lv_sharepercent / 100 ) * totalcostbasepass.
@@ -1051,6 +1546,40 @@ CLASS lhc_managecostbase IMPLEMENTATION.
                                             localcurr = localcurr
                                            ) ) ).
 
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lsc_I_MANAGECOSTBASE DEFINITION INHERITING FROM cl_abap_behavior_saver.
+  PROTECTED SECTION.
+
+    METHODS finalize REDEFINITION.
+
+    METHODS check_before_save REDEFINITION.
+
+    METHODS save REDEFINITION.
+
+    METHODS cleanup REDEFINITION.
+
+    METHODS cleanup_finalize REDEFINITION.
+
+ENDCLASS.
+
+CLASS lsc_I_MANAGECOSTBASE IMPLEMENTATION.
+
+  METHOD finalize.
+  ENDMETHOD.
+
+  METHOD check_before_save.
+  ENDMETHOD.
+
+  METHOD save.
+  ENDMETHOD.
+
+  METHOD cleanup.
+  ENDMETHOD.
+
+  METHOD cleanup_finalize.
   ENDMETHOD.
 
 ENDCLASS.

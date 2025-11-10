@@ -7,37 +7,37 @@
 annotate view /ESRCC/C_CoRule_S with
 {
   @UI.facet: [ {
-//    id: 'Transport', 
-//    purpose: #STANDARD, 
-//    type: #IDENTIFICATION_REFERENCE, 
-//    label: 'Transport', 
-//    position: 1 , 
-//    hidden: #(HideTransport)
-//  }, 
-//  {
-    id: '/ESRCC/I_CoRule', 
-    purpose: #STANDARD, 
-    type: #LINEITEM_REFERENCE, 
-    label: 'Maintain Standard Charge-out Rules', 
-    position: 2 , 
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1 ,
+    hidden: #(HideTransport)
+  },
+  {
+    id: '/ESRCC/I_CoRule',
+    purpose: #STANDARD,
+    type: #LINEITEM_REFERENCE,
+    label: 'Maintain Charge-out Rules',
+    position: 2 ,
     targetElement: '_Rule'
   } ]
   @UI.lineItem: [ {
-    position: 1 
+    position: 1
   } ]
   SingletonID;
-  
+
   @UI.hidden: true
   HideTransport;
-  
+
   @UI.identification: [ {
-    position: 2 , 
+    position: 2 ,
     importance: #HIGH
-//  }, 
-//  {
-//    type: #FOR_ACTION, 
-//    dataAction: 'SelectCustomizingTransptReq', 
-//    label: 'Select Transport'
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
   } ]
   TransportRequestID;
 }

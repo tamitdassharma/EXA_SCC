@@ -13,8 +13,11 @@ authorization master ( global )
   internal create;
   internal delete;
 
+  field ( readonly )
+  SingletonID;
+
   draft action ( features : instance ) Edit with additional implementation;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare
@@ -23,6 +26,8 @@ authorization master ( global )
     validation ServiceProduct~ValidateData;
     validation ServiceReceiver~ValidateData;
   }
+
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _Stewardship { create ( features : instance, precheck ); with draft; }
 }
@@ -50,24 +55,26 @@ authorization dependent by _StewardshipAll
   update ( features : instance, precheck );
   delete ( features : instance );
 
-  mapping for /ESRCC/STEWRDSHP
-  {
-    StewardshipUuid = STEWARDSHIP_UUID;
-    ValidFrom = VALID_FROM;
-    Validto = VALID_TO;
-    Stewardship = STEWARDSHIP;
-    CostObjectUuid = COST_OBJECT_UUID;
-    ChainId = CHAIN_ID;
-    ChainSequence = CHAIN_SEQUENCE;
-    WorkflowId = WORKFLOW_ID;
-    WorkflowStatus = WORKFLOW_STATUS;
-    CommentId = COMMENT_ID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyStewrdshpP [1];
+
+  mapping for /esrcc/stewrdshp
+    {
+      StewardshipUuid    = STEWARDSHIP_UUID;
+      ValidFrom          = VALID_FROM;
+      Validto            = VALID_TO;
+      Stewardship        = STEWARDSHIP;
+      CostObjectUuid     = COST_OBJECT_UUID;
+      ChainId            = CHAIN_ID;
+      ChainSequence      = CHAIN_SEQUENCE;
+      WorkflowId         = WORKFLOW_ID;
+      WorkflowStatus     = WORKFLOW_STATUS;
+      CommentId          = COMMENT_ID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   action ( features : instance ) Submit parameter /ESRCC/C_COMMENT result [1] $self;
   action ( features : instance ) Finalize result [1] $self;
@@ -79,10 +86,10 @@ authorization dependent by _StewardshipAll
   determination TriggerWorkflow on save { field WorkflowStatus; }
 
   validation ValidateData on save { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 
   association _StewardshipAll { with draft; }
   association _ServiceProduct { create ( features : instance, precheck ); with draft; }
-  association _ServiceReceiver { create ( features : instance, precheck ); with draft; }
 }
 
 define behavior for /ESRCC/I_StwdSp alias ServiceProduct
@@ -108,24 +115,24 @@ authorization dependent by _StewardshipAll
   StewardshipUuid, ServiceProduct, ValidFrom;
 
   update ( features : instance, precheck );
-  delete ( features : instance, precheck );
+  delete ( features : instance );
 
-  mapping for /ESRCC/stwd_sp
-  {
-    ServiceProductUuid = SERVICE_PRODUCT_UUID;
-    Serviceproduct = SERVICE_PRODUCT;
-    Validfrom = VALID_FROM;
-    Validto = VALID_TO;
-    ShareOfCost = SHARE_OF_COST;
-    Erpsalesorder = ERP_SALES_ORDER;
-    Contractid = CONTRACT_ID;
-    StewardshipUuid = STEWARDSHIP_UUID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_StwdSpP [1];
+
+  mapping for /esrcc/stwd_sp
+    {
+      ServiceProductUuid = SERVICE_PRODUCT_UUID;
+      Serviceproduct     = SERVICE_PRODUCT;
+      Validfrom          = VALID_FROM;
+      Validto            = VALID_TO;
+      ShareOfCost        = SHARE_OF_COST;
+      StewardshipUuid    = STEWARDSHIP_UUID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _StewardshipAll { with draft; }
   association _Stewardship { with draft; }
@@ -133,6 +140,9 @@ authorization dependent by _StewardshipAll
   determination UpdateInternalWorkflowStatus on modify { create; update; delete; }
 
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+
+  association _ServiceReceiver { create ( features : instance, precheck ); with draft; }
 }
 
 define behavior for /ESRCC/I_StwdSpRec alias ServiceReceiver
@@ -146,13 +156,13 @@ authorization dependent by _StewardshipAll
   ServiceReceiverUuid;
 
   field ( mandatory : create )
-  ServiceProduct, Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
+  Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
 
   field ( readonly )
-  ServiceReceiverUuid, SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+  ServiceReceiverUuid, ServiceProduct, SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
 
   field ( readonly : update )
-  StewardshipUuid, ServiceProduct, Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
+  StewardshipUuid, ServiceProductUuid, Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
 
   field ( mandatory ) InvoiceCurrency;
 
@@ -160,24 +170,26 @@ authorization dependent by _StewardshipAll
   delete ( features : instance );
 
   mapping for /esrcc/stwdsprec
-  {
-    ServiceReceiverUuid = SERV_PROD_REC_UUID;
-    ServiceProduct = SERVICE_PRODUCT;
-    CostObjectUuid = COST_OBJECT_UUID;
-    StewardshipUuid = STEWARDSHIP_UUID;
-    InvoiceCurrency = INVOICE_CURRENCY;
-    Active = ACTIVE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+    {
+      ServiceReceiverUuid = SERV_PROD_REC_UUID;
+      CostObjectUuid      = COST_OBJECT_UUID;
+      ServiceProductUuid  = SERVICE_PRODUCT_UUID;
+      InvoiceCurrency     = INVOICE_CURRENCY;
+      Erpsalesorder       = ERP_SALES_ORDER;
+      Contractid          = CONTRACT_ID;
+      Active              = ACTIVE;
+      CreatedBy           = CREATED_BY;
+      CreatedAt           = CREATED_AT;
+      LastChangedBy       = LAST_CHANGED_BY;
+      LastChangedAt       = LAST_CHANGED_AT;
+      LocalLastChangedAt  = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _StewardshipAll { with draft; }
-  association _Stewardship { with draft; }
+  association _ServiceProduct { with draft; }
 
   determination UpdateInternalWorkflowStatus on modify { create; update; delete; }
 
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

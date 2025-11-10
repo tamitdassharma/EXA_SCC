@@ -11,6 +11,7 @@
     <LOWERCASE>X</LOWERCASE>
     <DDTEXT>Street Address</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

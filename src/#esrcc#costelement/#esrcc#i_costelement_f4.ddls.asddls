@@ -16,7 +16,7 @@ define view entity /ESRCC/I_COSTELEMENT_F4
       @UI.hidden: true
   key cost_element_uuid                 as Uuid,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: [ 'SysidDescription' ]
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Sysid' },
@@ -25,7 +25,7 @@ define view entity /ESRCC/I_COSTELEMENT_F4
                                        useForValidation: true }]
       sysid                             as Sysid,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: [ 'LegalEntityDescription' ]
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Legalentity' },
@@ -34,7 +34,7 @@ define view entity /ESRCC/I_COSTELEMENT_F4
                                        useForValidation: true }]
       legal_entity                      as LegalEntity,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: [ 'CompanyCodeDescription' ]
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' },
@@ -45,26 +45,26 @@ define view entity /ESRCC/I_COSTELEMENT_F4
 
       @ObjectModel.text.element: ['costelementdescription']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       cost_element                      as Costelement,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _CostelementText.description      as costelementdescription,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _CcodeText.ccodedescription       as CompanyCodeDescription,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _CcodeText.LegalentityDescription as LegalEntityDescription,
 
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.filter.hidden: true
       _SystemInfoText.Description       as SysidDescription,
 

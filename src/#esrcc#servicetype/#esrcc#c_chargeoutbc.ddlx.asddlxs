@@ -51,7 +51,8 @@ annotate view /ESRCC/C_ChargeoutBc with
   @UI.hidden: true
   Uuid;
 
-  @UI.lineItem: [ { position: 1 } ]
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
                                        useForValidation: true }]
@@ -74,11 +75,11 @@ annotate view /ESRCC/C_ChargeoutBc with
   ChargeoutRuleId;
 
   @UI.identification: [ { position: 5 } ]
-  @UI.lineItem: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5, cssDefault.width: '10rem' } ]
   ChargeoutMethod;
 
-  @UI.identification: [ { position: 6, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
-  @UI.lineItem: [ { position: 6, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.identification: [ { position: 6,  criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.lineItem: [ { position: 6, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
   @UI.textArrangement: #TEXT_ONLY
   @EndUserText.label: 'Workflow Status'
   WorkflowStatus;
@@ -104,10 +105,10 @@ annotate view /ESRCC/C_ChargeoutBc with
 
   @UI.hidden
   ServiceProductDescription;
-
   @UI.hidden
   ChargeoutMethodDescription;
-
   @UI.hidden
   WorkflowStatusDescription;
+  @UI.hidden
+  ChargeoutRuleDescription;
 }

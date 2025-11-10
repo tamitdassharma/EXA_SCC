@@ -1,0 +1,113 @@
+managed with additional save implementation in class /ESRCC/BP_I_REGION_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Region_S alias RegionAll
+draft table /esrcc/d_regio_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation Regions~ValidateDataConsistency;
+    validation RegionText~ValidateDataConsistency;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Regions { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Regions alias Regions
+persistent table /esrcc/regions
+draft table /esrcc/d_regions
+etag master LocalLastChangedAt
+lock dependent by _RegionAll
+authorization dependent by _RegionAll
+
+{
+  field ( mandatory : create )
+  Region;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Region;
+
+  update ( features : global );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyRegions [1];
+
+  mapping for /esrcc/regions
+    {
+      Region             = REGION;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RegionAll { with draft; }
+  association _RegionText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateDataConsistency on save { create; update; }
+}
+
+define behavior for /ESRCC/I_RegionText alias RegionText
+persistent table /esrcc/regionst
+draft table /esrcc/d_regiont
+etag master LocalLastChangedAt
+lock dependent by _RegionAll
+authorization dependent by _RegionAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  Region,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/regionst
+    {
+      Spras              = SPRAS;
+      Region             = REGION;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _RegionAll { with draft; }
+  association _Regions { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateDataConsistency on save { create; update; }
+}

@@ -11,7 +11,7 @@
     "serviceVersion": "0001",
     "rootEntitySet": "CostObjectAll",
     "name": "Cost Objects Master Data & Frequency",
-    "configurationGroup": "/ESRCC/BC_GROUP2",
+    "configurationGroup": "/ESRCC/BC_GROUP6",
     "skipRootEntity": true
   },
   "appConfiguration": {
@@ -28,9 +28,9 @@
       {
         "entitySet": "CostObject",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "CostObjectAll"

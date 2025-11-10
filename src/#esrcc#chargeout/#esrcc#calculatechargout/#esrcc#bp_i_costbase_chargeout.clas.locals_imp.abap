@@ -12,6 +12,7 @@ CLASS lhc_CostbaseChargeout DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
     METHODS deleteadhochargeout FOR MODIFY
       IMPORTING keys FOR ACTION CostbaseChargeout~deleteadhochargeout.
+
     METHODS get_instance_features FOR INSTANCE FEATURES
       IMPORTING keys REQUEST requested_features FOR CostbaseChargeout RESULT result.
 
@@ -34,7 +35,8 @@ CLASS lhc_CostbaseChargeout IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD deleteadhochargeout.
-    DATA lo_badi     TYPE REF TO /esrcc/badi_cockpit.
+
+    DATA lo_badi     TYPE REF TO /esrcc/badi_stdchargeout.
 
     IF lo_badi IS NOT BOUND.
       TRY.
@@ -42,8 +44,6 @@ CLASS lhc_CostbaseChargeout IMPLEMENTATION.
         CATCH cx_badi_not_implemented cx_badi_unknown_error.
       ENDTRY.
     ENDIF.
-
-
 
     IF keys IS NOT INITIAL.
 
@@ -65,12 +65,10 @@ CLASS lhc_CostbaseChargeout IMPLEMENTATION.
 
   METHOD precheck_deleteadhochargeout.
 
-    " Return result to UI
-    READ ENTITIES OF /esrcc/i_costbase_chargeout IN LOCAL MODE
-        ENTITY CostbaseChargeout
-        ALL FIELDS
-        WITH CORRESPONDING #( keys )
-        RESULT DATA(costbases).
+    SELECT chargeout~* FROM /esrcc/i_costbase_chargeout AS chargeout
+             INNER JOIN @keys AS keys
+             ON chargeout~CcUuid = keys~CcUuid
+             INTO TABLE @DATA(costbases).
 
     LOOP AT costbases ASSIGNING FIELD-SYMBOL(<costbase>).
 *Authorisation Check
@@ -83,7 +81,7 @@ CLASS lhc_CostbaseChargeout IMPLEMENTATION.
           ID '/ESRCC/CN' FIELD <costbase>-costcenter
           ID 'ACTVT'      FIELD '06'.
         IF sy-subrc <> 0.
-          APPEND VALUE #( %tky = <costbase>-%tky
+          APPEND VALUE #( CcUuid = <costbase>-CcUuid
                           %msg = new_message(
                                      id    = '/ESRCC/MESSAGES'
                                      number = '001'
@@ -91,22 +89,39 @@ CLASS lhc_CostbaseChargeout IMPLEMENTATION.
                                      v2     = <costbase>-Costcenter
                                      severity  = if_abap_behv_message=>severity-error )
                          ) TO reported-costbasechargeout.
-          APPEND VALUE #( %tky = <costbase>-%tky ) TO
+          APPEND VALUE #( CcUuid = <costbase>-CcUuid ) TO
                           failed-costbasechargeout.
           EXIT.
         ENDIF.
       ELSE.
-        APPEND VALUE #( %tky = <costbase>-%tky
+        APPEND VALUE #( CcUuid = <costbase>-CcUuid
                             %msg = new_message(
                                        id    = '/ESRCC/MESSAGES'
                                        number = '000'
                                        v1     = <costbase>-legalentity
                                        severity  = if_abap_behv_message=>severity-error )
                            ) TO reported-costbasechargeout.
-        APPEND VALUE #( %tky = <costbase>-%tky ) TO
+        APPEND VALUE #( CcUuid = <costbase>-CcUuid ) TO
                         failed-costbasechargeout.
         EXIT.
       ENDIF.
+
+      IF <costbase>-status <> /esrcc/if_calculate_chargeout=>finalized AND
+         <costbase>-status <> /esrcc/if_calculate_chargeout=>approved AND
+         <costbase>-status <> /esrcc/if_calculate_chargeout=>rejected.
+
+        APPEND VALUE #( CcUuid = <costbase>-CcUuid
+                            %msg = new_message(
+                                       id    = '/ESRCC/MESSAGES'
+                                       number = '009'
+                                       v1     = <costbase>-Status
+                                       severity  = if_abap_behv_message=>severity-error )
+                           ) TO reported-costbasechargeout.
+        APPEND VALUE #( CcUuid = <costbase>-CcUuid ) TO
+                        failed-costbasechargeout.
+        EXIT.
+      ENDIF.
+
     ENDLOOP.
 
   ENDMETHOD.

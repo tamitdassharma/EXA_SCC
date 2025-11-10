@@ -11,7 +11,7 @@
   presentationVariant: [{
     qualifier: 'pVariant',
     sortOrder: [{ by: 'ServiceProduct', direction: #ASC },
-                { by: 'ValidFrom', direction: #ASC}],                
+                { by: 'ValidFrom', direction: #ASC}],
     visualizations: [{type: #AS_LINEITEM }]
   }]
 }
@@ -48,14 +48,22 @@ annotate view /ESRCC/C_StwdSp with
      targetQualifier: 'AdminGroup',
      label: 'Admin Information',
      position: 30
+   },
+   {
+    id: 'ServiceReceiver',
+    type: #PRESENTATIONVARIANT_REFERENCE,
+    targetElement: '_ServiceReceiver',
+    parentId: 'CE',
+    targetQualifier: 'pVariant',
+    position: 40
    } ]
 
   @UI.hidden: true
+  @UI.lineItem: [{ type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', position: 10 }]
   @EndUserText.label: 'Service Product UUID'
   ServiceProductUuid;
 
   @UI.lineItem: [ { position: 10 } ]
-  @UI.identification: [ { position: 10 } ]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' }, useForValidation: true }]
   ServiceProduct;
@@ -72,13 +80,13 @@ annotate view /ESRCC/C_StwdSp with
   @UI.lineItem: [ { position: 40, cssDefault.width: '10rem' } ]
   ShareOfCost;
 
-  @UI.identification: [ { position: 50 } ]
-  @UI.lineItem: [ { position: 50 } ]
-  ErpSalesOrder;
-
-  @UI.identification: [ { position: 60 } ]
-  @UI.lineItem: [ { position: 60 } ]
-  ContractId;
+  //  @UI.identification: [ { position: 50 } ]
+  //  @UI.lineItem: [ { position: 50 } ]
+  //  ErpSalesOrder;
+  //
+  //  @UI.identification: [ { position: 60 } ]
+  //  @UI.lineItem: [ { position: 60, type:#WITH_URL } ]
+  //  ContractId;
 
   @UI.hidden: true
   @EndUserText.label: 'Stewardship UUID'
@@ -99,7 +107,7 @@ annotate view /ESRCC/C_StwdSp with
   @UI.lineItem: [ { position: 100, cssDefault.width: '9.5rem' } ]
   @UI.fieldGroup: [{ position: 40, qualifier: 'AdminGroup' }]
   LastChangedAt;
-  
+
   @UI.hidden: true
   ServiceProductDescription;
 }

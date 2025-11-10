@@ -1,0 +1,35 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Maintain Service Product True-up Rules",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "serviceConfiguration": {
+    "serviceBinding": "/ESRCC/UI_CHGTRUP_O4",
+    "serviceName": "/ESRCC/UI_CHGTRUP_O4",
+    "serviceVersion": "0001",
+    "rootEntitySet": "ServicePrdTrueUpAll",
+    "name": "Service Product True-up Rules",
+    "configurationGroup": "/ESRCC/BC_GROUP5",
+    "skipRootEntity": true
+  },
+  "appConfiguration": {
+    "listReport": {},
+    "objectPages": [
+      {
+        "entitySet": "ServicePrdTrueUpAll",
+        "variantManagement": "control"
+      }
+    ],
+    "tableSettings": [
+      {
+        "entitySet": "ServicePrdTrueUp",
+        "tableType": "gridTable",
+        "creationModeName": "creationRow",
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
+      }
+    ]
+  }
+}

@@ -43,8 +43,8 @@
       {
         "entitySet": "Stewardship",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "StewardshipAll"

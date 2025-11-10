@@ -55,6 +55,13 @@ CLASS /esrcc/cl_authorization DEFINITION
       RETURNING
         VALUE(is_authorized) TYPE abap_boolean.
 
+    CLASS-METHODS check_authorization_tabu
+      IMPORTING
+        field_name           TYPE sxco_cds_object_name
+        activity             TYPE activ_auth DEFAULT c_authorization_activity-change
+      RETURNING
+        VALUE(is_authorized) TYPE if_abap_behv=>t_xflag.
+
     METHODS set_authorization_for_instance
       IMPORTING
         key                   TYPE any
@@ -81,6 +88,20 @@ CLASS /esrcc/cl_authorization DEFINITION
       RETURNING
         VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
 
+    METHODS regulate_action_copy
+      IMPORTING
+        is_draft            TYPE abp_behv_flag OPTIONAL
+        wf_status           TYPE /esrcc/status_de
+      RETURNING
+        VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
+
+    METHODS regulate_action_copy_obj_page
+      IMPORTING
+        is_draft            TYPE abp_behv_flag OPTIONAL
+        wf_status           TYPE /esrcc/status_de
+      RETURNING
+        VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
+
     METHODS regulate_action_finalize
       IMPORTING
         is_draft            TYPE abp_behv_flag OPTIONAL
@@ -89,6 +110,20 @@ CLASS /esrcc/cl_authorization DEFINITION
         VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
 
     METHODS regulate_action_reopen
+      IMPORTING
+        is_draft            TYPE abp_behv_flag OPTIONAL
+        wf_status           TYPE /esrcc/status_de
+      RETURNING
+        VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
+
+    METHODS regulate_action_sync
+      IMPORTING
+        is_draft            TYPE abp_behv_flag OPTIONAL
+        wf_status           TYPE /esrcc/status_de
+      RETURNING
+        VALUE(is_regulated) TYPE if_abap_behv=>t_xflag.
+
+    METHODS regulate_action_autogenerate
       IMPORTING
         is_draft            TYPE abp_behv_flag OPTIONAL
         wf_status           TYPE /esrcc/status_de
@@ -122,8 +157,12 @@ CLASS /esrcc/cl_authorization DEFINITION
       go_abap_dictionary    TYPE REF TO /esrcc/cl_abap_dictionary,
       gv_source_entity_name TYPE sxco_cds_object_name,
       gt_wf_submit          TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
+      gt_wf_copy            TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
+      gt_wf_copy_obj_page   TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
       gt_wf_finalize        TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
       gt_wf_reopen          TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
+      gt_wf_sync            TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
+      gt_wf_autogenerate    TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
       gt_wf_update          TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
       gt_wf_delete          TYPE /esrcc/cl_wf_utility=>tt_workflow_status,
       gt_authorized_list    TYPE SORTED TABLE OF ts_authorized_list WITH NON-UNIQUE DEFAULT KEY.
@@ -185,7 +224,7 @@ ENDCLASS.
 
 
 
-CLASS /ESRCC/CL_AUTHORIZATION IMPLEMENTATION.
+CLASS /esrcc/cl_authorization IMPLEMENTATION.
 
 
   METHOD check_authorization. " Check authorization and set error message
@@ -271,6 +310,12 @@ CLASS /ESRCC/CL_AUTHORIZATION IMPLEMENTATION.
                       update = COND #( WHEN activity = c_authorization_activity-change THEN authorized_status )
                       delete = COND #( WHEN activity = c_authorization_activity-delete THEN authorized_status ) ) INTO TABLE gt_authorized_list.
     ENDIF.
+  ENDMETHOD.
+
+
+  METHOD check_authorization_tabu.
+    AUTHORITY-CHECK OBJECT 'S_TABU_NAM' ID 'TABLE' FIELD field_name ID 'ACTVT' FIELD activity.
+    is_authorized = COND #( WHEN sy-subrc = 0 THEN if_abap_behv=>auth-allowed ELSE if_abap_behv=>auth-unauthorized ).
   ENDMETHOD.
 
 
@@ -428,8 +473,6 @@ CLASS /ESRCC/CL_AUTHORIZATION IMPLEMENTATION.
       gt_wf_reopen = /esrcc/cl_wf_utility=>wf_status_action_reopen( ).
     ENDIF.
 
-    check_auth_reopen( ).
-
     is_regulated = COND #( WHEN check_auth_reopen( ) = abap_false THEN if_abap_behv=>auth-unauthorized
                            ELSE determine_regulation_state(
                                   is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
@@ -448,6 +491,60 @@ CLASS /ESRCC/CL_AUTHORIZATION IMPLEMENTATION.
                      is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
                      wf_status         = wf_status
                      wf_status_allowed = gt_wf_submit
+                   ).
+  ENDMETHOD.
+
+
+  METHOD regulate_action_sync.
+    IF gt_wf_sync IS INITIAL.
+      gt_wf_sync = /esrcc/cl_wf_utility=>wf_status_action_sync( ).
+    ENDIF.
+
+    is_regulated = COND #( WHEN check_auth_reopen( ) = abap_false THEN if_abap_behv=>auth-unauthorized
+                           ELSE determine_regulation_state(
+                                  is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
+                                  wf_status         = wf_status
+                                  wf_status_allowed = gt_wf_sync
+                                ) ).
+  ENDMETHOD.
+
+
+  METHOD regulate_action_autogenerate.
+    IF gt_wf_autogenerate IS INITIAL.
+      gt_wf_autogenerate = /esrcc/cl_wf_utility=>wf_status_action_autogenerate( ).
+    ENDIF.
+
+    is_regulated = COND #( WHEN check_auth_reopen( ) = abap_false THEN if_abap_behv=>auth-unauthorized
+                           ELSE determine_regulation_state(
+                                  is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
+                                  wf_status         = wf_status
+                                  wf_status_allowed = gt_wf_autogenerate
+                                ) ).
+  ENDMETHOD.
+
+
+  METHOD regulate_action_copy.
+    IF gt_wf_copy IS INITIAL.
+      gt_wf_copy = /esrcc/cl_wf_utility=>wf_status_action_copy( ).
+    ENDIF.
+
+    is_regulated = determine_regulation_state(
+                     is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
+                     wf_status         = wf_status
+                     wf_status_allowed = gt_wf_copy
+                   ).
+  ENDMETHOD.
+
+
+  METHOD regulate_action_copy_obj_page.
+    IF gt_wf_copy_obj_page IS INITIAL.
+      gt_wf_copy_obj_page = /esrcc/cl_wf_utility=>wf_status_action_copy_obj_page( ).
+    ENDIF.
+
+    is_regulated = determine_regulation_state(
+                     is_draft          = COND #( WHEN is_draft IS SUPPLIED THEN is_draft ELSE if_abap_behv=>mk-on )
+                     wf_status         = wf_status
+                     wf_status_allowed = gt_wf_copy_obj_page
                    ).
   ENDMETHOD.
 

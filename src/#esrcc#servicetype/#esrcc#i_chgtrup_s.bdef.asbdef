@@ -1,0 +1,80 @@
+managed with additional save implementation in class /ESRCC/BP_I_CHGTRUP_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_Chgtrup_S alias ServicePrdTrueUpAll
+draft table /esrcc/d_chgtr_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation ServicePrdTrueUp~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _ServicePrdTrueUp { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_Chgtrup alias ServicePrdTrueUp
+persistent table /esrcc/chgtrup
+draft table /esrcc/d_chgtrup
+etag master LocalLastChangedAt
+lock dependent by _ServicePrdTrueUpAll
+authorization dependent by _ServicePrdTrueUpAll
+
+{
+  field ( readonly )
+  SingletonID,
+  Uuid,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( mandatory : create, readonly : update )
+  Serviceproduct, Validfrom;
+
+  field ( mandatory )
+  ChargeoutRuleId, Validto;
+
+  field ( numbering : managed )
+  Uuid;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyChgTrupP [1];
+
+  mapping for /esrcc/chgtrup
+    {
+      Uuid               = UUID;
+      Serviceproduct     = SERVICEPRODUCT;
+      Validfrom          = VALIDFROM;
+      Validto            = VALIDTO;
+      ChargeoutRuleId    = CHARGEOUT_RULE_ID;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _ServicePrdTrueUpAll { with draft; }
+  validation ValidateData on save { create; update; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

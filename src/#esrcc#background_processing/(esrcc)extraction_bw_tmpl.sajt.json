@@ -1,0 +1,57 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Extraction BW Job Template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "/ESRCC/EXTRACTION_BW_CAT"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "EXT_OBJ",
+        "value": ""
+      },
+      {
+        "name": "LEDGER",
+        "value": ""
+      },
+      {
+        "name": "PKG_SIZE",
+        "value": "10000"
+      },
+      {
+        "name": "REP_YEAR",
+        "value": ""
+      },
+      {
+        "name": "SIMULATE",
+        "value": "X"
+      }
+    ],
+    "valueRangesParameters": [
+      {
+        "name": "CSTCENTR",
+        "valueRanges": []
+      },
+      {
+        "name": "CSTELEM",
+        "valueRanges": []
+      },
+      {
+        "name": "ENTITY",
+        "valueRanges": []
+      },
+      {
+        "name": "PERIOD",
+        "valueRanges": []
+      },
+      {
+        "name": "PKG_CODE",
+        "valueRanges": []
+      }
+    ]
+  }
+}

@@ -12,6 +12,7 @@
     <MAINFLAG>X</MAINFLAG>
     <CONTFLAG>C</CONTFLAG>
     <EXCLASS>4</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/REASON</TABNAME>
@@ -96,12 +97,6 @@
      <DDTEXT>Gründe einbeziehen/ausschließen</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/REASON</TABNAME>
-     <CCLASS>CUS_DEV_SUP_RO</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

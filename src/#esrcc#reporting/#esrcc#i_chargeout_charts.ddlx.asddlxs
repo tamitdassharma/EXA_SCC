@@ -97,13 +97,9 @@
 {
     qualifier: 'ChartDefault',
     chartType: #COLUMN,
-    dimensions:  ['Legalentity','Ryear','Fplv' ],
+    dimensions:  ['Legalentity','Ryear' ],
     measures:  [ 'TotalChargeOutAmount' ],
     dimensionAttributes: [
-     {
-        dimension: 'Fplv',
-        role:  #CATEGORY
-    },
     {
         dimension: 'Ryear',
         role:  #CATEGORY
@@ -142,6 +138,8 @@
 
 //UI Presention Annotation
 @UI.presentationVariant: [
+
+
 //{
 //    qualifier: 'KPI1ExcludedCost',
 //    text: 'Total Cost (Initial)',
@@ -182,6 +180,17 @@
 
 {
     qualifier: 'Default',
+    
+     sortOrder: [                                      
+                                      { by: 'Ryear' },                                   
+                                      { by: 'Poper' }, 
+                                      { by: 'Sysid' },
+                                      { by: 'Legalentity' },
+                                      { by: 'Ccode' },
+                                      { by: 'Costobject' },
+                                      { by: 'Costcenter' }                                      
+                                      ],
+                                      
     visualizations: [{
         type: #AS_CHART,
         qualifier: 'ChartDefault'
@@ -190,27 +199,25 @@
 annotate view /ESRCC/I_CHARGEOUT_CHARTS with
 {
 
-  @UI.lineItem: [{ position: 05 ,cssDefault:{width: '10rem'}} ]
-  @UI.selectionField: [{position: 05 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' }}]
-  @UI.textArrangement: #TEXT_ONLY
+//  @UI.lineItem: [{ position: 05 ,cssDefault:{width: '10rem'}} ]
+////  @UI.selectionField: [{position: 15 }]
+////  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' }}]
+//  @UI.textArrangement: #TEXT_ONLY
+  @UI.hidden:true
   Fplv;
 
-  @UI.lineItem: [{ position: 10 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }}]
-  Sysid;
-  @UI.lineItem: [{ position: 20}]
-  @UI.selectionField: [{position: 10 }]
-
-
+  @Consumption.filter.mandatory: true
+  @UI.lineItem: [{ position: 10}]
+  @UI.selectionField: [{position: 05 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' }}]
-
   Ryear;
-  @UI.lineItem: [{ position: 30 }]
-  @UI.selectionField: [{position: 15 }]
+  @UI.lineItem: [{ position: 20 }]
+  @UI.selectionField: [{position: 10 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
   Poper;
-
+  @UI.lineItem: [{ position: 30 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }}]
+  Sysid;
   @UI.lineItem: [{ position: 40 }]
   @UI.selectionField: [{position: 20 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntity_F4', element: 'Legalentity' } }]
@@ -219,141 +226,158 @@ annotate view /ESRCC/I_CHARGEOUT_CHARTS with
 
   @UI.lineItem: [{ position: 50 }]
   @UI.selectionField: [{position: 30 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' },
-                                       additionalBinding: [ { element: 'Legalentity', localElement: 'Legalentity' } ]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [ { element: 'Legalentity', localElement: 'Legalentity' } ]}]
   @UI.textArrangement: #TEXT_LAST
   Ccode;
   
-  @UI.lineItem: [{ position: 105 }]
-  ContractId;
   
-  @UI.lineItem: [{ position: 100 }]
-  @UI.selectionField: [{position: 80}]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_TRANSACTIONGROUP_F4', element: 'Transactiongroup' } }]
-  @UI.textArrangement: #TEXT_LAST
-  Transactiongroup;
-
-  @UI.lineItem: [{ position: 90 }]
-  @UI.selectionField: [{position: 70}]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICETYPE_F4', element: 'ServiceType' } }]
-  @UI.textArrangement: #TEXT_LAST
-  Servicetype;
 
   @UI.lineItem: [{ position: 60 }]
   @UI.selectionField: [{position: 40}]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
   @UI.textArrangement: #TEXT_LAST
   Costobject;
-
-  @UI.lineItem: [{ position: 70 }]
-  @UI.textArrangement: #TEXT_ONLY
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROCESSTYPE', element: 'ProcessType' } }]
-  ProcessType;
   
-  @UI.lineItem: [{ position: 75 }]
+  @UI.lineItem: [{ position: 70 }]
   @UI.selectionField: [{position: 50 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
   @UI.textArrangement: #TEXT_LAST
   Costcenter;
-
-  @UI.lineItem: [{ position: 81 }]
+    
+  @UI.lineItem: [{ position: 80 }]
+  @UI.selectionField: [{position: 70}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' }}]
+//                                       additionalBinding: [{ element: 'OECD', localElement: 'OECD' }]}]
+  @UI.textArrangement: #TEXT_LAST
+  Serviceproduct;
+  
+  @UI.lineItem: [{ position: 90 }]
   @UI.selectionField: [{position: 60}]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_OECD', element: 'OECD' }}]
   @UI.textArrangement: #TEXT_LAST
   OECD;
-
-  @UI.lineItem: [{ position: 80 }]
+  
+  @UI.lineItem: [{ position: 100 }]
+  ContractId;
+  
+  @UI.lineItem: [{ position: 110 }]
   @UI.selectionField: [{position: 70}]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICEPRODUCT_F4', element: 'ServiceProduct' },
-                                       additionalBinding: [{ element: 'OECD', localElement: 'OECD' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SERVICETYPE_F4', element: 'ServiceType' } }]
   @UI.textArrangement: #TEXT_LAST
-  Serviceproduct;
+  Servicetype;
+  
+  @UI.lineItem: [{ position: 120 }]
+  @UI.selectionField: [{position: 80}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_TRANSACTIONGROUP_F4', element: 'Transactiongroup' } }]
+  @UI.textArrangement: #TEXT_LAST
+  Transactiongroup;
+
+  
 
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' } }]
-  @UI.lineItem: [{ position: 81 } ]
+  @UI.lineItem: [{ position: 130 } ]
   @UI.textArrangement: #TEXT_LAST
   ReceiverSysId;
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Receivingentity' }]}]
-  @UI.lineItem: [{ position: 82 } ]
-  @UI.textArrangement: #TEXT_LAST
-  ReceiverCompanyCode;
-  
-  @UI.lineItem: [{ position: 83 } ]
+  @UI.lineItem: [{ position: 140 } ]
   @UI.selectionField: [{position: 100}]
   @UI.textArrangement: #TEXT_LAST
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RECEIVINGENTITY_F4', element: 'Receivingentity' } }]
   Receivingentity;
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_REC_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Receivingentity' }]}]
+  @UI.lineItem: [{ position: 150 } ]
+  @UI.textArrangement: #TEXT_LAST
+  ReceiverCompanyCode;
+  
+  
   
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
-  @UI.lineItem: [{ position: 84 } ]
+  @UI.lineItem: [{ position: 160 } ]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCostObject;
   
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'ReceiverCostObject'}]}]
-  @UI.lineItem: [{ position: 85 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_RECEIVER_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'ReceiverCostObject'}]}]
+  @UI.lineItem: [{ position: 170 } ]
   @UI.textArrangement: #TEXT_LAST
   ReceiverCostCenter;
   
-  @UI.lineItem: [{ position: 110 } ]
+  @UI.lineItem: [{ position: 180 } ]
   @UI.selectionField: [{position: 110}]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_FunctionalArea_F4', element: 'FunctionalArea' }}]
   @UI.textArrangement: #TEXT_LAST
   FunctionalArea;
   
-  @UI.lineItem: [{ position: 110 } ]
+  @UI.lineItem: [{ position: 190 } ]
   @UI.selectionField: [{position: 90}]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BUSINESSDIV_F4', element: 'BusinessDivision' }}]
   @UI.textArrangement: #TEXT_LAST
   Businessdivision;
-
-  @UI.lineItem: [{ position: 130 }]
-  @UI.dataPoint: { title: 'Charge-Out Amount', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Charge-Out Amount'
+  
+  @UI.lineItem: [{ position: 300 }]
+  @UI.textArrangement: #TEXT_ONLY
+  @UI.selectionField: [{position: 300}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_REPPROCESSTYPE', element: 'ProcessType' } }]
+  ProcessType;
+  
+  @UI.lineItem: [{ position: 310 }]
+  @UI.dataPoint: { title: 'Total Charge-Out Amount', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Total Charge-Out Amount'
   TotalChargeOutAmount;
+  
+  @UI.lineItem: [{ position: 320 }]
+  @UI.dataPoint: { title: 'Total True-up Amount', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Total True-up Amount'
+  TotalTrueupAmount;
 
-  @UI.lineItem: [{ position: 140 }]
-  @UI.dataPoint: { title: 'Total Cost (Initial)', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Total Cost (Initial)'
-  TotalCostBase;
-
-  @UI.lineItem: [{ position: 150 }]
-  @UI.dataPoint: { title: 'Excluded Cost', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Excluded Cost'
-  ExcludedTotalCost;
-  @UI.lineItem: [{ position: 160 }]
-  @UI.dataPoint: { title: 'Total Cost Included', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Total Cost Included'
-  IncludedTotalCost;
-
-  @UI.lineItem: [{ position: 170 }]
-  @UI.dataPoint: { title: 'Stewardship', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Stewardship'
-  Stewardship;
-
-  @UI.lineItem: [{ position: 171 }]
-  @UI.dataPoint: { title: 'Total Cost Base Remaining', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Total Cost Base Remaining'
-  TotalCostBaseRemaining;
-
-  @UI.lineItem: [{ position: 190 }]
-  @UI.dataPoint: { title: 'Thereof Value-Add Markup', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Thereof Value-Add Mark-up'
-  ValueAddMarkup;
-
-  @UI.lineItem: [{ position: 200 }]
-  @UI.dataPoint: { title: 'Thereof Pass-Through Markup', valueFormat.numberOfFractionalDigits: 2 }
-  @EndUserText.label: 'Thereof Pass-Through Mark-up'
-  PassThruMarkup;
-
-  @UI.lineItem: [{ position: 180}]
+  @UI.lineItem: [{ position: 330 }]
+  @UI.dataPoint: { title: 'Charge-Out Amount', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Standard Charge-Out Amount'
+  TotalStdChargeOutAmount;
+  
+  @UI.lineItem: [{ position: 335}]
   @UI.dataPoint: { title: 'Total Mark-up', valueFormat.numberOfFractionalDigits: 2 }
   @EndUserText.label: 'Total Mark-up'
   SrvTotalMarkup;
 
-  @UI.selectionField: [{position: 120}]
+  @UI.lineItem: [{ position: 340 }]
+  @UI.dataPoint: { title: 'Total Cost (Initial)', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Total Cost (Initial)'
+  TotalCostBase;
+
+  @UI.lineItem: [{ position: 350 }]
+  @UI.dataPoint: { title: 'Excluded Cost', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Excluded Cost'
+  ExcludedTotalCost;
+  @UI.lineItem: [{ position: 360 }]
+  @UI.dataPoint: { title: 'Total Cost Included', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Total Cost Included'
+  IncludedTotalCost;
+
+  @UI.lineItem: [{ position: 370 }]
+  @UI.dataPoint: { title: 'Stewardship', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Stewardship'
+  Stewardship;
+
+  @UI.lineItem: [{ position: 380 }]
+  @UI.dataPoint: { title: 'Total Cost Base Remaining', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Total Cost Base Remaining'
+  TotalCostBaseRemaining;
+
+  @UI.lineItem: [{ position: 390 }]
+  @UI.dataPoint: { title: 'Thereof Value-Add Markup', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Thereof Value-Add Mark-up'
+  ValueAddMarkup;
+
+  @UI.lineItem: [{ position: 400 }]
+  @UI.dataPoint: { title: 'Thereof Pass-Through Markup', valueFormat.numberOfFractionalDigits: 2 }
+  @EndUserText.label: 'Thereof Pass-Through Mark-up'
+  PassThruMarkup;
+ 
+
+  @UI.selectionField: [{position: 420}]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_CHARGEOUTSTATUS', element: 'Status' } }]
   @UI.lineItem: [{ position: 210}]
   @UI.textArrangement: #TEXT_ONLY
@@ -370,7 +394,7 @@ annotate view /ESRCC/I_CHARGEOUT_CHARTS with
   @EndUserText.quickInfo: 'Receiving Country'
   @UI.textArrangement: #TEXT_LAST
   receivingentitycountry;
-
+  
   @UI.lineItem: [{ position: 999, label: 'ID' }] 
   UUID;
   @UI.lineItem: [{ position: 999, label: 'Parent ID' }] 

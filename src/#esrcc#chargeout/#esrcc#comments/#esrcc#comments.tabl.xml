@@ -11,6 +11,7 @@
     <MASTERLANG>E</MASTERLANG>
     <CONTFLAG>A</CONTFLAG>
     <EXCLASS>1</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/COMMENTS</TABNAME>
@@ -121,12 +122,6 @@
      <DDTEXT>Kommentare bearbeiten</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/COMMENTS</TABNAME>
-     <CCLASS>CUS_DEV_SUP_DA</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

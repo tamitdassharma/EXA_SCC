@@ -1,0 +1,82 @@
+managed with additional save implementation in class /ESRCC/BP_I_LIC_MAP_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_LicMap_S alias LicenseeAll
+draft table /esrcc/d_lic_m_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation Licensee~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _Licensee { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_LicMap alias Licensee
+persistent table /esrcc/lic_map
+draft table /esrcc/d_lic_map
+etag master LocalLastChangedAt
+lock dependent by _LicenseeAll
+authorization dependent by _LicenseeAll
+
+{
+  field ( readonly )
+  SingletonID,
+  Uuid, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+
+  field ( numbering : managed )
+  Uuid;
+
+  field ( mandatory : create )
+  LicensorSysid, LicensorLegalEntity, LicensorCompanyCode, LicensorCostObject, LicensorCostCenter, License;
+
+  field ( readonly : update )
+  LicensorSysid, LicensorLegalEntity, LicensorCompanyCode, LicensorCostObject, LicensorCostCenter, License;
+
+  field ( mandatory )
+  LicenseeSysid, LicenseeLegalEntity, LicenseeCompanyCode, LicenseeCostObject, LicenseeCostCenter, InvoiceCurrency;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLicMapP [1];
+
+  mapping for /esrcc/lic_map
+    {
+      Uuid                   = UUID;
+      License                = LICENSE;
+      Active                 = ACTIVE;
+      LicensorCostObjectUuid = LICENSOR_COST_OBJECT_UUID;
+      LicenseeCostObjectUuid = LICENSEE_COST_OBJECT_UUID;
+      InvoiceCurrency        = INVOICE_CURRENCY;
+      ErpSalesOrder          = ERP_SALES_ORDER;
+      AgreementId            = AGREEMENT_ID;
+      CreatedBy              = CREATED_BY;
+      CreatedAt              = CREATED_AT;
+      LastChangedBy          = LAST_CHANGED_BY;
+      LastChangedAt          = LAST_CHANGED_AT;
+      LocalLastChangedAt     = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LicenseeAll { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}

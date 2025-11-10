@@ -10,6 +10,7 @@
     <OUTPUTLEN>000010</OUTPUTLEN>
     <DDTEXT>Virtual Posting Document Number</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

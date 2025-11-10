@@ -13,6 +13,7 @@ define root view entity /ESRCC/C_ALLOCATIONSHARE
       Fplv,
       Ryear,
       Poper,
+      RefPoper,
       Sysid,
       @ObjectModel.text.element: [ 'ccodedescription' ]
       Ccode,
@@ -32,6 +33,8 @@ define root view entity /ESRCC/C_ALLOCATIONSHARE
       ReceiverCostObject,
       @ObjectModel.text.element: [ 'RecCostCenterdescription' ]
       ReceiverCostCenter,
+      @ObjectModel.text.element: [ 'ProcessTypedescription' ]
+      ProcessType,
       @ObjectModel.text.element: [ 'KeyVersionDescription' ]
       keyversion,
       @ObjectModel.text.element: [ 'AllocationKeyDescription' ]
@@ -70,6 +73,8 @@ define root view entity /ESRCC/C_ALLOCATIONSHARE
       RecCostCenterdescription,
       @Semantics.text: true
       Serviceproductdescription,
+      @Semantics.text: true
+      ProcessTypedescription,
       @ObjectModel.text.element: [ 'legalcountryname' ]
       legalentitycountry,
       @ObjectModel.text.element: [ 'receivingcountryname' ]

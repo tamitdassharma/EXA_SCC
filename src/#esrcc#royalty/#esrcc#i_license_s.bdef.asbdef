@@ -1,0 +1,117 @@
+managed with additional save implementation in class /ESRCC/BP_I_LICENSE_S unique;
+strict;
+with draft;
+
+define behavior for /ESRCC/I_License_S alias LicenseAll
+draft table /esrcc/d_licen_s
+with unmanaged save
+lock master total etag LastChangedAtMax
+authorization master ( global )
+
+{
+  field ( readonly )
+  SingletonID;
+
+  update;
+  internal create;
+  internal delete;
+
+  draft action ( features : instance ) Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare
+  {
+    validation License~ValidateData;
+  }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
+
+  association _License { create ( features : instance, precheck ); with draft; }
+}
+
+define behavior for /ESRCC/I_License alias License
+persistent table /esrcc/license
+draft table /esrcc/d_licens1
+etag master LocalLastChangedAt
+lock dependent by _LicenseAll
+authorization dependent by _LicenseAll
+
+{
+  field ( mandatory : create )
+  License;
+
+  field ( readonly )
+  SingletonID,
+  CreatedBy,
+  CreatedAt,
+  LastChangedBy,
+  LastChangedAt,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  License;
+
+  field ( mandatory )
+  LicenseTyp, RuleId, ValidFrom, ValidTo;
+
+  update ( features : global, precheck );
+  delete ( features : global );
+
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyLicenseP [1];
+
+  mapping for /esrcc/license
+    {
+      License            = LICENSE;
+      LicenseTyp         = LICENSE_TYPE;
+      RuleId             = RULE_ID;
+      ValidFrom          = VALID_FROM;
+      ValidTo            = VALID_TO;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LicenseAll { with draft; }
+  association _LicenseText { create ( features : global ); with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
+}
+
+define behavior for /ESRCC/I_LicenseText alias LicenseText
+persistent table /esrcc/licenset
+draft table /esrcc/d_licens2
+etag master LocalLastChangedAt
+lock dependent by _LicenseAll
+authorization dependent by _LicenseAll
+
+{
+  field ( mandatory : create )
+  Spras;
+
+  field ( readonly )
+  SingletonID,
+  License,
+  LocalLastChangedAt;
+
+  field ( readonly : update )
+  Spras;
+
+  update ( features : global );
+  delete ( features : global );
+
+  mapping for /esrcc/licenset
+    {
+      Spras              = SPRAS;
+      License            = LICENSE;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  association _LicenseAll { with draft; }
+  association _License { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+}

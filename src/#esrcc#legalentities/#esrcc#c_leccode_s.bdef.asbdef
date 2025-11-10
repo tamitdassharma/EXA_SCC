@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_LeCcode_S alias LeToCompanyCodeAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _LeToCompanyCode { create ( augment ); with draft; }
 }
@@ -19,11 +19,12 @@ define behavior for /ESRCC/C_LeCcode alias LeToCompanyCode
 
 {
   field ( modify )
-   Description;
+  Description;
 
-
-  use update( augment );
+  use update ( augment );
   use delete;
+
+  use action Copy;
 
   use association _LeToCompanyCodeAll { with draft; }
   use association _CompanyCodeText { create; with draft; }

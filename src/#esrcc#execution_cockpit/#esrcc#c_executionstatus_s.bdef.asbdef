@@ -21,9 +21,9 @@ define behavior for /ESRCC/C_ExecutionStatus alias ExecutionStatus
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _ExecutionStatusAll { with draft; }
   use association _ExecutionStatusText { create; with draft; }

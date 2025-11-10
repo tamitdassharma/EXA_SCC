@@ -12,6 +12,7 @@
     <MASTERLANG>E</MASTERLANG>
     <CONTFLAG>A</CONTFLAG>
     <EXCLASS>4</EXCLASS>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD02V>
    <DD09L>
     <TABNAME>/ESRCC/D_LE_ADDR</TABNAME>
@@ -149,12 +150,6 @@
      <DDTEXT>/ESRCC/I_LeAddress - Entwurf</DDTEXT>
     </item>
    </DD02_TEXTS>
-   <TABL_EXTRAS>
-    <TDDAT>
-     <TABNAME>/ESRCC/D_LE_ADDR</TABNAME>
-     <CCLASS>CUS_DEV_SUP_DA</CCLASS>
-    </TDDAT>
-   </TABL_EXTRAS>
   </asx:values>
  </asx:abap>
 </abapGit>

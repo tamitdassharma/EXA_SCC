@@ -12,7 +12,7 @@ define view entity /ESRCC/I_SystemInformation_F4
 {
       @ObjectModel.text.association: '_SysInfoText'
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key system_id              as SystemId,
 
       @EndUserText.label: 'Source RFC Destination'

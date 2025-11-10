@@ -1,0 +1,10 @@
+projection;
+strict ( 2 );
+
+define behavior for /ESRCC/C_RoyaltyBaseValue alias RoyaltyBaseValue
+{
+  use create;
+  use update;
+  use delete;
+  field ( suppress ) locallastchangedat;
+}

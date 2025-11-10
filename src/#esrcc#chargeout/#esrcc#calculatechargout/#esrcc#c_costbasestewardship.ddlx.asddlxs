@@ -10,7 +10,8 @@
     description : {type: #STANDARD, value: 'costcenterdescription' }
   },
   presentationVariant: [{ sortOrder: [{ by: 'Fplv' }, 
-                                      { by: 'Ryear' }, 
+                                      { by: 'Ryear' },
+                                      { by: 'Poper' }, 
                                       { by: 'Sysid' },
                                       { by: 'Legalentity' },
                                       { by: 'Ccode' },
@@ -76,7 +77,7 @@ annotate view /ESRCC/C_CostBaseStewardship with
   }
   ]
 
-  @UI.lineItem: [
+ @UI.lineItem: [
    {  position: 5 ,
     importance: #MEDIUM,
     label: ''
@@ -89,9 +90,9 @@ annotate view /ESRCC/C_CostBaseStewardship with
     position: 5 ,
     qualifier: 'OrgData'
   } ]
-  @UI.selectionField: [{ position: 5 }]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' },
-                                        additionalBinding: [{ element: 'costdataset', localElement: 'Fplv' }] }]
+  @UI.selectionField: [{ position: 25 }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTDATASET', element: 'costdataset' }}]
+//                                        additionalBinding: [{ element: 'costdataset', localElement: 'Fplv' }] }]
   @UI.textArrangement: #TEXT_ONLY
   Fplv;
 
@@ -110,39 +111,6 @@ annotate view /ESRCC/C_CostBaseStewardship with
   @UI.selectionField: [{ position: 10 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_RYEAR', element: 'ryear' } }]
   Ryear;
-  @UI.lineItem: [ {
-    position:   15 ,
-    importance: #MEDIUM,
-    label: '',
-    cssDefault:{width: '5rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 15 ,
-    qualifier: 'OrgData'
-  } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQ', element: 'Billingfreq' } }]
-  @UI.selectionField: [{ position: 15 }]
-  @UI.textArrangement: #TEXT_ONLY
-  Billingfrequqncy;
-  @UI.lineItem: [ {
-    position: 16 ,
-    importance: #MEDIUM,
-    label: '',
-    cssDefault:{width: '5rem'}
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 16 ,
-    qualifier: 'OrgData'
-  } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_BILLINGFREQUENCY_F4', element: 'Billingperiod' },
-                                          additionalBinding: [{ element: 'Billingfreq', localElement: 'Billingfrequqncy' }] }]
-  @UI.selectionField: [{ position: 16 }]
-  @UI.textArrangement: #TEXT_ONLY
-  Billingperiod;
 
   @UI.lineItem: [ {
     position: 20 ,
@@ -159,6 +127,8 @@ annotate view /ESRCC/C_CostBaseStewardship with
   @UI.selectionField: [{ position: 20 }]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
   Poper;
+  
+   
 
   @UI.lineItem: [ {
     position: 30 ,
@@ -197,8 +167,8 @@ annotate view /ESRCC/C_CostBaseStewardship with
     label: '',
     cssDefault:{width: '15rem'}
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' },
-                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_PR_F4', element: 'Ccode' }}]
+//                                       additionalBinding: [{ element: 'Legalentity', localElement: 'Legalentity' }]}]
   @UI.selectionField: [{ position: 40 }]
   @UI.fieldGroup: [
   {
@@ -227,12 +197,23 @@ annotate view /ESRCC/C_CostBaseStewardship with
     label: '',
     cssDefault:{width: '15rem'}
   } ]
-  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' },
-                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSCEN_F4', element: 'Costcenter' }}]
+//                                       additionalBinding: [{ element: 'Costobject', localElement: 'Costobject'}]}]
   @UI.selectionField: [{ position: 60 }]
   @UI.textArrangement: #TEXT_LAST
   @UI.connectedFields: [{ qualifier: 'title' }]
   Costcenter;
+  
+  @UI.lineItem: [ {
+    position: 75 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '15rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_TPPROFILE', element: 'TpProfile' }}]
+  @UI.selectionField: [{ position: 65 }]
+  @UI.textArrangement: #TEXT_LAST
+  TpProfile;
   
   @UI.lineItem: [ {
     position: 999 ,
@@ -301,8 +282,21 @@ annotate view /ESRCC/C_CostBaseStewardship with
     cssDefault:{width: '10rem'}
   } ]
   @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_PROCESSTYPE', element: 'ProcessType' }}]
+  @UI.selectionField: [{ position: 110 }]
   @UI.textArrangement: #TEXT_ONLY
   ProcessType;
+  
+  @UI.lineItem: [ {
+    position: 92 ,
+    importance: #MEDIUM,
+    label: '',
+    cssDefault:{width: '10rem'}
+  } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_POPER', element: 'Poper' }}]
+  @UI.selectionField: [{ position: 25 }]
+  @EndUserText.label: 'Re-Calculation Period'
+//  @UI.textArrangement: #TEXT_ONLY
+  Recalrefpoper;
 
   @UI.lineItem: [ {
     position: 120 ,
@@ -403,18 +397,18 @@ annotate view /ESRCC/C_CostBaseStewardship with
   @UI.textArrangement: #TEXT_ONLY
   Status;
 
-  @UI.lineItem: [ {
-    position: 245 ,
-    importance: #MEDIUM,
-    label: ''
-  } ]
-  @UI.fieldGroup: [
-  {
-    importance: #HIGH,
-    position: 50,
-    qualifier: 'AdminData'
-  } ]
-  Workflowid;
+//  @UI.lineItem: [ {
+//    position: 245 ,
+//    importance: #MEDIUM,
+//    label: ''
+//  } ]
+//  @UI.fieldGroup: [
+//  {
+//    importance: #HIGH,
+//    position: 50,
+//    qualifier: 'AdminData'
+//  } ]
+//  Workflowid;
 
   @UI.lineItem: [ {
     position: 250 ,
@@ -483,10 +477,10 @@ annotate view /ESRCC/C_CostBaseStewardship with
   functionalareadescription;
   @UI.hidden: true
   profitcenterdescription;
-  @UI.hidden: true
-  billingfrequencydescription;
-  @UI.hidden: true
-  billingperioddescription;
+//  @UI.hidden: true
+//  billingfrequencydescription;
+//  @UI.hidden: true
+//  billingperioddescription;
   @UI.hidden: true
   statusdescription;
   @UI.hidden: true
@@ -513,4 +507,6 @@ annotate view /ESRCC/C_CostBaseStewardship with
     label: 'ID'
   } ]
   CommentId;
+  @UI.hidden: true
+  TpProfileDesc;
 }

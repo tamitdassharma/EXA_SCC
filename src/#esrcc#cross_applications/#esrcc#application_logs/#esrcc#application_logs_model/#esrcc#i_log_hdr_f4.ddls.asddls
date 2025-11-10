@@ -18,45 +18,45 @@ define view entity /ESRCC/I_LOG_HDR_F4
                                                                            and _CcodeText.Ccode = $projection.CompanyCode
   association [0..1] to /ESRCC/I_LegalEntityAll_F4     as _LegalEntityText on  _LegalEntityText.Legalentity = $projection.LegalEntity
 {
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
   key log_header_uuid              as LogHeaderUuid,
 
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['ApplicationDescription']
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_APPLICATION', element: 'Application' }, useForValidation: true }]
       application                  as Application,
 
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['SubApplicationDescription']
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_SUB_APPLICATION', element: 'SubApplication' }, useForValidation: true }]
       sub_application              as SubApplication,
 
       run_number                   as RunNumber,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       reporting_year               as ReportingYear,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       period_from                  as PeriodFrom,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       period_to                    as PeriodTo,
 
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       planning_version             as PlanningVersion,
 
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.association: '_SystemIdText'
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_SystemInformation_F4', element: 'Systemid' },
                                            useForValidation: true }]
       system_id                    as SystemId,
 
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['CompanyCodeDescription']
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' },
                                            additionalBinding: [{ element: 'Sysid', localElement: 'SystemId' }],
                                            useForValidation: true }]
@@ -64,7 +64,7 @@ define view entity /ESRCC/I_LOG_HDR_F4
 
       @UI.textArrangement: #TEXT_LAST
       @ObjectModel.text.element: ['LegalEntityDescription']
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity:{ name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' },
                                            useForValidation: true }]
       legal_entity                 as LegalEntity,

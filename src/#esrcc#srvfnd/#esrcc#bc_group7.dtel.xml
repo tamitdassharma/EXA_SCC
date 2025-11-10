@@ -6,9 +6,8 @@
     <ROLLNAME>/ESRCC/BC_GROUP7</ROLLNAME>
     <DDLANGUAGE>E</DDLANGUAGE>
     <HEADLEN>55</HEADLEN>
-    <SCRLEN3>40</SCRLEN3>
-    <DDTEXT>Group 7: Accounting &amp; Billing Configurations</DDTEXT>
-    <REPTEXT>Group 7: Accounting &amp; Billing Configurations</REPTEXT>
+    <DDTEXT>Group 07: License &amp; Royalty Configurations</DDTEXT>
+    <REPTEXT>Group 07: License &amp; Royalty Configurations</REPTEXT>
     <DTELMASTER>E</DTELMASTER>
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000001</LENG>
@@ -21,8 +20,8 @@
    <DD04_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DDTEXT>Gruppe 7: Faktura-/Verbuchungskonfigurationen</DDTEXT>
-     <REPTEXT>Gruppe 7: Faktura-/Verbuchungskonfigurationen</REPTEXT>
+     <DDTEXT>Gruppe 07: Lizenz- und Lizenzgebührenkonfigurationen​</DDTEXT>
+     <REPTEXT>Gruppe 07: Lizenz- und Lizenzgebührenkonfigurationen​</REPTEXT>
     </item>
    </DD04_TEXTS>
   </asx:values>

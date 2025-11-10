@@ -17,11 +17,10 @@ define view entity /ESRCC/I_ServiceChargeoutWght
       Validto,
       RuleId,
       ChargeoutMethod,
-      CostVersion,
+//      CostVersion,
       CapacityVersion,
       ConsumptionVersion,
       KeyVersion,
-
       _Weightage.allocation_key    as AllocationKey,
       _Weightage.allocation_period as AllocationPeriod,
       _Weightage.ref_period        as RefPeriod,

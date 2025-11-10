@@ -1,0 +1,42 @@
+projection implementation in class /ESRCC/BP_C_LEDGER_S unique;
+strict;
+use draft;
+
+define behavior for /ESRCC/C_Ledger_S alias LedgerAll
+
+{
+  use action Edit;
+  use action Activate;
+  use action Discard;
+  use action Resume;
+  use action Prepare;
+  use action SelectCustomizingTransptReq;
+
+  use association _Ledger { create ( augment ); with draft; }
+}
+
+define behavior for /ESRCC/C_Ledger alias Ledger
+
+{
+  field ( modify )
+   Description;
+
+
+  use update( augment );
+  use delete;
+
+  use action Copy;
+
+  use association _LedgerAll { with draft; }
+  use association _LedgerText { create; with draft; }
+}
+
+define behavior for /ESRCC/C_LedgerText alias LedgerText
+
+{
+  use update;
+  use delete;
+
+  use association _LedgerAll { with draft; }
+  use association _Ledger { with draft; }
+}

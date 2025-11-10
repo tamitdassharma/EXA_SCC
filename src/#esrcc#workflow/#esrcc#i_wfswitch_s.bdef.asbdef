@@ -3,18 +3,21 @@ strict;
 with draft;
 
 define behavior for /ESRCC/I_WfSwitch_S alias WorkflowSwitchAll
-draft table /ESRCC/D_WF_SW_S
+draft table /esrcc/d_wf_sw_s
 with unmanaged save
 lock master total etag LastChangedAtMax
-authorization master( global )
+authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
@@ -24,38 +27,39 @@ authorization master( global )
 }
 
 define behavior for /ESRCC/I_WfSwitch alias WorkflowSwitch
-persistent table /ESRCC/WF_SWITCH
-draft table /ESRCC/D_WF_SWIT
+persistent table /esrcc/wf_switch
+draft table /esrcc/d_wf_swit
 etag master LocalLastChangedAt
 lock dependent by _WorkflowSwitchAll
 authorization dependent by _WorkflowSwitchAll
 
 {
   field ( mandatory : create )
-   Application;
+  Application;
 
   field ( readonly )
-   SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
+  SingletonID, CreatedAt, CreatedBy, LastChangedAt, LastChangedBy;
 
   field ( readonly : update )
-   Application;
+  Application;
 
+  update ( features : global );
+  delete ( features : global );
 
-  update( features : global );
-  delete( features : global );
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyWfSwitchP [1];
 
-  mapping for /ESRCC/WF_SWITCH
-  {
-    Application = APPLICATION;
-    Workflowactive = WORKFLOWACTIVE;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/wf_switch
+    {
+      Application        = APPLICATION;
+      Workflowactive     = WORKFLOWACTIVE;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _WorkflowSwitchAll { with draft; }
 
-  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

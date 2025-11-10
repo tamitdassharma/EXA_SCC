@@ -28,9 +28,9 @@
       {
         "entitySet": "LegalEntity",
         "tableType": "gridTable",
-        "rowCountMode": "auto",
         "creationModeName": "creationRow",
-        "enableFullScreen": true
+        "enableFullScreen": true,
+        "rowCountMode": "auto"
       },
       {
         "entitySet": "LegalEntityAll"

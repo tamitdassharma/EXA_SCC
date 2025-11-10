@@ -38,7 +38,7 @@ define view entity /ESRCC/I_ReceiverChargeout
   association [0..1] to /ESRCC/I_KEY_VERSION                as _KeyVersion           on  _KeyVersion.KeyVersion = $projection.keyversion
 
   association [0..1] to /ESRCC/I_INVOICESTATUS              as _InvoiceStatus        on  _InvoiceStatus.InvoiceStatus = $projection.InvoiceStatus
-
+  
 {
   key UUID,
   key ParentUUID,
@@ -56,20 +56,21 @@ define view entity /ESRCC/I_ReceiverChargeout
       Passthrumarkup,
       _ServiceCost.ConsumptionVersion,
       _ServiceCost.KeyVersion,
-      _ServiceCost.ContractId,
+      reccost.ErpSalesOrder,
+      reccost.ContractId,
       // Direct Allocation
       Reckpi,
       ConsumptionUom,
 //      Uom,
-      case when _ServiceCost.Chargeout = 'D' then
-      cast((_ServiceCost.Servicecostperunit + ( Valueaddmarkup / 100) * _ServiceCost.Valueaddcostperunit ) +
-      ( _ServiceCost.Passthrucostperunit * (Passthrumarkup / 100) ) as abap.dec(10,2)) else 0 end        as TransferPrice,
+      cast(case when _ServiceCost.Chargeout = 'D' then
+      (_ServiceCost.Servicecostperunit + ( Valueaddmarkup / 100) * _ServiceCost.Valueaddcostperunit ) +
+      ( _ServiceCost.Passthrucostperunit * (Passthrumarkup / 100) ) else 0 end as abap.dec(23,2)) as TransferPrice,
 
-      case when _ServiceCost.Chargeout = 'D' then
-      cast(( _ServiceCost.Valueaddcostperunit + ( Valueaddmarkup / 100 ) * _ServiceCost.Valueaddcostperunit ) as abap.dec(10,2)) else 0 end as TpValueaddmarkupCostperunit,
+      cast(case when _ServiceCost.Chargeout = 'D' then
+      ( _ServiceCost.Valueaddcostperunit + ( Valueaddmarkup / 100 ) * _ServiceCost.Valueaddcostperunit ) else 0 end as abap.dec(23,2)) as TpValueaddmarkupCostperunit,
 
-      case when _ServiceCost.Chargeout = 'D' then
-      cast(( _ServiceCost.Passthrucostperunit + (Passthrumarkup / 100 ) * _ServiceCost.Passthrucostperunit ) as abap.dec(10,2)) else 0 end  as TpPassthrumarkupCostperunit,
+      cast(case when _ServiceCost.Chargeout = 'D' then
+      ( _ServiceCost.Passthrucostperunit + (Passthrumarkup / 100 ) * _ServiceCost.Passthrucostperunit ) else 0 end as abap.dec(23,2)) as TpPassthrumarkupCostperunit,
 
       case when _ServiceCost.Chargeout = 'I' or _ServiceCost.Chargeout = 'A' then
       cast( ( (Reckpishare / 100)   * _ServiceCost.Srvcostshare )  as abap.dec(23,2))
@@ -137,7 +138,7 @@ define view entity /ESRCC/I_ReceiverChargeout
                                   else
                                   Reckpi end as abap.dec(23,2))  ) as abap.dec(23,2))
       end                                                                                                as TotalChargeout,
-
+      
       reccost.Status,
       Workflowid,
       reccost.CommentId,
@@ -165,6 +166,9 @@ define view entity /ESRCC/I_ReceiverChargeout
       InvoiceUUID,
       InvoiceNumber,
       InvoiceStatus,
+      PostingDate,
+      PostingPeriod,
+      ErpFlag,
       _InvoiceStatus.text                                                                                as invoicestatusdescription,
       CreatedBy,
       CreatedAt,

@@ -1,0 +1,45 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "Hierarchy Definition Job Template",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "generalInformation": {
+    "catalogName": "/ESRCC/HIER_DEF_CATALOG"
+  },
+  "parameters": {
+    "singleValueParameters": [
+      {
+        "name": "OPTIONS",
+        "value": ""
+      },
+      {
+        "name": "SYNC",
+        "value": ""
+      }
+    ],
+    "valueRangesParameters": [
+      {
+        "name": "HIER1",
+        "valueRanges": []
+      },
+      {
+        "name": "HIER2",
+        "valueRanges": []
+      },
+      {
+        "name": "HIER3",
+        "valueRanges": []
+      },
+      {
+        "name": "HIER4",
+        "valueRanges": []
+      },
+      {
+        "name": "VALIDFR",
+        "valueRanges": []
+      }
+    ]
+  }
+}

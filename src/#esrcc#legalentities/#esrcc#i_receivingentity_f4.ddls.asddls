@@ -8,7 +8,7 @@ define view entity /ESRCC/I_RECEIVINGENTITY_F4
 {
       @ObjectModel.text.element: ['Description']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7, ranking: #HIGH }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9, ranking: #HIGH }
   key cast( Legalentity as /esrcc/receivingntity ) as Receivingentity,
       Entitytype,
       Role,

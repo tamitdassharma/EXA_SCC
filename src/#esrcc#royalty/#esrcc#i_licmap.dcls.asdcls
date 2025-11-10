@@ -1,0 +1,5 @@
+@MappingRole: true
+define role /ESRCC/I_LicMap {
+  grant select on /ESRCC/I_LicMap
+  where ( ) = ASPECT pfcg_auth ( 'S_TABU_NAM', ACTVT = '03', TABLE = '/ESRCC/I_LICMAP' );
+}

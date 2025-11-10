@@ -8,7 +8,9 @@
     <DATATYPE>CHAR</DATATYPE>
     <LENG>000012</LENG>
     <OUTPUTLEN>000012</OUTPUTLEN>
+    <LOWERCASE>X</LOWERCASE>
     <DDTEXT>User Name in User Master Record</DDTEXT>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
   </asx:values>
  </asx:abap>

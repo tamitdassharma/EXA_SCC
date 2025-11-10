@@ -36,10 +36,6 @@ define root view entity /ESRCC/C_CHG_ANALYTICS
       ReceiverCostObject,
       @ObjectModel.text.element: [ 'RecCostCenterdescription' ]
       ReceiverCostCenter,
-      @ObjectModel.filter.enabled: false
-      Billingfrequqncy,
-      @ObjectModel.filter.enabled: false
-      Billingperiod,
       @ObjectModel.text.element: [ 'functionalareadescription' ]
       FunctionalArea,
       @ObjectModel.text.element: [ 'businessdescription' ]
@@ -53,6 +49,7 @@ define root view entity /ESRCC/C_CHG_ANALYTICS
       @ObjectModel.text.element: [ 'transactiongroupdescription' ]
       Transactiongroup,
       ContractId,
+      ErpSalesOrder,
       @ObjectModel.filter.enabled: false
       Chargeout,
       @ObjectModel.filter.enabled: false
@@ -64,6 +61,12 @@ define root view entity /ESRCC/C_CHG_ANALYTICS
       @ObjectModel.filter.enabled: false
       @Semantics.amount.currencyCode: 'Currency'
       TotalChargeout,
+      @ObjectModel.filter.enabled: false
+      @Semantics.amount.currencyCode: 'Currency'
+      TotalTrueupAmount,
+      @ObjectModel.filter.enabled: false
+      @Semantics.amount.currencyCode: 'Currency'
+      StdChargeout,
       @ObjectModel.filter.enabled: false
       @Semantics.amount.currencyCode: 'Currency'
       TotalRecMarkup,
@@ -108,6 +111,7 @@ define root view entity /ESRCC/C_CHG_ANALYTICS
       RecERPTotalCost,
       @ObjectModel.text.element: [ 'statusdescription' ]
       Status,
+      ChainId,
       @ObjectModel.text.element: [ 'oecdDescription' ]
       OECD,
       @ObjectModel.filter.enabled: false
@@ -159,9 +163,12 @@ define root view entity /ESRCC/C_CHG_ANALYTICS
       @ObjectModel.filter.enabled: false
       legalentityregion,
       @ObjectModel.filter.enabled: false
-      legalentityregiondesc,
+      LegalEntityRegionDesc,
       @ObjectModel.filter.enabled: false
       ReceiverRegion,
       @ObjectModel.filter.enabled: false
       ReceiverRegionDesc
 }
+where ProcessType <> 'R' 
+  and TotalChargeout <> 0  
+

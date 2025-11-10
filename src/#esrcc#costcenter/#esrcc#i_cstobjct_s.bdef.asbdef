@@ -13,14 +13,18 @@ authorization master ( global )
   internal create;
   internal delete;
 
+  field ( readonly )
+  SingletonID;
+
   draft action ( features : instance ) Edit with additional implementation;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare
   {
     validation CostObject~ValidateData;
   }
+  action ( features : instance ) SelectCustomizingTransptReq parameter D_SelectCustomizingTransptReqP result [1] $self;
 
   association _CostObject { create ( features : instance, precheck ); with draft; }
 }
@@ -42,37 +46,42 @@ authorization dependent by _CostObjectAll
   field ( mandatory : create )
   Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
 
-  field ( mandatory )
-  BillingFrequency;
-
   field ( readonly : update )
   Sysid, LegalEntity, CompanyCode, CostObject, CostCenter;
 
   update ( features : instance, precheck );
   delete ( features : instance, precheck );
 
-  mapping for /ESRCC/CST_OBJCT
-  {
-    CostObjectUuid = COST_OBJECT_UUID;
-    Sysid = SYSID;
-    LegalEntity = LEGAL_ENTITY;
-    CompanyCode = COMPANY_CODE;
-    CostObject = COST_OBJECT;
-    CostCenter = COST_CENTER;
-    FunctionalArea = FUNCTIONAL_AREA;
-    ProfitCenter = PROFIT_CENTER;
-    BusinessDivision = BUSINESS_DIVISION;
-    BillingFrequency = BILLING_FREQUENCY;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyCstObjctP [1];
+
+  mapping for /esrcc/cst_objct
+    {
+      CostObjectUuid     = COST_OBJECT_UUID;
+      Sysid              = SYSID;
+      LegalEntity        = LEGAL_ENTITY;
+      CompanyCode        = COMPANY_CODE;
+      CostObject         = COST_OBJECT;
+      CostCenter         = COST_CENTER;
+      Active             = active;
+      FunctionalArea     = FUNCTIONAL_AREA;
+      ProfitCenter       = PROFIT_CENTER;
+      BusinessDivision   = BUSINESS_DIVISION;
+      BillingFrequency   = BILLING_FREQUENCY;
+      Hierarchy1         = hierarchy1;
+      Hierarchy2         = hierarchy2;
+      Hierarchy3         = hierarchy3;
+      Hierarchy4         = hierarchy4;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _CostObjectAll { with draft; }
   association _CostObjectText { create ( features : instance ); with draft; }
 
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
   validation ValidateData on save ##NOT_ASSIGNED_TO_DETACT { create; update; }
 }
 
@@ -98,14 +107,16 @@ authorization dependent by _CostObjectAll
   update ( features : instance );
   delete ( features : instance );
 
-  mapping for /ESRCC/CST_OBJTT
-  {
-    Spras = SPRAS;
-    CostObjectUuid = COST_OBJECT_UUID;
-    Description = DESCRIPTION;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  mapping for /esrcc/cst_objtt
+    {
+      Spras              = SPRAS;
+      CostObjectUuid     = COST_OBJECT_UUID;
+      Description        = DESCRIPTION;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _CostObjectAll { with draft; }
   association _CostObject { with draft; }
+
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

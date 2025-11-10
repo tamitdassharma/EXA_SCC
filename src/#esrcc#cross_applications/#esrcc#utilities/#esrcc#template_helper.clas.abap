@@ -42,14 +42,14 @@ CLASS /esrcc/template_helper DEFINITION PUBLIC FINAL CREATE PRIVATE.
       _upload_charge_out_rule      EXPORTING records TYPE i,
       _upload_charge_out_rule_desc EXPORTING records TYPE i,
       _upload_alloc_keys_weight    EXPORTING records TYPE i,
-      _upload_service_markup       EXPORTING records TYPE i.
+      _upload_service_markup       EXPORTING records TYPE i,
+      _upload_chargeout_trueup     EXPORTING records TYPE i,
+      _upload_license_mapping      EXPORTING records TYPE i,
+      _upload_royalties_base_value EXPORTING records TYPE i.
 ENDCLASS.
 
 
-
-CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
-
-
+CLASS /esrcc/template_helper IMPLEMENTATION.
   METHOD /esrcc/if_template_helper~check_alias_registered.
     TRY.
         _table_metadata = VALUE #( _tables_metadata[ alias = alias ] OPTIONAL ).
@@ -59,7 +59,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
       CATCH cx_sy_itab_line_not_found.
     ENDTRY.
   ENDMETHOD.
-
 
   METHOD /esrcc/if_template_helper~check_table_registered.
     TRY.
@@ -71,36 +70,50 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-
   METHOD /esrcc/if_template_helper~get_table_alias.
     alias = _table_metadata-alias.
   ENDMETHOD.
 
-
   METHOD /esrcc/if_template_helper~get_table_name.
     table_name = _table_metadata-name.
   ENDMETHOD.
-
 
   METHOD /esrcc/if_template_helper~upload_template_data.
     _excel_structured_data = excel_structured_data.
 
     TRY.
         GET BADI _enrichment_exit FILTERS table_name = _table_metadata-name.
-      CATCH cx_badi_not_implemented cx_badi_unknown_error cx_badi_initial_reference cx_sy_dyn_call_illegal_method
-        INTO FINAL(raised_badi_exception). " TODO: variable is assigned but never used (ABAP cleaner)
+      CATCH cx_badi_not_implemented
+            cx_badi_unknown_error
+            cx_badi_initial_reference
+            cx_sy_dyn_call_illegal_method INTO FINAL(raised_badi_exception). " TODO: variable is assigned but never used (ABAP cleaner)
     ENDTRY.
 
     CALL METHOD (_table_metadata-method)
-      IMPORTING records = records.
+      IMPORTING
+        records = records.
   ENDMETHOD.
-
 
   METHOD create.
     instance = NEW /esrcc/template_helper( ).
     _tables_metadata = _register_tables_metadata( ).
   ENDMETHOD.
 
+  METHOD _extract_table_components.
+    DATA:
+      structure_descriptor TYPE REF TO cl_abap_typedescr.
+
+    cl_abap_structdescr=>describe_by_name( EXPORTING  p_name         = table_name
+                                           RECEIVING  p_descr_ref    = structure_descriptor
+                                           EXCEPTIONS type_not_found = 1
+                                                      OTHERS         = 2 ).
+    IF sy-subrc <> 0.
+      RETURN.
+    ENDIF.
+
+    components = CAST cl_abap_structdescr( structure_descriptor )->get_components( ).
+    DELETE components WHERE name IS INITIAL.
+  ENDMETHOD.
 
   METHOD _register_tables_metadata.
     TYPES:
@@ -187,10 +200,118 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                 ( name    = '/ESRCC/SRVMKP'
                                                   alias   = '/ESRCC/SRVMKPTMP'
                                                   parents = VALUE #( ( ) )
-                                                  method  = '_UPLOAD_SERVICE_MARKUP' ) )
+                                                  method  = '_UPLOAD_SERVICE_MARKUP' )
+                                                " True-up for charge-out
+                                                ( name    = '/ESRCC/CHGTRUP'
+                                                  alias   = '/ESRCC/CHGTRUTMP'
+                                                  parents = VALUE #( ( ) )
+                                                  method  = '_UPLOAD_CHARGEOUT_TRUEUP' )
+                                                ( name    = '/ESRCC/LIC_MAP'
+                                                  alias   = '/ESRCC/LICMAPTMP'
+                                                  parents = VALUE #( ( ) )
+                                                  method  = '_UPLOAD_LICENSE_MAPPING' )
+                                                ( name    = '/ESRCC/ROYBASVAL'
+                                                  alias   = '/ESRCC/RBASVLTMP'
+                                                  parents = VALUE #( ( ) )
+                                                  method  = '_UPLOAD_ROYALTIES_BASE_VALUE' ) )
            TO tables_metadata.
   ENDMETHOD.
 
+  METHOD _upload_alloc_keys_weight.
+    TYPES:
+      alloc_keyw_wgt_db_type TYPE STANDARD TABLE OF /esrcc/aloc_wgt WITH DEFAULT KEY.
+
+    DATA:
+      line                   TYPE /esrcc/alcwgttmp,
+      alloc_key_wgt_template TYPE STANDARD TABLE OF /esrcc/alcwgttmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO alloc_key_wgt_template.
+    ENDLOOP.
+
+    IF lines( alloc_key_wgt_template ) = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT
+      FROM /esrcc/co_rule AS rule
+             LEFT JOIN
+               /esrcc/aloc_wgt AS weightage ON weightage~rule_id = rule~rule_id
+                 INNER JOIN
+                   @alloc_key_wgt_template AS template ON  rule~rule_id             = template~rule_id
+                                                       AND weightage~allocation_key = template~allocation_key
+      FIELDS rule~rule_id,
+             weightage~allocation_key,
+             rule~workflow_status,
+             weightage~created_by,
+             weightage~created_at
+      INTO TABLE @FINAL(weightages).
+
+    SELECT
+      FROM /esrcc/co_rule AS rule
+             INNER JOIN
+               @alloc_key_wgt_template AS template ON rule~rule_id = template~rule_id
+      FIELDS DISTINCT rule~rule_id,
+                      rule~workflow_status
+      INTO TABLE @FINAL(rules).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+
+    DATA(weightage_db) = VALUE alloc_keyw_wgt_db_type(
+        FOR <weightage> IN alloc_key_wgt_template
+        LET weightage = VALUE #( weightages[ rule_id        = <weightage>-rule_id
+                                             allocation_key = <weightage>-allocation_key ] OPTIONAL )
+            rule      = VALUE #( rules[ rule_id = <weightage>-rule_id ] OPTIONAL ) IN
+        ( VALUE #( BASE CORRESPONDING #( <weightage> )
+                   client          = COND #( WHEN rule-workflow_status = 'A' THEN sy-mandt )
+                   created_by      = COND #( WHEN weightage-created_by IS INITIAL
+                                             THEN cl_abap_context_info=>get_user_technical_name( )
+                                             ELSE weightage-created_by )
+                   created_at      = COND #( WHEN weightage-created_at IS INITIAL
+                                             THEN timestamp
+                                             ELSE weightage-created_at )
+                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
+                   last_changed_at = timestamp                                     ) ) ).
+
+    DELETE weightage_db WHERE client IS INITIAL OR rule_id IS INITIAL OR allocation_key IS INITIAL.
+    MODIFY /esrcc/aloc_wgt FROM TABLE @weightage_db.
+    IF sy-subrc = 0.
+      records = sy-dbcnt.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD _upload_chargeout_config.
     TYPES:
@@ -236,11 +357,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -306,6 +429,167 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
+  METHOD _upload_charge_out_rule.
+    TYPES:
+      co_rule_db_type TYPE STANDARD TABLE OF /esrcc/co_rule WITH DEFAULT KEY.
+
+    DATA:
+      line             TYPE /esrcc/coruletmp,
+      co_rule_template TYPE STANDARD TABLE OF /esrcc/coruletmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO co_rule_template.
+    ENDLOOP.
+
+    IF lines( co_rule_template ) = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT
+      FROM /esrcc/co_rule AS charge_out_rule
+             INNER JOIN
+               @co_rule_template AS template ON template~rule_id = charge_out_rule~rule_id
+      FIELDS charge_out_rule~rule_id,
+             charge_out_rule~workflow_status,
+             created_by,
+             created_at
+      INTO TABLE @FINAL(co_rules).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+
+    DATA(co_rule_db) = VALUE co_rule_db_type(
+        FOR <co_rule> IN co_rule_template
+        LET co_rule = VALUE #( co_rules[ rule_id = <co_rule>-rule_id ] OPTIONAL ) IN
+        ( VALUE #( BASE CORRESPONDING #( <co_rule> )
+                   client          = COND #( WHEN co_rule-workflow_status = 'A' THEN sy-mandt )
+                   rule_id         = COND #( WHEN co_rule-rule_id IS INITIAL
+                                             THEN <co_rule>-rule_id
+                                             ELSE co_rule-rule_id )
+                   workflow_status = COND #( WHEN co_rule-workflow_status IS INITIAL
+                                             THEN 'A'
+                                             ELSE co_rule-workflow_status )
+                   created_by      = COND #( WHEN co_rule-created_by IS INITIAL
+                                             THEN cl_abap_context_info=>get_user_technical_name( )
+                                             ELSE co_rule-created_by )
+                   created_at      = COND #( WHEN co_rule-created_at IS INITIAL
+                                             THEN timestamp
+                                             ELSE co_rule-created_at )
+                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
+                   last_changed_at = timestamp                                           ) ) ).
+
+    DELETE co_rule_db WHERE workflow_status <> 'A'.
+    MODIFY /esrcc/co_rule FROM TABLE @co_rule_db.
+    IF sy-subrc = 0.
+      records = sy-dbcnt.
+    ENDIF.
+  ENDMETHOD.
+
+  METHOD _upload_charge_out_rule_desc.
+    TYPES:
+      co_rule_desc_db_type TYPE STANDARD TABLE OF /esrcc/co_rulet WITH DEFAULT KEY.
+
+    DATA:
+      line                  TYPE /esrcc/corulttmp,
+      co_rule_desc_template TYPE STANDARD TABLE OF /esrcc/corulttmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO co_rule_desc_template.
+    ENDLOOP.
+
+    IF lines( co_rule_desc_template ) = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT
+      FROM /esrcc/co_rule AS rule " ON description~rule_id = rule~rule_id
+             INNER JOIN
+               @co_rule_desc_template AS template ON rule~rule_id = template~rule_id
+      FIELDS DISTINCT rule~rule_id,
+                      workflow_status
+*             description~spras
+      INTO TABLE @FINAL(descriptions).
+
+    DATA(co_rule_desc_db) = VALUE co_rule_desc_db_type(
+        FOR <co_rule_desc> IN co_rule_desc_template
+        LET co_rule_desc = VALUE #( descriptions[ rule_id = <co_rule_desc>-rule_id ] OPTIONAL ) IN
+        ( VALUE #( BASE CORRESPONDING #( <co_rule_desc> )
+                   client  = COND #( WHEN co_rule_desc-workflow_status = 'A' THEN sy-mandt )
+                   rule_id = COND #( WHEN co_rule_desc-rule_id IS INITIAL
+                                     THEN <co_rule_desc>-rule_id
+                                     ELSE co_rule_desc-rule_id )  ) ) ).
+
+    DELETE co_rule_desc_db WHERE client IS INITIAL.
+    MODIFY /esrcc/co_rulet FROM TABLE @co_rule_desc_db.
+    IF sy-subrc = 0.
+      records = sy-dbcnt.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD _upload_consumption.
     TYPES:
@@ -440,16 +724,33 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                          AND template~fplv                  = consumption~fplv
                                                          AND template~provider_sysid        = provider~sysid
                                                          AND template~provider_legal_entity = provider~legal_entity
-                                                         AND template~company_code          = provider~company_code
-                                                         AND template~cost_object           = provider~cost_object
-                                                         AND template~cost_center           = provider~cost_center
+                                                         AND template~provider_company_code = provider~company_code
+                                                         AND template~provider_cost_object  = provider~cost_object
+                                                         AND template~provider_cost_center  = provider~cost_center
       INTO TABLE @FINAL(consumptions).
 
     /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
 
     DATA(consumption_db) = VALUE consumption_db_type( ).
     LOOP AT consumption_template ASSIGNING FIELD-SYMBOL(<consumption>).
-      FINAL(consumption)      = VALUE #( consumptions[ sysid                 = <consumption>-sysid
+      FINAL(cost_object_uuid) = VALUE #( cost_objects[ sysid        = <consumption>-sysid
+                                                       legal_entity = <consumption>-legal_entity
+                                                       company_code = <consumption>-company_code
+                                                       cost_object  = <consumption>-cost_object
+                                                       cost_center  = <consumption>-cost_center ]-cost_object_uuid OPTIONAL ).
+      FINAL(provider_cost_object_uuid) = VALUE #( providers[
+                                                      sysid        = <consumption>-provider_sysid
+                                                      legal_entity = <consumption>-provider_legal_entity
+                                                      company_code = <consumption>-provider_company_code
+                                                      cost_object  = <consumption>-provider_cost_object
+                                                      cost_center  = <consumption>-provider_cost_center ]-cost_object_uuid OPTIONAL ).
+
+      FINAL(consumption)      = VALUE #( consumptions[ direct_allocation_uuid = VALUE #( consumptions[ cost_object_uuid          = cost_object_uuid
+                                                                                                       provider_cost_object_uuid = provider_cost_object_uuid
+                                                                                                       service_product           = <consumption>-service_product
+                                                                                                       ryear                     = <consumption>-ryear
+                                                                                                       poper                     = <consumption>-poper ]-direct_allocation_uuid OPTIONAL )
+                                                       sysid                 = <consumption>-sysid
                                                        legal_entity          = <consumption>-legal_entity
                                                        company_code          = <consumption>-company_code
                                                        cost_object           = <consumption>-cost_object
@@ -464,40 +765,28 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                        provider_cost_object  = <consumption>-provider_cost_object
                                                        provider_cost_center  = <consumption>-provider_cost_center ] OPTIONAL ).
 
-      FINAL(cost_object_uuid) = VALUE #( cost_objects[ sysid        = <consumption>-sysid
-                                                       legal_entity = <consumption>-legal_entity
-                                                       company_code = <consumption>-company_code
-                                                       cost_object  = <consumption>-cost_object
-                                                       cost_center  = <consumption>-cost_center ]-cost_object_uuid OPTIONAL ).
-      FINAL(provider_cost_object_uuid) = VALUE #( providers[
-                                                      sysid        = <consumption>-provider_sysid
-                                                      legal_entity = <consumption>-provider_legal_entity
-                                                      company_code = <consumption>-provider_company_code
-                                                      cost_object  = <consumption>-provider_cost_object
-                                                      cost_center  = <consumption>-provider_cost_center ]-cost_object_uuid OPTIONAL ).
-
       FINAL(service_product) = VALUE #( products[ serviceproduct = <consumption>-service_product ]-serviceproduct OPTIONAL ).
       IF cost_object_uuid IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 020 )
-*                                 invalid_record = <consumption> ).
+        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
+                                                           message_type   = 'E'
+                                                           message_number = 020 )
+                                 invalid_record = <consumption> ).
 
       ELSEIF provider_cost_object_uuid IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 019 )
-*                                 invalid_record = <consumption> ).
+        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
+                                                           message_type   = 'E'
+                                                           message_number = 019 )
+                                 invalid_record = <consumption> ).
       ELSEIF <consumption>-uom IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 023 )
-*                                 invalid_record = <consumption> ).
+        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
+                                                           message_type   = 'E'
+                                                           message_number = 023 )
+                                 invalid_record = <consumption> ).
       ELSEIF service_product IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 024 )
-*                                 invalid_record = <consumption> ).
+        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
+                                                           message_type   = 'E'
+                                                           message_number = 024 )
+                                 invalid_record = <consumption> ).
       ELSE.
         TRY.
             APPEND VALUE #( BASE CORRESPONDING #( <consumption> )
@@ -572,7 +861,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
     app_logger->save_header_and_messages( ).
   ENDMETHOD.
-
 
   METHOD _upload_cost_element.
     TYPES:
@@ -675,7 +963,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-
   METHOD _upload_cost_element_desc.
     TYPES:
       description_db_type TYPE STANDARD TABLE OF /esrcc/cst_elmtt WITH DEFAULT KEY.
@@ -760,7 +1047,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
       records = sy-dbcnt.
     ENDIF.
   ENDMETHOD.
-
 
   METHOD _upload_cost_object.
     TYPES:
@@ -870,7 +1156,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-
   METHOD _upload_cost_object_desc.
     TYPES:
       description_db_type TYPE STANDARD TABLE OF /esrcc/cst_objtt WITH DEFAULT KEY.
@@ -959,7 +1244,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD _upload_cst_elmnt_charac.
     TYPES:
       characteristic_db_type TYPE STANDARD TABLE OF /esrcc/cstelmtch WITH DEFAULT KEY.
@@ -1004,11 +1288,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -1105,7 +1391,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
       records = sy-dbcnt.
     ENDIF.
   ENDMETHOD.
-
 
   METHOD _upload_indirect_allocation.
     TYPES:
@@ -1228,16 +1513,10 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                        cost_object  = <allocation>-cost_object
                                                        cost_center  = <allocation>-cost_center ]-cost_object_uuid OPTIONAL ).
       IF cost_object_uuid IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 018 )
-*                                 invalid_record = <allocation> ).
-
-      ELSEIF <allocation>-currency IS INITIAL.
-*        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
-*                                                           message_type   = 'E'
-*                                                           message_number = 021 )
-*                                 invalid_record = <allocation> ).
+        app_logger->add_message( log_message    = VALUE #( message_id     = /esrcc/if_file_upload_handler=>message_class
+                                                           message_type   = 'E'
+                                                           message_number = 018 )
+                                 invalid_record = <allocation> ).
       ELSE.
         /esrcc/cl_utility_core=>curr_external_to_internal( EXPORTING currency        = <allocation>-currency
                                                                      amount_external = <allocation>-value
@@ -1302,7 +1581,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
     app_logger->save_header_and_messages( ).
   ENDMETHOD.
-
 
   METHOD _upload_service_capacity.
     TYPES:
@@ -1458,6 +1736,115 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
+  METHOD _upload_service_markup.
+    TYPES:
+      service_markup_type TYPE STANDARD TABLE OF /esrcc/srvmkp WITH DEFAULT KEY.
+
+    DATA:
+      line                    TYPE /esrcc/srvmkptmp,
+      service_markup_template TYPE STANDARD TABLE OF /esrcc/srvmkptmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    FINAL(components) = _extract_table_components( '/ESRCC/SRVMKPTMP' ).
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        TRY.
+            FINAL(component) = VALUE #( components[ column_index + 1 ] OPTIONAL ).
+            DATA(text) = VALUE string( ).
+            FINAL(dec_notation) = VALUE xsdboolean( ).
+            FINAL(date_frmt) = VALUE xsdboolean( ).
+            CALL BADI _enrichment_exit->convert_standard_data_type
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
+            IF text IS NOT INITIAL.
+              CLEAR: line.
+              EXIT.
+            ENDIF.
+          CATCH cx_root INTO FINAL(exception). " TODO: variable is assigned but never used (ABAP cleaner)
+        ENDTRY.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO service_markup_template.
+    ENDLOOP.
+
+    IF lines( service_markup_template ) = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT
+      FROM /esrcc/srvmkp AS service_markup
+             INNER JOIN
+               @service_markup_template AS template ON  template~serviceproduct = service_markup~serviceproduct
+                                                    AND template~validfrom      = service_markup~validfrom
+      FIELDS service_markup~serviceproduct,
+             service_markup~validfrom,
+             workflow_status,
+             created_by,
+             created_at
+      INTO TABLE @FINAL(service_markups).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+
+    DATA(markup_db) = VALUE service_markup_type(
+        FOR <markup> IN service_markup_template
+        LET markup = VALUE #( service_markups[ serviceproduct = <markup>-serviceproduct
+                                               validfrom      = <markup>-validfrom ] OPTIONAL ) IN
+        ( VALUE #( BASE CORRESPONDING #( <markup> )
+                   client          = sy-mandt
+                   workflow_status = COND #( WHEN markup-workflow_status IS INITIAL OR markup-workflow_status = 'A'
+                                             THEN 'A'
+                                             ELSE markup-workflow_status )
+                   created_by      = COND #( WHEN markup-created_by IS INITIAL
+                                             THEN cl_abap_context_info=>get_user_technical_name( )
+                                             ELSE markup-created_by )
+                   created_at      = COND #( WHEN markup-created_at IS INITIAL
+                                             THEN timestamp
+                                             ELSE markup-created_at )
+                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
+                   last_changed_at = timestamp                                     ) ) ).
+
+    DELETE markup_db WHERE workflow_status <> 'A'.
+    MODIFY /esrcc/srvmkp FROM TABLE @markup_db.
+    IF sy-subrc = 0.
+      records = sy-dbcnt.
+    ENDIF.
+  ENDMETHOD.
 
   METHOD _upload_stewardship.
     TYPES:
@@ -1503,11 +1890,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -1613,7 +2002,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD _upload_stwrdshp_srvprod.
     TYPES:
       service_product_db_type TYPE STANDARD TABLE OF /esrcc/stwd_sp WITH DEFAULT KEY.
@@ -1658,11 +2046,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -1785,7 +2175,6 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 
-
   METHOD _upload_stwrdshp_srvprod_rec.
     TYPES:
       receiver_db_type TYPE STANDARD TABLE OF /esrcc/stwdsprec WITH DEFAULT KEY.
@@ -1830,11 +2219,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -1854,9 +2245,10 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
     DELETE receiver_template WHERE    sysid                 IS INITIAL OR legal_entity          IS INITIAL
                                    OR company_code          IS INITIAL OR cost_object           IS INITIAL
                                    OR cost_center           IS INITIAL OR swd_valid_from        IS INITIAL
-                                   OR service_product       IS INITIAL OR receiver_sysid        IS INITIAL
-                                   OR receiver_legal_entity IS INITIAL OR receiver_company_code IS INITIAL
-                                   OR receiver_cost_object  IS INITIAL OR receiver_cost_center  IS INITIAL.
+                                   OR service_product       IS INITIAL OR srv_prd_valid_from    IS INITIAL
+                                   OR receiver_sysid        IS INITIAL OR receiver_legal_entity IS INITIAL
+                                   OR receiver_company_code IS INITIAL OR receiver_cost_object  IS INITIAL
+                                   OR receiver_cost_center  IS INITIAL.
     SORT receiver_template BY sysid
                               legal_entity
                               company_code
@@ -1864,6 +2256,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                               cost_center
                               swd_valid_from
                               service_product
+                              srv_prd_valid_from
                               receiver_sysid
                               receiver_legal_entity
                               receiver_company_code
@@ -1871,7 +2264,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                               receiver_cost_center.
     DELETE ADJACENT DUPLICATES FROM receiver_template
            COMPARING sysid legal_entity company_code cost_object cost_center swd_valid_from service_product
-           receiver_sysid receiver_legal_entity receiver_company_code
+           srv_prd_valid_from receiver_sysid receiver_legal_entity receiver_company_code
            receiver_cost_object receiver_cost_center.
     IF lines( receiver_template ) = 0.
       RETURN.
@@ -1883,9 +2276,11 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
            cost_objects~cost_object,
            cost_objects~cost_center,
            stewardships~stewardship_uuid,
-           stewardships~valid_from          AS swd_valid_from,
+           stewardships~valid_from               AS swd_valid_from,
            stewardships~workflow_status,
-           service_products~service_product
+           service_products~service_product,
+           service_products~valid_from           AS srv_prd_valid_from,
+           service_products~service_product_uuid
       FROM /esrcc/cst_objct AS cost_objects
              INNER JOIN
                /esrcc/stewrdshp AS stewardships ON cost_objects~cost_object_uuid = stewardships~cost_object_uuid
@@ -1899,6 +2294,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                       AND cost_objects~cost_center         = receiver~cost_center
                                                       AND stewardships~valid_from          = receiver~swd_valid_from
                                                       AND service_products~service_product = receiver~service_product
+                                                      AND service_products~valid_from      = receiver~srv_prd_valid_from
       INTO TABLE @FINAL(service_products).
 
     SELECT cost_object_uuid, sysid, legal_entity, company_code, cost_object, cost_center
@@ -1920,6 +2316,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                     stewardship~valid_from       AS swd_valid_from,
 *                    stewardship~workflow_status,
                     product~service_product,
+                    product~valid_from           AS srv_prd_valid_from,
                     receiver_object~sysid        AS receiver_sysid,
                     receiver_object~legal_entity AS receiver_legal_entity,
                     receiver_object~company_code AS receiver_company_code,
@@ -1933,8 +2330,9 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                  INNER JOIN
                    /esrcc/cst_objct AS object ON object~cost_object_uuid = stewardship~cost_object_uuid
                      INNER JOIN
-                       /esrcc/stwdsprec AS receiver ON  stewardship~stewardship_uuid = receiver~stewardship_uuid
-                                                    AND product~service_product      = receiver~service_product
+                       /esrcc/stwdsprec AS receiver ON product~service_product_uuid = receiver~service_product_uuid
+*                        stewardship~stewardship_uuid = receiver~stewardship_uuid
+*                                                    AND product~service_product      = receiver~service_product
                          INNER JOIN
                            /esrcc/cst_objct AS receiver_object ON receiver_object~cost_object_uuid = receiver~cost_object_uuid
                              INNER JOIN
@@ -1945,6 +2343,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                               AND template~cost_center           = object~cost_center
                                                               AND template~swd_valid_from        = stewardship~valid_from
                                                               AND template~service_product       = product~service_product
+                                                              AND template~srv_prd_valid_from    = product~valid_from
                                                               AND template~receiver_sysid        = receiver_object~sysid
                                                               AND template~receiver_legal_entity = receiver_object~legal_entity
                                                               AND template~receiver_company_code = receiver_object~company_code
@@ -1964,6 +2363,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                        cost_center           = <receiver>-cost_center
                                                        swd_valid_from        = <receiver>-swd_valid_from
                                                        service_product       = <receiver>-service_product
+                                                       srv_prd_valid_from    = <receiver>-srv_prd_valid_from
                                                        receiver_sysid        = <receiver>-receiver_sysid
                                                        receiver_legal_entity = <receiver>-receiver_legal_entity
                                                        receiver_company_code = <receiver>-receiver_company_code
@@ -1975,13 +2375,14 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
 *                                                          cost_object    = <receiver>-cost_object
 *                                                          cost_center    = <receiver>-cost_center
 *                                                          swd_valid_from = <receiver>-swd_valid_from ]-stewardship_uuid OPTIONAL )
-                service_product  = VALUE #( service_products[ sysid           = <receiver>-sysid
-                                                              legal_entity    = <receiver>-legal_entity
-                                                              company_code    = <receiver>-company_code
-                                                              cost_object     = <receiver>-cost_object
-                                                              cost_center     = <receiver>-cost_center
-                                                              swd_valid_from  = <receiver>-swd_valid_from
-                                                              service_product = <receiver>-service_product ] OPTIONAL )
+                service_product  = VALUE #( service_products[ sysid              = <receiver>-sysid
+                                                              legal_entity       = <receiver>-legal_entity
+                                                              company_code       = <receiver>-company_code
+                                                              cost_object        = <receiver>-cost_object
+                                                              cost_center        = <receiver>-cost_center
+                                                              swd_valid_from     = <receiver>-swd_valid_from
+                                                              service_product    = <receiver>-service_product
+                                                              srv_prd_valid_from = <receiver>-srv_prd_valid_from ] OPTIONAL )
                 cost_object_uuid = VALUE #( receiver_cost_objects[
                                                 sysid        = <receiver>-receiver_sysid
                                                 legal_entity = <receiver>-receiver_legal_entity
@@ -1989,57 +2390,39 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
                                                 cost_object  = <receiver>-receiver_cost_object
                                                 cost_center  = <receiver>-receiver_cost_center ]-cost_object_uuid OPTIONAL ) IN
             ( VALUE #( BASE CORRESPONDING #( <receiver> )
-                       client             = COND #( WHEN service_product-workflow_status = 'A' THEN sy-mandt )
-                       serv_prod_rec_uuid = COND #( WHEN receiver-serv_prod_rec_uuid IS INITIAL
-                                                    THEN cl_system_uuid=>create_uuid_x16_static( )
-                                                    ELSE receiver-serv_prod_rec_uuid )
-                       stewardship_uuid   = service_product-stewardship_uuid
-                       service_product    = service_product-service_product
-                       cost_object_uuid   = cost_object_uuid
-                       created_by         = COND #( WHEN receiver-created_by IS INITIAL
-                                                    THEN cl_abap_context_info=>get_user_technical_name( )
-                                                    ELSE receiver-created_by )
-                       created_at         = COND #( WHEN receiver-created_at IS INITIAL
-                                                    THEN timestamp
-                                                    ELSE receiver-created_at )
-                       last_changed_by    = cl_abap_context_info=>get_user_technical_name( )
-                       last_changed_at    = timestamp                                   ) ) ).
+                       client               = COND #( WHEN service_product-workflow_status = 'A' THEN sy-mandt )
+                       serv_prod_rec_uuid   = COND #( WHEN receiver-serv_prod_rec_uuid IS INITIAL
+                                                      THEN cl_system_uuid=>create_uuid_x16_static( )
+                                                      ELSE receiver-serv_prod_rec_uuid )
+*                       stewardship_uuid     = service_product-stewardship_uuid
+                       service_product_uuid = service_product-service_product_uuid
+                       cost_object_uuid     = cost_object_uuid
+                       created_by           = COND #( WHEN receiver-created_by IS INITIAL
+                                                      THEN cl_abap_context_info=>get_user_technical_name( )
+                                                      ELSE receiver-created_by )
+                       created_at           = COND #( WHEN receiver-created_at IS INITIAL
+                                                      THEN timestamp
+                                                      ELSE receiver-created_at )
+                       last_changed_by      = cl_abap_context_info=>get_user_technical_name( )
+                       last_changed_at      = timestamp                                   ) ) ).
       CATCH cx_uuid_error.
         " handle exception
     ENDTRY.
 
-    DELETE receiver_db WHERE stewardship_uuid IS INITIAL OR service_product IS INITIAL OR cost_object_uuid IS INITIAL OR client IS INITIAL.
+    DELETE receiver_db WHERE service_product_uuid IS INITIAL OR cost_object_uuid IS INITIAL OR client IS INITIAL.
     MODIFY /esrcc/stwdsprec FROM TABLE @receiver_db.
     IF sy-subrc = 0.
       records = sy-dbcnt.
     ENDIF.
   ENDMETHOD.
 
-
-  METHOD _extract_table_components.
-    DATA:
-      structure_descriptor TYPE REF TO cl_abap_typedescr.
-
-    cl_abap_structdescr=>describe_by_name( EXPORTING  p_name         = table_name
-                                           RECEIVING  p_descr_ref    = structure_descriptor
-                                           EXCEPTIONS type_not_found = 1
-                                                      OTHERS         = 2 ).
-    IF sy-subrc <> 0.
-      RETURN.
-    ENDIF.
-
-    components = CAST cl_abap_structdescr( structure_descriptor )->get_components( ).
-    DELETE components WHERE name IS INITIAL.
-  ENDMETHOD.
-
-
-  METHOD _upload_alloc_keys_weight.
+  METHOD _upload_chargeout_trueup.
     TYPES:
-      alloc_keyw_wgt_db_type TYPE STANDARD TABLE OF /esrcc/aloc_wgt WITH DEFAULT KEY.
+      true_up_db_type TYPE STANDARD TABLE OF /esrcc/chgtrup WITH DEFAULT KEY.
 
     DATA:
-      line                   TYPE /esrcc/alcwgttmp,
-      alloc_key_wgt_template TYPE STANDARD TABLE OF /esrcc/alcwgttmp WITH DEFAULT KEY.
+      line             TYPE /esrcc/chgtrutmp,
+      true_up_template TYPE STANDARD TABLE OF /esrcc/chgtrutmp WITH DEFAULT KEY.
 
     FIELD-SYMBOLS:
       <excel_structured_data> TYPE STANDARD TABLE,
@@ -2047,268 +2430,7 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
 
     ASSIGN _excel_structured_data->* TO <excel_structured_data>.
 
-    " TODO: variable is assigned but never used (ABAP cleaner)
-    DATA(row_index) = 1.
-    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
-      row_index += 1.
-
-      DATA(column_index) = 0.
-      DO.
-        column_index += 1.
-
-        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
-        IF <sheet_cell_value> IS NOT ASSIGNED.
-          EXIT.
-        ENDIF.
-
-        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
-        IF <line_cell_value> IS NOT ASSIGNED.
-          UNASSIGN:
-             <sheet_cell_value>,
-             <line_cell_value>.
-          CONTINUE.
-        ENDIF.
-
-        <line_cell_value> = <sheet_cell_value>.
-
-        UNASSIGN:
-              <sheet_cell_value>,
-              <line_cell_value>.
-      ENDDO.
-      APPEND line TO alloc_key_wgt_template.
-    ENDLOOP.
-
-    IF lines( alloc_key_wgt_template ) = 0.
-      RETURN.
-    ENDIF.
-
-    SELECT
-      FROM /esrcc/co_rule AS rule
-             LEFT JOIN
-               /esrcc/aloc_wgt AS weightage ON weightage~rule_id = rule~rule_id
-                 INNER JOIN
-                   @alloc_key_wgt_template AS template ON  rule~rule_id             = template~rule_id
-                                                       AND weightage~allocation_key = template~allocation_key
-      FIELDS rule~rule_id,
-             weightage~allocation_key,
-             rule~workflow_status,
-             weightage~created_by,
-             weightage~created_at
-      INTO TABLE @FINAL(weightages).
-
-    SELECT
-      FROM /esrcc/co_rule AS rule
-             INNER JOIN
-               @alloc_key_wgt_template AS template ON rule~rule_id = template~rule_id
-      FIELDS DISTINCT rule~rule_id,
-                      rule~workflow_status
-      INTO TABLE @FINAL(rules).
-
-    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
-
-    DATA(weightage_db) = VALUE alloc_keyw_wgt_db_type(
-        FOR <weightage> IN alloc_key_wgt_template
-        LET weightage = VALUE #( weightages[ rule_id        = <weightage>-rule_id
-                                             allocation_key = <weightage>-allocation_key ] OPTIONAL )
-            rule      = VALUE #( rules[ rule_id = <weightage>-rule_id ] OPTIONAL ) IN
-        ( VALUE #( BASE CORRESPONDING #( <weightage> )
-                   client          = COND #( WHEN rule-workflow_status = 'A' THEN sy-mandt )
-                   created_by      = COND #( WHEN weightage-created_by IS INITIAL
-                                             THEN cl_abap_context_info=>get_user_technical_name( )
-                                             ELSE weightage-created_by )
-                   created_at      = COND #( WHEN weightage-created_at IS INITIAL
-                                             THEN timestamp
-                                             ELSE weightage-created_at )
-                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
-                   last_changed_at = timestamp                                     ) ) ).
-
-    DELETE weightage_db WHERE client IS INITIAL OR rule_id IS INITIAL OR allocation_key IS INITIAL.
-    MODIFY /esrcc/aloc_wgt FROM TABLE @weightage_db.
-    IF sy-subrc = 0.
-      records = sy-dbcnt.
-    ENDIF.
-  ENDMETHOD.
-
-
-  METHOD _upload_charge_out_rule.
-    TYPES:
-      co_rule_db_type TYPE STANDARD TABLE OF /esrcc/co_rule WITH DEFAULT KEY.
-
-    DATA:
-      line             TYPE /esrcc/coruletmp,
-      co_rule_template TYPE STANDARD TABLE OF /esrcc/coruletmp WITH DEFAULT KEY.
-
-    FIELD-SYMBOLS:
-      <excel_structured_data> TYPE STANDARD TABLE,
-      <row>                   TYPE any.
-
-    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
-
-    " TODO: variable is assigned but never used (ABAP cleaner)
-    DATA(row_index) = 1.
-    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
-      row_index += 1.
-
-      DATA(column_index) = 0.
-      DO.
-        column_index += 1.
-
-        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
-        IF <sheet_cell_value> IS NOT ASSIGNED.
-          EXIT.
-        ENDIF.
-
-        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
-        IF <line_cell_value> IS NOT ASSIGNED.
-          UNASSIGN:
-             <sheet_cell_value>,
-             <line_cell_value>.
-          CONTINUE.
-        ENDIF.
-
-        <line_cell_value> = <sheet_cell_value>.
-
-        UNASSIGN:
-              <sheet_cell_value>,
-              <line_cell_value>.
-      ENDDO.
-      APPEND line TO co_rule_template.
-    ENDLOOP.
-
-    IF lines( co_rule_template ) = 0.
-      RETURN.
-    ENDIF.
-
-    SELECT
-      FROM /esrcc/co_rule AS charge_out_rule
-             INNER JOIN
-               @co_rule_template AS template ON template~rule_id = charge_out_rule~rule_id
-      FIELDS charge_out_rule~rule_id,
-             charge_out_rule~workflow_status,
-             created_by,
-             created_at
-      INTO TABLE @FINAL(co_rules).
-
-    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
-
-    DATA(co_rule_db) = VALUE co_rule_db_type(
-        FOR <co_rule> IN co_rule_template
-        LET co_rule = VALUE #( co_rules[ rule_id = <co_rule>-rule_id ] OPTIONAL ) IN
-        ( VALUE #( BASE CORRESPONDING #( <co_rule> )
-                   client          = COND #( WHEN co_rule-workflow_status = 'A' THEN sy-mandt )
-                   rule_id         = COND #( WHEN co_rule-rule_id IS INITIAL
-                                             THEN <co_rule>-rule_id
-                                             ELSE co_rule-rule_id )
-                   workflow_status = COND #( WHEN co_rule-workflow_status IS INITIAL
-                                             THEN 'A'
-                                             ELSE co_rule-workflow_status )
-                   created_by      = COND #( WHEN co_rule-created_by IS INITIAL
-                                             THEN cl_abap_context_info=>get_user_technical_name( )
-                                             ELSE co_rule-created_by )
-                   created_at      = COND #( WHEN co_rule-created_at IS INITIAL
-                                             THEN timestamp
-                                             ELSE co_rule-created_at )
-                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
-                   last_changed_at = timestamp                                           ) ) ).
-
-    DELETE co_rule_db WHERE workflow_status <> 'A'.
-    MODIFY /esrcc/co_rule FROM TABLE @co_rule_db.
-    IF sy-subrc = 0.
-      records = sy-dbcnt.
-    ENDIF.
-  ENDMETHOD.
-
-
-  METHOD _upload_charge_out_rule_desc.
-    TYPES:
-      co_rule_desc_db_type TYPE STANDARD TABLE OF /esrcc/co_rulet WITH DEFAULT KEY.
-
-    DATA:
-      line                  TYPE /esrcc/corulttmp,
-      co_rule_desc_template TYPE STANDARD TABLE OF /esrcc/corulttmp WITH DEFAULT KEY.
-
-    FIELD-SYMBOLS:
-      <excel_structured_data> TYPE STANDARD TABLE,
-      <row>                   TYPE any.
-
-    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
-
-    " TODO: variable is assigned but never used (ABAP cleaner)
-    DATA(row_index) = 1.
-    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
-      row_index += 1.
-
-      DATA(column_index) = 0.
-      DO.
-        column_index += 1.
-
-        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
-        IF <sheet_cell_value> IS NOT ASSIGNED.
-          EXIT.
-        ENDIF.
-
-        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
-        IF <line_cell_value> IS NOT ASSIGNED.
-          UNASSIGN:
-             <sheet_cell_value>,
-             <line_cell_value>.
-          CONTINUE.
-        ENDIF.
-
-        <line_cell_value> = <sheet_cell_value>.
-
-        UNASSIGN:
-              <sheet_cell_value>,
-              <line_cell_value>.
-      ENDDO.
-      APPEND line TO co_rule_desc_template.
-    ENDLOOP.
-
-    IF lines( co_rule_desc_template ) = 0.
-      RETURN.
-    ENDIF.
-
-    SELECT
-      FROM /esrcc/co_rule AS rule " ON description~rule_id = rule~rule_id
-             INNER JOIN
-               @co_rule_desc_template AS template ON rule~rule_id = template~rule_id
-      FIELDS DISTINCT rule~rule_id,
-                      workflow_status
-*             description~spras
-      INTO TABLE @FINAL(descriptions).
-
-    DATA(co_rule_desc_db) = VALUE co_rule_desc_db_type(
-        FOR <co_rule_desc> IN co_rule_desc_template
-        LET co_rule_desc = VALUE #( descriptions[ rule_id = <co_rule_desc>-rule_id ] OPTIONAL ) IN
-        ( VALUE #( BASE CORRESPONDING #( <co_rule_desc> )
-                   client  = COND #( WHEN co_rule_desc-workflow_status = 'A' THEN sy-mandt )
-                   rule_id = COND #( WHEN co_rule_desc-rule_id IS INITIAL
-                                     THEN <co_rule_desc>-rule_id
-                                     ELSE co_rule_desc-rule_id )  ) ) ).
-
-    DELETE co_rule_desc_db WHERE client IS INITIAL.
-    MODIFY /esrcc/co_rulet FROM TABLE @co_rule_desc_db.
-    IF sy-subrc = 0.
-      records = sy-dbcnt.
-    ENDIF.
-  ENDMETHOD.
-
-
-  METHOD _upload_service_markup.
-    TYPES:
-      service_markup_type TYPE STANDARD TABLE OF /esrcc/srvmkp WITH DEFAULT KEY.
-
-    DATA:
-      line                    TYPE /esrcc/srvmkptmp,
-      service_markup_template TYPE STANDARD TABLE OF /esrcc/srvmkptmp WITH DEFAULT KEY.
-
-    FIELD-SYMBOLS:
-      <excel_structured_data> TYPE STANDARD TABLE,
-      <row>                   TYPE any.
-
-    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
-
-    FINAL(components) = _extract_table_components( '/ESRCC/SRVMKPTMP' ).
+    FINAL(components) = _extract_table_components( '/ESRCC/CHGTRUTMP' ).
 
     " TODO: variable is assigned but never used (ABAP cleaner)
     DATA(row_index) = 1.
@@ -2338,11 +2460,13 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
             FINAL(dec_notation) = VALUE xsdboolean( ).
             FINAL(date_frmt) = VALUE xsdboolean( ).
             CALL BADI _enrichment_exit->convert_standard_data_type
-              EXPORTING component        = component
-                        decimal_notation = dec_notation
-                        date_format      = date_frmt
-              CHANGING  cell_value       = <sheet_cell_value>
-                        message          = text.
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
             IF text IS NOT INITIAL.
               CLEAR: line.
               EXIT.
@@ -2356,49 +2480,441 @@ CLASS /ESRCC/TEMPLATE_HELPER IMPLEMENTATION.
               <sheet_cell_value>,
               <line_cell_value>.
       ENDDO.
-      APPEND line TO service_markup_template.
+      APPEND line TO true_up_template.
     ENDLOOP.
 
-    IF lines( service_markup_template ) = 0.
+    DELETE true_up_template WHERE serviceproduct IS INITIAL OR validfrom IS INITIAL.
+    SORT true_up_template BY serviceproduct
+                             validfrom.
+    DELETE ADJACENT DUPLICATES FROM true_up_template COMPARING serviceproduct validfrom.
+
+    IF lines( true_up_template ) = 0.
       RETURN.
     ENDIF.
 
-    SELECT
-      FROM /esrcc/srvmkp AS service_markup
-             INNER JOIN
-               @service_markup_template AS template ON  template~serviceproduct = service_markup~serviceproduct
-                                                    AND template~validfrom      = service_markup~validfrom
-      FIELDS service_markup~serviceproduct,
-             service_markup~validfrom,
-             workflow_status,
-             created_by,
-             created_at
-      INTO TABLE @FINAL(service_markups).
+    SELECT uuid,
+           serviceproduct,
+           validfrom,
+           created_by,
+           created_at
+      FROM /esrcc/chargeout
+      FOR ALL ENTRIES IN @true_up_template
+      WHERE serviceproduct = @true_up_template-serviceproduct
+        AND validfrom      = @true_up_template-validfrom
+      INTO TABLE @FINAL(true_ups).
 
     /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
 
-    DATA(markup_db) = VALUE service_markup_type(
-        FOR <markup> IN service_markup_template
-        LET markup = VALUE #( service_markups[ serviceproduct = <markup>-serviceproduct
-                                               validfrom      = <markup>-validfrom ] OPTIONAL ) IN
-        ( VALUE #( BASE CORRESPONDING #( <markup> )
-                   client          = sy-mandt
-                   workflow_status = COND #( WHEN markup-workflow_status IS INITIAL OR markup-workflow_status = 'A'
-                                             THEN 'A'
-                                             ELSE markup-workflow_status )
-                   created_by      = COND #( WHEN markup-created_by IS INITIAL
-                                             THEN cl_abap_context_info=>get_user_technical_name( )
-                                             ELSE markup-created_by )
-                   created_at      = COND #( WHEN markup-created_at IS INITIAL
-                                             THEN timestamp
-                                             ELSE markup-created_at )
-                   last_changed_by = cl_abap_context_info=>get_user_technical_name( )
-                   last_changed_at = timestamp                                     ) ) ).
+    TRY.
+        MODIFY /esrcc/chgtrup FROM TABLE @(
+            VALUE true_up_db_type(
+                      FOR <chargeout> IN true_up_template
+                      LET chargeout = VALUE #( true_ups[ serviceproduct = <chargeout>-serviceproduct
+                                                         validfrom      = <chargeout>-validfrom ] OPTIONAL ) IN
+                      ( VALUE #( BASE CORRESPONDING #( <chargeout> )
+                                 client          = sy-mandt
+                                 uuid            = COND #( WHEN chargeout-uuid IS INITIAL
+                                                           THEN cl_system_uuid=>create_uuid_x16_static( )
+                                                           ELSE chargeout-uuid )
+                                 created_by      = COND #( WHEN chargeout-created_by IS INITIAL
+                                                           THEN cl_abap_context_info=>get_user_technical_name( )
+                                                           ELSE chargeout-created_by )
+                                 created_at      = COND #( WHEN chargeout-created_at IS INITIAL
+                                                           THEN timestamp
+                                                           ELSE chargeout-created_at )
+                                 last_changed_by = cl_abap_context_info=>get_user_technical_name( )
+                                 last_changed_at = timestamp                                           ) ) ) ).
+        IF sy-subrc = 0.
+          records = sy-dbcnt.
+        ENDIF.
+      CATCH cx_uuid_error.
+        " handle exception
+    ENDTRY.
+  ENDMETHOD.
 
-    DELETE markup_db WHERE workflow_status <> 'A'.
-    MODIFY /esrcc/srvmkp FROM TABLE @markup_db.
-    IF sy-subrc = 0.
-      records = sy-dbcnt.
+  METHOD _upload_license_mapping.
+    TYPES:
+      license_mapping_db_type TYPE STANDARD TABLE OF /esrcc/lic_map WITH DEFAULT KEY.
+
+    DATA:
+      line                     TYPE /esrcc/licmaptmp,
+      license_mapping_template TYPE STANDARD TABLE OF /esrcc/licmaptmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    FINAL(components) = _extract_table_components( '/ESRCC/LICMAPTMP' ).
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        TRY.
+            FINAL(component) = VALUE #( components[ column_index + 1 ] OPTIONAL ).
+            DATA(text) = VALUE string( ).
+            FINAL(dec_notation) = VALUE xsdboolean( ).
+            FINAL(date_frmt) = VALUE xsdboolean( ).
+            CALL BADI _enrichment_exit->convert_standard_data_type
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
+            IF text IS NOT INITIAL.
+              CLEAR: line.
+              EXIT.
+            ENDIF.
+          CATCH cx_root INTO FINAL(exception). " TODO: variable is assigned but never used (ABAP cleaner)
+        ENDTRY.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO license_mapping_template.
+    ENDLOOP.
+
+    DELETE license_mapping_template WHERE licensor_sysid IS INITIAL OR licensor_legal_entity IS INITIAL OR licensor_company_code IS INITIAL OR licensor_cost_object IS INITIAL OR licensor_cost_center IS INITIAL OR license IS INITIAL.
+    SORT license_mapping_template BY licensor_sysid
+                                     licensor_legal_entity
+                                     licensor_company_code
+                                     licensor_cost_object
+                                     licensor_cost_center
+                                     license.
+    DELETE ADJACENT DUPLICATES FROM license_mapping_template COMPARING licensor_sysid licensor_legal_entity licensor_company_code licensor_cost_object licensor_cost_center license.
+
+    IF lines( license_mapping_template ) = 0.
+      RETURN.
     ENDIF.
+
+    SELECT FROM /esrcc/cst_objct AS cost_objects
+      FIELDS cost_object_uuid,
+             sysid,
+             legal_entity,
+             company_code,
+             cost_object,
+             cost_center
+      FOR ALL ENTRIES IN @license_mapping_template
+      WHERE cost_objects~sysid        = @license_mapping_template-licensor_sysid
+        AND cost_objects~legal_entity = @license_mapping_template-licensor_legal_entity
+        AND cost_objects~company_code = @license_mapping_template-licensor_company_code
+        AND cost_objects~cost_object  = @license_mapping_template-licensor_cost_object
+        AND cost_objects~cost_center  = @license_mapping_template-licensor_cost_center
+      INTO TABLE @FINAL(licensors).
+
+    SELECT FROM /esrcc/cst_objct AS cost_objects
+      FIELDS cost_object_uuid,
+             sysid,
+             legal_entity,
+             company_code,
+             cost_object,
+             cost_center
+      FOR ALL ENTRIES IN @license_mapping_template
+      WHERE sysid        = @license_mapping_template-licensee_sysid
+        AND legal_entity = @license_mapping_template-licensee_legal_entity
+        AND company_code = @license_mapping_template-licensee_company_code
+        AND cost_object  = @license_mapping_template-licensee_cost_object
+        AND cost_center  = @license_mapping_template-licensee_cost_center
+      INTO TABLE @FINAL(licensees).
+
+    SELECT
+      FROM /esrcc/lic_map AS license_mapping
+             INNER JOIN
+               /esrcc/cst_objct AS licensor ON license_mapping~licensor_cost_object_uuid = licensor~cost_object_uuid
+                 INNER JOIN
+                   /esrcc/cst_objct AS licensee ON license_mapping~licensee_cost_object_uuid = licensee~cost_object_uuid
+      FIELDS uuid                                      AS license_mapping_uuid,
+             licensor~sysid                            AS licensor_sysid,
+             licensor~legal_entity                     AS licensor_legal_entity,
+             licensor~company_code                     AS licensor_company_code,
+             licensor~cost_object                      AS licensor_cost_object,
+             licensor~cost_center                      AS licensor_cost_center,
+             license_mapping~licensor_cost_object_uuid,
+             license_mapping~license,
+             licensee~sysid                            AS licensee_sysid,
+             licensee~legal_entity                     AS licensee_legal_entity,
+             licensee~company_code                     AS licensee_company_code,
+             licensee~cost_object                      AS licensee_cost_object,
+             licensee~cost_center                      AS licensee_cost_center,
+             license_mapping~licensee_cost_object_uuid,
+             license_mapping~created_at,
+             license_mapping~created_by
+      FOR ALL ENTRIES IN @license_mapping_template
+      WHERE licensor~sysid             = @license_mapping_template-licensor_sysid
+        AND licensor~legal_entity      = @license_mapping_template-licensor_legal_entity
+        AND licensor~company_code      = @license_mapping_template-licensor_company_code
+        AND licensor~cost_object       = @license_mapping_template-licensor_cost_object
+        AND licensor~cost_center       = @license_mapping_template-licensor_cost_center
+        AND licensee~sysid             = @license_mapping_template-licensee_sysid
+        AND licensee~legal_entity      = @license_mapping_template-licensee_legal_entity
+        AND licensee~company_code      = @license_mapping_template-licensee_company_code
+        AND licensee~cost_object       = @license_mapping_template-licensee_cost_object
+        AND licensee~cost_center       = @license_mapping_template-licensee_cost_center
+        AND license_mapping~license    = @license_mapping_template-license
+      INTO TABLE @FINAL(existing_license_mappings).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+
+    TRY.
+        DATA(license_db) = VALUE license_mapping_db_type(
+            FOR <license_mapping> IN license_mapping_template
+            LET license = VALUE #( existing_license_mappings[
+                                       licensor_sysid        = <license_mapping>-licensor_sysid
+                                       licensor_legal_entity = <license_mapping>-licensor_legal_entity
+                                       licensor_company_code = <license_mapping>-licensor_company_code
+                                       licensor_cost_object  = <license_mapping>-licensor_cost_object
+                                       licensor_cost_center  = <license_mapping>-licensor_cost_center
+                                       license               = <license_mapping>-license
+                                       licensee_sysid        = <license_mapping>-licensee_sysid
+                                       licensee_legal_entity = <license_mapping>-licensee_legal_entity
+                                       licensee_company_code = <license_mapping>-licensee_company_code
+                                       licensee_cost_object  = <license_mapping>-licensee_cost_object
+                                       licensee_cost_center  = <license_mapping>-licensee_cost_center ] OPTIONAL ) IN
+            ( VALUE #(
+                  BASE CORRESPONDING #( <license_mapping> )
+                  client                    = sy-mandt
+                  uuid                      = COND #( WHEN license-license_mapping_uuid IS INITIAL
+                                                      THEN cl_system_uuid=>create_uuid_x16_static( )
+                                                      ELSE license-license_mapping_uuid )
+                  licensor_cost_object_uuid = COND #( WHEN license-licensor_cost_object_uuid IS INITIAL
+                                                      THEN licensors[
+                                                          sysid        = <license_mapping>-licensor_sysid
+                                                          legal_entity = <license_mapping>-licensor_legal_entity
+                                                          company_code = <license_mapping>-licensor_company_code
+                                                          cost_object  = <license_mapping>-licensor_cost_object
+                                                          cost_center  = <license_mapping>-licensor_cost_center ]-cost_object_uuid
+                                                      ELSE license-licensor_cost_object_uuid )
+                  licensee_cost_object_uuid = COND #( WHEN license-licensee_cost_object_uuid IS INITIAL
+                                                      THEN licensees[
+                                                          sysid        = <license_mapping>-licensee_sysid
+                                                          legal_entity = <license_mapping>-licensee_legal_entity
+                                                          company_code = <license_mapping>-licensee_company_code
+                                                          cost_object  = <license_mapping>-licensee_cost_object
+                                                          cost_center  = <license_mapping>-licensee_cost_center ]-cost_object_uuid
+                                                      ELSE license-licensee_cost_object_uuid )
+                  created_by                = COND #( WHEN license-created_by IS INITIAL
+                                                      THEN cl_abap_context_info=>get_user_technical_name( )
+                                                      ELSE license-created_by )
+                  created_at                = COND #( WHEN license-created_at IS INITIAL
+                                                      THEN timestamp
+                                                      ELSE license-created_at )
+                  last_changed_by           = cl_abap_context_info=>get_user_technical_name( )
+                  last_changed_at           = timestamp ) ) ).
+
+        DELETE license_db WHERE uuid IS INITIAL OR licensor_cost_object_uuid IS INITIAL OR licensee_cost_object_uuid IS INITIAL.
+        MODIFY /esrcc/lic_map FROM TABLE @license_db.
+        IF sy-subrc = 0.
+          records = sy-dbcnt.
+        ENDIF.
+      CATCH cx_uuid_error.
+        " handle exception
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD _upload_royalties_base_value.
+    TYPES:
+      royalty_base_value_db_type TYPE STANDARD TABLE OF /esrcc/roybasval WITH DEFAULT KEY.
+
+    DATA:
+      line                        TYPE /esrcc/rbasvltmp,
+      royalty_base_value_template TYPE STANDARD TABLE OF /esrcc/rbasvltmp WITH DEFAULT KEY.
+
+    FIELD-SYMBOLS:
+      <excel_structured_data> TYPE STANDARD TABLE,
+      <row>                   TYPE any.
+
+    ASSIGN _excel_structured_data->* TO <excel_structured_data>.
+
+    FINAL(components) = _extract_table_components( '/ESRCC/RBASVLTMP' ).
+
+    " TODO: variable is assigned but never used (ABAP cleaner)
+    DATA(row_index) = 1.
+    LOOP AT <excel_structured_data> ASSIGNING <row> FROM 2.
+      row_index += 1.
+
+      DATA(column_index) = 0.
+      DO.
+        column_index += 1.
+
+        ASSIGN COMPONENT column_index OF STRUCTURE <row> TO FIELD-SYMBOL(<sheet_cell_value>).
+        IF <sheet_cell_value> IS NOT ASSIGNED.
+          EXIT.
+        ENDIF.
+
+        ASSIGN COMPONENT column_index + 1 OF STRUCTURE line TO FIELD-SYMBOL(<line_cell_value>).
+        IF <line_cell_value> IS NOT ASSIGNED.
+          UNASSIGN:
+             <sheet_cell_value>,
+             <line_cell_value>.
+          CONTINUE.
+        ENDIF.
+
+        TRY.
+            FINAL(component) = VALUE #( components[ column_index + 1 ] OPTIONAL ).
+            DATA(text) = VALUE string( ).
+            FINAL(dec_notation) = VALUE xsdboolean( ).
+            FINAL(date_frmt) = VALUE xsdboolean( ).
+            CALL BADI _enrichment_exit->convert_standard_data_type
+              EXPORTING
+                component        = component
+                decimal_notation = dec_notation
+                date_format      = date_frmt
+              CHANGING
+                cell_value       = <sheet_cell_value>
+                message          = text.
+            IF text IS NOT INITIAL.
+              CLEAR: line.
+              EXIT.
+            ENDIF.
+          CATCH cx_root INTO FINAL(exception). " TODO: variable is assigned but never used (ABAP cleaner)
+        ENDTRY.
+
+        <line_cell_value> = <sheet_cell_value>.
+
+        UNASSIGN:
+              <sheet_cell_value>,
+              <line_cell_value>.
+      ENDDO.
+      APPEND line TO royalty_base_value_template.
+    ENDLOOP.
+
+    DELETE royalty_base_value_template WHERE    sysid       IS INITIAL OR legal_entity IS INITIAL OR company_code IS INITIAL OR cost_object IS INITIAL OR cost_center IS INITIAL
+                                             OR ryear        IS INITIAL OR poper        IS INITIAL OR fplv        IS INITIAL OR royalty_base_key IS INITIAL OR license IS INITIAL.
+    SORT royalty_base_value_template BY sysid
+                                        legal_entity
+                                        company_code
+                                        cost_object
+                                        cost_center
+                                        ryear
+                                        poper
+                                        fplv
+                                        royalty_base_key
+                                        license.
+    DELETE ADJACENT DUPLICATES FROM royalty_base_value_template COMPARING sysid legal_entity company_code cost_object cost_center ryear poper fplv royalty_base_key license.
+
+    IF lines( royalty_base_value_template ) = 0.
+      RETURN.
+    ENDIF.
+
+    SELECT FROM /esrcc/cst_objct AS cost_objects
+      FIELDS cost_object_uuid,
+             sysid,
+             legal_entity,
+             company_code,
+             cost_object,
+             cost_center
+      FOR ALL ENTRIES IN @royalty_base_value_template
+      WHERE cost_objects~sysid        = @royalty_base_value_template-sysid
+        AND cost_objects~legal_entity = @royalty_base_value_template-legal_entity
+        AND cost_objects~company_code = @royalty_base_value_template-company_code
+        AND cost_objects~cost_object  = @royalty_base_value_template-cost_object
+        AND cost_objects~cost_center  = @royalty_base_value_template-cost_center
+      INTO TABLE @FINAL(cost_objects).
+
+    SELECT
+      FROM /esrcc/roybasval AS royalty_base_value
+             INNER JOIN
+               /esrcc/cst_objct AS cost_object ON royalty_base_value~cost_object_uuid = cost_object~cost_object_uuid
+      FIELDS royalty_base_value~uuid             AS royalty_base_value_uuid,
+             cost_object~sysid                   AS sysid,
+             cost_object~legal_entity            AS legal_entity,
+             cost_object~company_code            AS company_code,
+             cost_object~cost_object             AS cost_object,
+             cost_object~cost_center             AS cost_center,
+             royalty_base_value~cost_object_uuid,
+             royalty_base_value~ryear,
+             royalty_base_value~poper,
+             royalty_base_value~fplv,
+             royalty_base_value~royalty_base_key,
+             royalty_base_value~license,
+             royalty_base_value~created_at,
+             royalty_base_value~created_by
+      FOR ALL ENTRIES IN @royalty_base_value_template
+      WHERE cost_object~sysid                   = @royalty_base_value_template-sysid
+        AND cost_object~legal_entity            = @royalty_base_value_template-legal_entity
+        AND cost_object~company_code            = @royalty_base_value_template-company_code
+        AND cost_object~cost_object             = @royalty_base_value_template-cost_object
+        AND cost_object~cost_center             = @royalty_base_value_template-cost_center
+        AND royalty_base_value~ryear            = @royalty_base_value_template-ryear
+        AND royalty_base_value~poper            = @royalty_base_value_template-poper
+        AND royalty_base_value~fplv             = @royalty_base_value_template-fplv
+        AND royalty_base_value~royalty_base_key = @royalty_base_value_template-royalty_base_key
+        AND royalty_base_value~license          = @royalty_base_value_template-license
+      INTO TABLE @FINAL(existing_royalty_base_values).
+
+    /esrcc/cl_utility_core=>get_utc_date_time_ts( IMPORTING time_stamp = FINAL(timestamp) ).
+
+    TRY.
+        DATA(royalty_base_value_db) = VALUE royalty_base_value_db_type(
+            FOR <royalty_base_value> IN royalty_base_value_template
+            LET royalty_base_value = VALUE #( existing_royalty_base_values[
+                                                  sysid            = <royalty_base_value>-sysid
+                                                  legal_entity     = <royalty_base_value>-legal_entity
+                                                  company_code     = <royalty_base_value>-company_code
+                                                  cost_object      = <royalty_base_value>-cost_object
+                                                  cost_center      = <royalty_base_value>-cost_center
+                                                  ryear            = <royalty_base_value>-ryear
+                                                  poper            = <royalty_base_value>-poper
+                                                  fplv             = <royalty_base_value>-fplv
+                                                  royalty_base_key = <royalty_base_value>-royalty_base_key
+                                                  license          = <royalty_base_value>-license ]
+                                              OPTIONAL ) IN
+            ( VALUE #(
+                  BASE CORRESPONDING #( <royalty_base_value> )
+                  client           = sy-mandt
+                  uuid             = COND #( WHEN royalty_base_value-royalty_base_value_uuid IS INITIAL
+                                             THEN cl_system_uuid=>create_uuid_x16_static( )
+                                             ELSE royalty_base_value-royalty_base_value_uuid )
+                  cost_object_uuid = COND #( WHEN royalty_base_value-cost_object_uuid IS INITIAL
+                                             THEN cost_objects[
+                                                 sysid        = <royalty_base_value>-sysid
+                                                 legal_entity = <royalty_base_value>-legal_entity
+                                                 company_code = <royalty_base_value>-company_code
+                                                 cost_object  = <royalty_base_value>-cost_object
+                                                 cost_center  = <royalty_base_value>-cost_center ]-cost_object_uuid
+                                             ELSE royalty_base_value-cost_object_uuid )
+                  valid_on         = CONV #( |{ <royalty_base_value>-ryear }{ <royalty_base_value>-poper+1 }01| )
+                  created_by       = COND #( WHEN royalty_base_value-created_by IS INITIAL
+                                             THEN cl_abap_context_info=>get_user_technical_name( )
+                                             ELSE royalty_base_value-created_by )
+                  created_at       = COND #( WHEN royalty_base_value-created_at IS INITIAL
+                                             THEN timestamp
+                                             ELSE royalty_base_value-created_at )
+                  last_changed_by  = cl_abap_context_info=>get_user_technical_name( )
+                  last_changed_at  = timestamp ) ) ).
+
+        DELETE royalty_base_value_db WHERE uuid IS INITIAL OR cost_object_uuid IS INITIAL.
+        MODIFY /esrcc/roybasval FROM TABLE @royalty_base_value_db.
+        IF sy-subrc = 0.
+          records = sy-dbcnt.
+        ENDIF.
+      CATCH cx_uuid_error.
+        " handle exception
+    ENDTRY.
   ENDMETHOD.
 ENDCLASS.

@@ -1,0 +1,62 @@
+managed implementation in class /esrcc/bp_i_royaltybasevalue unique;
+strict ( 2 );
+
+define behavior for /ESRCC/I_RoyaltyBaseValue alias RoyaltyBaseValue
+persistent table /esrcc/roybasval
+lock master
+authorization master ( instance )
+{
+  field ( mandatory : create, readonly : update )
+  Sysid,
+  LegalEntity,
+  CompanyCode,
+  CostObject,
+  CostCenter,
+  License,
+
+  Ryear,
+  Poper,
+  Fplv,
+  RoyaltyBaseKey;
+
+  field ( readonly )
+  Uuid,
+  ValidOn,
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
+
+  field ( numbering : managed )
+  Uuid;
+
+//  field ( mandatory ) Value;
+
+  create ( precheck );
+  update ( precheck );
+  delete ( precheck );
+
+  mapping for /esrcc/roybasval
+    {
+      Uuid               = UUID;
+      Ryear              = RYEAR;
+      Poper              = POPER;
+      Fplv               = FPLV;
+      RoyaltyBaseKey     = ROYALTY_BASE_KEY;
+      AmountValue        = AMOUNTVALUE;
+      UnitValue          = UNITVALUE;
+      Uom                = UOM;
+      Currency           = CURRENCY;
+      CostObjectUuid     = COST_OBJECT_UUID;
+      license            = LICENSE;
+      ValidOn            = VALID_ON;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
+
+  determination UpdateValidOn on modify { create; }
+}

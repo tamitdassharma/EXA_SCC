@@ -18,8 +18,11 @@ authorization master ( global )
   AllocationKey,
   Fplv;
 
-  field ( numbering : managed )
+  field ( numbering : managed, readonly : update )
   IndirectAllocationUUID;
+
+  field ( mandatory )
+  Value;
 
   field ( readonly )
   CreatedAt,
@@ -33,22 +36,20 @@ authorization master ( global )
   update ( precheck );
   delete ( precheck );
 
-  mapping for /ESRCC/INDTALLOC
-  {
-    IndirectAllocationUUID = INDIRECT_ALLOCATION_UUID;
-    Ryear = RYEAR;
-    Poper = POPER;
-    AllocationKey = ALLOCATION_KEY;
-    Fplv = FPLV;
-    Value = VALUE;
-    Currency = CURRENCY;
-    CostObjectUUID = COST_OBJECT_UUID;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
-
-  validation ValidateData on save { create; update; }
+  mapping for /esrcc/indtalloc
+    {
+      IndirectAllocationUUID = INDIRECT_ALLOCATION_UUID;
+      Ryear                  = RYEAR;
+      Poper                  = POPER;
+      AllocationKey          = ALLOCATION_KEY;
+      Fplv                   = FPLV;
+      Value                  = VALUE;
+      Currency               = CURRENCY;
+      CostObjectUUID         = COST_OBJECT_UUID;
+      CreatedBy              = CREATED_BY;
+      CreatedAt              = CREATED_AT;
+      LastChangedBy          = LAST_CHANGED_BY;
+      LastChangedAt          = LAST_CHANGED_AT;
+      LocalLastChangedAt     = LOCAL_LAST_CHANGED_AT;
+    }
 }

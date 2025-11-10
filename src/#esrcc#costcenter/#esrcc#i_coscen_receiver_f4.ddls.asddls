@@ -11,39 +11,39 @@ define view entity /ESRCC/I_COSCEN_RECEIVER_F4
   key CostObjectUuid,
 
       @ObjectModel.text.element: [ 'SysidDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 1 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_SystemInformation_F4', element: 'SystemId' }}]
       @Consumption.filter.hidden: true
-      cast( Sysid as /esrcc/recsysid )              as Sysid,
+      cast( Sysid as /esrcc/recsysid preserving type )              as Sysid,
 
       @ObjectModel.text.element: [ 'LegalEntityDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 2 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_LegalEntityAll_F4', element: 'Legalentity' }}]
-      cast( LegalEntity as /esrcc/receivingntity )  as LegalEntity,
+      cast( LegalEntity as /esrcc/receivingntity preserving type )  as LegalEntity,
 
       @ObjectModel.text.element: [ 'CompanyCodeDescription' ]
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 3 }]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COMPANYCODES_F4', element: 'Ccode' }}]
-      cast( CompanyCode as /esrcc/recccode_de )     as CompanyCode,
+      cast( CompanyCode as /esrcc/recccode_de preserving type )     as CompanyCode,
 
       @ObjectModel.text.element: [ 'CostObjectDescription' ]
       @UI.lineItem: [{ position: 4 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_COSTOBJECTS', element: 'Costobject' }}]
-      cast( Costobject as /esrcc/reccostobject_de ) as Costobject,
+      cast( Costobject as /esrcc/reccostobject_de preserving type ) as Costobject,
 
       @ObjectModel.text.element: [ 'Description' ]
       @UI.lineItem: [{ position: 5 }]
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
-      cast( Costcenter as /esrcc/reccostcenter )    as Costcenter,
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
+      cast( Costcenter as /esrcc/reccostcenter preserving type )    as Costcenter,
 
       FunctionalArea,
       ProfitCenter,
@@ -53,7 +53,7 @@ define view entity /ESRCC/I_COSCEN_RECEIVER_F4
       @ObjectModel.text.element: [ 'CurrencyName' ]
       @UI.textArrangement: #TEXT_LAST
       @Consumption.filter.hidden: true
-      _LegalEntity.LocalCurr                        as Currency,
+      _LegalEntity.LocalCurr                                        as Currency,
 
       Description,
       SysidDescription,

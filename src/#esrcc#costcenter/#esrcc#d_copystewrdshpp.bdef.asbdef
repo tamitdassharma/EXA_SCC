@@ -1,0 +1,6 @@
+abstract;
+
+define behavior for /ESRCC/D_CopyStewrdshpP
+{
+  field ( mandatory ) Sysid, LegalEntity, CompanyCode, CostObject, CostCenter, ValidFrom, ValidTo;
+}

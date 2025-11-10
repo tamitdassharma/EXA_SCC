@@ -10,7 +10,7 @@ define behavior for /ESRCC/C_SrvPro_S alias ServiceProductAll
   use action Discard;
   use action Resume;
   use action Prepare;
-//  use action SelectCustomizingTransptReq;
+  use action SelectCustomizingTransptReq;
 
   use association _ServiceProduct { create ( augment ); with draft; }
 }
@@ -21,9 +21,9 @@ define behavior for /ESRCC/C_SrvPro alias ServiceProduct
   field ( modify )
    Description;
 
-
   use update( augment );
   use delete;
+  use action Copy;
 
   use association _ServiceProductAll { with draft; }
   use association _ServiceProductText { create; with draft; }

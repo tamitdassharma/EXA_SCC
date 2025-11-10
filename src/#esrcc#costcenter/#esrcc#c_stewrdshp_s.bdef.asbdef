@@ -10,6 +10,7 @@ define behavior for /ESRCC/C_Stewrdshp_S alias StewardshipAll
   use action Discard;
   use action Resume;
   use action Prepare;
+  use action SelectCustomizingTransptReq;
 
   use association _Stewardship { create; with draft; }
 }
@@ -20,22 +21,24 @@ define behavior for /ESRCC/C_Stewrdshp alias Stewardship
   use update;
   use delete;
 
+  use action Copy;
   use action Submit;
   use action Finalize;
   use action Reopen;
 
   use association _StewardshipAll { with draft; }
   use association _ServiceProduct { create; with draft; }
-  use association _ServiceReceiver { create; with draft; }
 }
 
 define behavior for /ESRCC/C_StwdSp alias ServiceProduct
 {
   use update;
   use delete;
+  use action Copy;
 
   use association _StewardshipAll { with draft; }
   use association _Stewardship { with draft; }
+  use association _ServiceReceiver { create; with draft; }
 }
 
 define behavior for /ESRCC/C_StwdSpRec alias ServiceReceiver
@@ -44,5 +47,5 @@ define behavior for /ESRCC/C_StwdSpRec alias ServiceReceiver
   use delete;
 
   use association _StewardshipAll { with draft; }
-  use association _Stewardship { with draft; }
+  use association _ServiceProduct { with draft; }
 }

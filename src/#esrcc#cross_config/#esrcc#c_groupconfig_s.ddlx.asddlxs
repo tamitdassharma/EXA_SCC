@@ -7,10 +7,19 @@
 annotate view /ESRCC/C_GroupConfig_S with
 {
   @UI.facet: [ {
+    id: 'Transport',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'Transport',
+    position: 1,
+    hidden: #(HideTransport)
+  },
+  {
     id: 'CE',
     purpose: #STANDARD,
     type: #COLLECTION,
-    label: 'Maintain Group Configuration'
+    label: 'Maintain Group Configuration',
+    position: 2
   },
   {
     id: 'Group',
@@ -39,4 +48,15 @@ annotate view /ESRCC/C_GroupConfig_S with
 
   @UI.hidden: true
   HideTransport;
+
+  @UI.identification: [ {
+    position: 2 ,
+    importance: #HIGH
+  },
+  {
+    type: #FOR_ACTION,
+    dataAction: 'SelectCustomizingTransptReq',
+    label: 'Select Transport'
+  } ]
+  TransportRequestID;
 }

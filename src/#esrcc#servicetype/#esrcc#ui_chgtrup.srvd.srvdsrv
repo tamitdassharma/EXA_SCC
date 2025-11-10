@@ -1,0 +1,4 @@
+define service /ESRCC/UI_CHGTRUP {
+  expose /ESRCC/C_CHGTRUP_S as ServicePrdTrueUpAll;
+  expose /ESRCC/C_CHGTRUP as ServicePrdTrueUp;
+}

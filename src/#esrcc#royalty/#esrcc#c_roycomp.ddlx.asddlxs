@@ -1,0 +1,90 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Royalty Computation Rule',
+    typeNamePlural: 'Royalty Computation Rules',
+    title: {
+      type: #STANDARD,
+      value: 'RuleId'
+    }
+  }
+}
+annotate view /ESRCC/C_RoyComp with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_RoyComp',
+    purpose: #STANDARD,
+    parentId: 'CE',
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    position: 10
+  },
+  {
+    id: 'Admin',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    parentId: 'CE',
+    targetQualifier: 'AdminGroup',
+    label: 'Admin Information',
+    position: 20
+  },
+  {
+    id: '/ESRCC/I_RoyCompText',
+    type: #LINEITEM_REFERENCE,
+    position: 30,
+    targetElement: '_RuleText'
+  } ]
+
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET, position: 10 } ]
+  RuleId;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_ROYALTYCOMPMETHOD', element: 'RoyaltyComputationMethod' } } ]
+  RoyaltyComputationMethod;
+
+  @UI.identification: [ { position: 5 } ]
+  @UI.lineItem: [ { position: 5 } ]
+  Value;
+  
+  @UI.identification: [ { position: 6 } ]
+  @UI.lineItem: [ { position: 6 } ]
+  AmountValue;
+
+  @UI.identification: [ { position: 7, hidden: true } ]
+  @UI.lineItem: [ { position: 7, hidden: true } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: 'I_Currency', element: 'Currency' } } ]
+  Currency;
+
+  @UI.lineItem: [ { position: 8 } ]
+  @UI.fieldGroup: [{ position: 1, qualifier: 'AdminGroup' }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 9, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ position: 2, qualifier: 'AdminGroup' }]
+  CreatedAt;
+
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.fieldGroup: [{ position: 3, qualifier: 'AdminGroup' }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 11, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ position: 4, qualifier: 'AdminGroup' }]
+  LastChangedAt;
+
+  @UI.lineItem: [ { position: 2 } ]
+  Description;
+
+  @UI.hidden: true
+  RoyaltyComputationMethodDesc;
+  @UI.hidden: true
+  CurrencyName;
+}

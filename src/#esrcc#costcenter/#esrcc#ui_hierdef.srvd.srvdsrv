@@ -1,0 +1,4 @@
+define service /ESRCC/UI_HIERDEF {
+  expose /ESRCC/C_HIERDEF_S as HierDefAll;
+  expose /ESRCC/C_HIERDEF as HierDef;
+}

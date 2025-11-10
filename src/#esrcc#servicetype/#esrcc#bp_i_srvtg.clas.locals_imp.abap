@@ -1,7 +1,8 @@
 CLASS lcl_custom_validation DEFINITION.
   PUBLIC SECTION.
     TYPES:
-      ts_tg TYPE STRUCTURE FOR READ RESULT /esrcc/i_srvtg_s\\transactiongrp,
+      ts_tg        TYPE STRUCTURE FOR READ RESULT /esrcc/i_srvtg_s\\transactiongrp,
+      tt_tg_create TYPE TABLE FOR CREATE /esrcc/i_srvtg_s\\transactiongrpall\_transactiongrp,
       BEGIN OF ts_control,
         transactiongroup TYPE if_abap_behv=>t_xflag,
       END OF ts_control.
@@ -12,6 +13,14 @@ CLASS lcl_custom_validation DEFINITION.
         IMPORTING
           entity  TYPE ts_tg
           control TYPE ts_control.
+
+    CLASS-METHODS:
+      precheck_cba_transaction_group
+        IMPORTING
+          entities TYPE tt_tg_create
+        CHANGING
+          reported TYPE any
+          failed   TYPE any.
 
   PRIVATE SECTION.
     DATA: config_util_ref TYPE REF TO /esrcc/cl_config_util.
@@ -36,6 +45,26 @@ CLASS lcl_custom_validation IMPLEMENTATION.
       entity = entity
     ).
   ENDMETHOD.
+
+  METHOD precheck_cba_transaction_group.
+    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+      EXPORTING
+        paths              = VALUE #( ( path = 'TransactionGrpAll' ) )
+        source_entity_name = '/ESRCC/C_SRVTG'
+        is_transition      = abap_true
+      CHANGING
+        reported_entity    = reported
+        failed_entity      = failed ) ).
+
+    LOOP AT entities INTO DATA(entity).
+      LOOP AT entity-%target INTO DATA(target).
+        lo_validation->validate_transaction_group(
+          entity  = CORRESPONDING #( target )
+          control = VALUE #( transactiongroup = if_abap_behv=>mk-on )
+        ).
+      ENDLOOP.
+    ENDLOOP.
+  ENDMETHOD.
 ENDCLASS.
 
 
@@ -44,16 +73,15 @@ CLASS lhc_rap_tdat_cts DEFINITION.
     CLASS-METHODS:
       get
         RETURNING
-          VALUE(result) TYPE REF TO if_mbc_cp_rap_table_cts.
+          VALUE(result) TYPE REF TO if_mbc_cp_rap_tdat_cts.
 
 ENDCLASS.
 
 CLASS lhc_rap_tdat_cts IMPLEMENTATION.
   METHOD get.
-    result = mbc_cp_api=>rap_table_cts( table_entity_relations = VALUE #(
-                                         ( entity = 'TransactionGrp' table = '/ESRCC/SRVTG' )
-                                         ( entity = 'TransactionGrpText' table = '/ESRCC/TGT' )
-                                       ) ).
+    result = mbc_cp_api=>rap_tdat_cts( tdat_name = '/ESRCC/SRVTG'
+                                       table_entity_relations = VALUE #( ( entity = 'TransactionGrp' table = '/ESRCC/SRVTG' )
+                                                                         ( entity = 'TransactionGrpText' table = '/ESRCC/TGT' ) ) ) ##NO_TEXT.
   ENDMETHOD.
 ENDCLASS.
 CLASS lhc_/esrcc/i_srvtg_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
@@ -63,10 +91,10 @@ CLASS lhc_/esrcc/i_srvtg_s DEFINITION INHERITING FROM cl_abap_behavior_handler.
         IMPORTING
                   keys   REQUEST requested_features FOR transactiongrpall
         RESULT    result,
-*      selectcustomizingtransptreq FOR MODIFY
-*        IMPORTING
-*                  keys   FOR ACTION transactiongrpall~selectcustomizingtransptreq
-*        RESULT    result,
+      selectcustomizingtransptreq FOR MODIFY
+        IMPORTING
+                  keys   FOR ACTION transactiongrpall~selectcustomizingtransptreq
+        RESULT    result,
       get_global_authorizations FOR GLOBAL AUTHORIZATION
         IMPORTING
         REQUEST requested_authorizations FOR transactiongrpall
@@ -77,76 +105,52 @@ ENDCLASS.
 
 CLASS lhc_/esrcc/i_srvtg_s IMPLEMENTATION.
   METHOD get_instance_features.
-    DATA: selecttransport_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled,
-          edit_flag            TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
+    DATA(selecttransport_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_transport_allowed( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
 
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-        iv_objectname = '/ESRCC/SRVTG'
-        iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    DATA(transport_service) = cl_bcfg_cd_reuse_api_factory=>get_transport_service_instance(
-      iv_objectname = '/ESRCC/SRVTG'
-      iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table ).
-    IF transport_service->is_transport_allowed( ) = abap_false.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
     READ ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
     ENTITY transactiongrpall
       ALL FIELDS WITH CORRESPONDING #( keys )
-      RESULT DATA(all).
-    IF all[ 1 ]-%is_draft = if_abap_behv=>mk-off.
-      selecttransport_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
-    result = VALUE #( (
-               %tky = all[ 1 ]-%tky
+      RESULT DATA(entities)
+      FAILED failed.
+
+    result = VALUE #( FOR row IN entities (
+               %tky = row-%tky
                %action-edit = edit_flag
-               %assoc-_transactiongrp = edit_flag ) ).
-*               %action-selectcustomizingtransptreq = selecttransport_flag ) ).
+               %assoc-_transactiongrp = edit_flag
+               %action-selectcustomizingtransptreq = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE selecttransport_flag ) ) ).
   ENDMETHOD.
-*  METHOD selectcustomizingtransptreq.
-*    MODIFY ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
-*      ENTITY transactiongrpall
-*        UPDATE FIELDS ( transportrequestid hidetransport )
-*        WITH VALUE #( FOR key IN keys
-*                        ( %tky               = key-%tky
-*                          transportrequestid = key-%param-transportrequestid
-*                          hidetransport      = abap_false ) ).
-*
-*    READ ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
-*      ENTITY transactiongrpall
-*        ALL FIELDS WITH CORRESPONDING #( keys )
-*        RESULT DATA(entities).
-*    result = VALUE #( FOR entity IN entities
-*                        ( %tky   = entity-%tky
-*                          %param = entity ) ).
-*  ENDMETHOD.
+  METHOD selectcustomizingtransptreq.
+    MODIFY ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
+      ENTITY transactiongrpall
+        UPDATE FIELDS ( transportrequestid hidetransport )
+        WITH VALUE #( FOR key IN keys
+                        ( %tky               = key-%tky
+                          transportrequestid = key-%param-transportrequestid
+                          hidetransport      = abap_false ) ).
+
+    READ ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
+      ENTITY transactiongrpall
+        ALL FIELDS WITH CORRESPONDING #( keys )
+        RESULT DATA(entities).
+
+    result = VALUE #( FOR entity IN entities
+                        ( %tky   = entity-%tky
+                          %param = entity ) ).
+  ENDMETHOD.
   METHOD get_global_authorizations.
-    AUTHORITY-CHECK OBJECT 'S_TABU_NAM' ID 'TABLE' FIELD '/ESRCC/I_SRVTG' ID 'ACTVT' FIELD '02'.
-    DATA(is_authorized) = COND #( WHEN sy-subrc = 0 THEN if_abap_behv=>auth-allowed
-                                  ELSE if_abap_behv=>auth-unauthorized ).
+    DATA(is_authorized) = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_SRVTG' ).
     result-%update      = is_authorized.
     result-%action-edit = is_authorized.
-*    result-%action-selectcustomizingtransptreq = is_authorized.
+    result-%action-selectcustomizingtransptreq = is_authorized.
   ENDMETHOD.
   METHOD precheck_cba_transactiongrp.
-    TYPES ts_tg TYPE STRUCTURE FOR READ RESULT /esrcc/i_srvtg_s\\transactiongrp.
-
-    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+    lcl_custom_validation=>precheck_cba_transaction_group(
       EXPORTING
-        paths              = VALUE #( ( path = 'TransactionGrpAll' ) )
-        source_entity_name = '/ESRCC/C_SRVTG'
-        is_transition      = abap_true
+        entities = entities
       CHANGING
-        reported_entity    = reported-transactiongrp
-        failed_entity      = failed-transactiongrp ) ).
-
-    LOOP AT entities[ 1 ]-%target INTO DATA(entity).
-      lo_validation->validate_transaction_group(
-        entity  = CORRESPONDING #( entity )
-        control = VALUE #( transactiongroup = if_abap_behv=>mk-on )
-      ).
-    ENDLOOP.
+        failed   = failed-transactiongrp
+        reported = reported-transactiongrp ).
   ENDMETHOD.
 
 ENDCLASS.
@@ -174,45 +178,147 @@ ENDCLASS.
 CLASS lhc_/esrcc/i_srvtg DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS:
-*      validaterecordchanges FOR VALIDATE ON SAVE
-*        IMPORTING
-*          keys FOR transactiongrp~validaterecordchanges,
+      validatetransportrequest FOR VALIDATE ON SAVE
+        IMPORTING
+          keys FOR transactiongrp~validatetransportrequest,
       get_global_features FOR GLOBAL FEATURES
         IMPORTING
         REQUEST requested_features FOR transactiongrp
-        RESULT result.
+        RESULT result,
+      get_instance_features FOR INSTANCE FEATURES
+        IMPORTING keys REQUEST requested_features FOR transactiongrp RESULT result.
+
+    METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
+      IMPORTING REQUEST requested_authorizations FOR transactiongrp RESULT result.
+
+    METHODS copy FOR MODIFY
+      IMPORTING keys FOR ACTION transactiongrp~copy.
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_srvtg IMPLEMENTATION.
-*  METHOD validaterecordchanges.
-*    DATA change TYPE REQUEST FOR CHANGE /ESRCC/I_SrvTg_S.
-*    SELECT SINGLE TransportRequestID FROM /ESRCC/D_SRVTG_S INTO @DATA(TransportRequestID). "#EC CI_NOORDER
-*    lhc_rap_tdat_cts=>get( )->validate_changes(
-*                                transport_request = TransportRequestID
-*                                table             = '/ESRCC/SRVTG'
-*                                keys              = REF #( keys )
-*                                reported          = REF #( reported )
-*                                failed            = REF #( failed )
-*                                change            = REF #( change-TransactionGrp ) ).
-*  ENDMETHOD.
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_srvtg_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_srvtg_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/SRVTG'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-transactiongrp ) ).
+  ENDMETHOD.
+
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/SRVTG'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
     result-%assoc-_transactiongrptext = edit_flag.
   ENDMETHOD.
+
+  METHOD get_instance_features.
+    result = VALUE #( FOR row IN keys ( %tky = row-%tky
+                                        %action-copy = COND #( WHEN row-%is_draft = if_abap_behv=>mk-off THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ) ) ).
+  ENDMETHOD.
+
+  METHOD get_global_authorizations.
+    result-%action-copy = /esrcc/cl_authorization=>check_authorization_tabu( field_name = '/ESRCC/I_SRVTG' ).
+  ENDMETHOD.
+
+  METHOD copy.
+    DATA:
+      new_main TYPE TABLE FOR CREATE /esrcc/i_srvtg_s\_transactiongrp,
+      new_text TYPE TABLE FOR CREATE /esrcc/i_srvtg_s\\transactiongrp\_transactiongrptext.
+
+    FIELD-SYMBOLS <new_text> LIKE LINE OF new_text.
+
+    IF lines( keys ) > 1.
+      INSERT mbc_cp_api=>message( )->get_select_only_one_entry( ) INTO TABLE reported-%other.
+      failed-transactiongrp = VALUE #( FOR fkey IN keys ( %tky = fkey-%tky ) ).
+      RETURN.
+    ENDIF.
+
+    READ ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
+      ENTITY transactiongrp
+      ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(ref_main)
+      FAILED DATA(read_failed).
+
+    READ ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
+      ENTITY transactiongrp BY \_transactiongrptext
+      ALL FIELDS WITH CORRESPONDING #( ref_main )
+      RESULT DATA(ref_text).
+
+    LOOP AT ref_main ASSIGNING FIELD-SYMBOL(<ref_main>).
+      DATA(key)     = keys[ KEY draft %tky = <ref_main>-%tky ].
+      DATA(key_cid) = key-%cid.
+
+      APPEND VALUE #(
+        %tky-singletonid = 1
+        %is_draft = <ref_main>-%is_draft
+        %target = VALUE #( ( %cid             = key_cid
+                             %is_draft        = <ref_main>-%is_draft
+                             %data            = CORRESPONDING #( <ref_main> EXCEPT transactiongroup singletonid )
+                             transactiongroup = key-%param-transactiongroup ) ) ) TO new_main.
+
+      UNASSIGN <new_text>.
+      LOOP AT ref_text ASSIGNING FIELD-SYMBOL(<ref_text>) USING KEY draft WHERE %tky-%is_draft        = key-%tky-%is_draft
+                                                                            AND %tky-transactiongroup = key-%tky-transactiongroup.
+        IF <new_text> IS NOT ASSIGNED.
+          INSERT VALUE #( %cid_ref  = key_cid
+                          %is_draft = key-%is_draft ) INTO TABLE new_text ASSIGNING <new_text>.
+        ENDIF.
+
+        INSERT VALUE #( %cid             = key_cid && <ref_text>-spras
+                        %is_draft        = key-%is_draft
+                        %data            = CORRESPONDING #( <ref_text> EXCEPT transactiongroup singletonid )
+                        transactiongroup = key-%param-transactiongroup ) INTO TABLE <new_text>-%target.
+      ENDLOOP.
+    ENDLOOP.
+
+*   Pre-check validation before create
+    lcl_custom_validation=>precheck_cba_transaction_group(
+      EXPORTING
+        entities = new_main
+      CHANGING
+        failed   = failed-transactiongrp
+        reported = reported-transactiongrp ).
+
+    IF failed-transactiongrp IS INITIAL.
+      MODIFY ENTITIES OF /esrcc/i_srvtg_s IN LOCAL MODE
+        ENTITY transactiongrpall CREATE BY \_transactiongrp
+        FIELDS (
+                 transactiongroup
+               ) WITH new_main
+        ENTITY transactiongrp CREATE BY \_transactiongrptext
+        FIELDS (
+                 spras
+                 transactiongroup
+                 description
+               ) WITH new_text
+        MAPPED DATA(mapped_create)
+        FAILED failed
+        REPORTED reported.
+    ENDIF.
+
+    mapped-transactiongrp = mapped_create-transactiongrp.
+    INSERT LINES OF read_failed-transactiongrp INTO TABLE failed-transactiongrp.
+
+    IF failed-transactiongrp IS INITIAL AND failed-transactiongrptext IS INITIAL.
+      reported-transactiongrp = VALUE #( FOR created IN mapped-transactiongrp (
+                                     %cid            = created-%cid
+                                     %action-copy    = if_abap_behv=>mk-on
+                                     %msg            = mbc_cp_api=>message( )->get_item_copied( )
+                                     %path-transactiongrpall = VALUE #( %is_draft = created-%is_draft singletonid = 1 ) ) ).
+    ENDIF.
+  ENDMETHOD.
+
 ENDCLASS.
 CLASS lhc_/esrcc/i_srvtgtext DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
     METHODS:
-*      validaterecordchanges FOR VALIDATE ON SAVE
-*        IMPORTING
-*          keys FOR transactiongrptext~validaterecordchanges,
+      validatetransportrequest FOR VALIDATE ON SAVE
+        IMPORTING
+          keys FOR transactiongrptext~validatetransportrequest,
       get_global_features FOR GLOBAL FEATURES
         IMPORTING
         REQUEST requested_features FOR transactiongrptext
@@ -220,24 +326,19 @@ CLASS lhc_/esrcc/i_srvtgtext DEFINITION INHERITING FROM cl_abap_behavior_handler
 ENDCLASS.
 
 CLASS lhc_/esrcc/i_srvtgtext IMPLEMENTATION.
-*  METHOD validaterecordchanges.
-*    DATA change TYPE REQUEST FOR CHANGE /ESRCC/I_SrvTg_S.
-*    SELECT SINGLE TransportRequestID FROM /ESRCC/D_SRVTG_S INTO @DATA(TransportRequestID). "#EC CI_NOORDER
-*    lhc_rap_tdat_cts=>get( )->validate_changes(
-*                                transport_request = TransportRequestID
-*                                table             = '/ESRCC/TGT'
-*                                keys              = REF #( keys )
-*                                reported          = REF #( reported )
-*                                failed            = REF #( failed )
-*                                change            = REF #( change-TransactionGrpText ) ).
-*  ENDMETHOD.
+  METHOD validatetransportrequest.
+    DATA change TYPE REQUEST FOR CHANGE /esrcc/i_srvtg_s.
+    SELECT SINGLE transportrequestid FROM /esrcc/d_srvtg_s INTO @DATA(transportrequestid). "#EC CI_NOORDER
+    lhc_rap_tdat_cts=>get( )->validate_changes(
+                                transport_request = transportrequestid
+                                table             = '/ESRCC/TGT'
+                                keys              = REF #( keys )
+                                reported          = REF #( reported )
+                                failed            = REF #( failed )
+                                change            = REF #( change-transactiongrptext ) ).
+  ENDMETHOD.
   METHOD get_global_features.
-    DATA edit_flag TYPE abp_behv_flag VALUE if_abap_behv=>fc-o-enabled.
-    IF cl_bcfg_cd_reuse_api_factory=>get_cust_obj_service_instance(
-         iv_objectname = '/ESRCC/TGT'
-         iv_objecttype = cl_bcfg_cd_reuse_api_factory=>simple_table )->is_editable( ) = abap_false.
-      edit_flag = if_abap_behv=>fc-o-disabled.
-    ENDIF.
+    DATA(edit_flag) = COND #( WHEN lhc_rap_tdat_cts=>get( )->is_editable( ) = abap_false THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled ).
     result-%update = edit_flag.
     result-%delete = edit_flag.
   ENDMETHOD.

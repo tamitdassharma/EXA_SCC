@@ -1,0 +1,4 @@
+define service /ESRCC/UI_LIC_MAP {
+  expose /ESRCC/C_LICMAP_S as LicenseeAll;
+  expose /ESRCC/C_LICMAP as Licensee;
+}

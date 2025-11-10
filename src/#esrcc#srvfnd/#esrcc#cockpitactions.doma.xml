@@ -11,84 +11,80 @@
     <VALEXI>X</VALEXI>
     <DDTEXT>Execution Cockpit</DDTEXT>
     <DOMMASTER>E</DOMMASTER>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
    <DD07V_TAB>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Calculate Cost Base &amp; Stewardship</DDTEXT>
+     <DDTEXT>Standard Charge-outs : Calculate</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>02</DOMVALUE_L>
-     <DDTEXT>Finalize Cost Base &amp; Stewardship</DDTEXT>
+     <DDTEXT>Standard Charge-outs : Finalize</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>03</DOMVALUE_L>
-     <DDTEXT>Re-Open Cost Base &amp; Stewardship</DDTEXT>
+     <DDTEXT>Standard Charge-outs : Re-open</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>Calculate Service Product Cost &amp; Receiver Share​</DDTEXT>
+     <DDTEXT>Sequential Charge-outs : Calculate</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Finalize Service Product Cost &amp; Receiver Share​</DDTEXT>
+     <DDTEXT>Sequential Charge-outs : Finalize</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Re-Open Service Product Cost &amp; Receiver Share​</DDTEXT>
+     <DDTEXT>Sequential Charge-outs : Re-open</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>07</DOMVALUE_L>
-     <DDTEXT>Calculate Mark-up and Allocations/Charge-outs</DDTEXT>
+     <DDTEXT>True-up Recalculation : Re-Calculate</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0008</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>08</DOMVALUE_L>
-     <DDTEXT>Finalize Mark-up and Allocations/Charge-outs</DDTEXT>
+     <DDTEXT>True-up Recalculation : Finalize</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0009</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>09</DOMVALUE_L>
-     <DDTEXT>Re-Open Mark-up and Allocations/Charge-outs​</DDTEXT>
+     <DDTEXT>True-up Recalculation : Re-Open</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0010</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>10</DOMVALUE_L>
-     <DDTEXT>Calculate &amp; Finalize Sequential Charge-outs</DDTEXT>
+     <DDTEXT>True-up for Sequentials : Re-Calculate</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/COCKPITACTIONS</DOMNAME>
      <VALPOS>0011</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>11</DOMVALUE_L>
-     <DDTEXT>Re-Open Sequential Charge-outs</DDTEXT>
+     <DDTEXT>True-up for Sequentials : Finalize</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0012</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>12</DOMVALUE_L>
+     <DDTEXT>True-up for Sequentials : Re-open</DDTEXT>
     </DD07V>
    </DD07V_TAB>
    <I18N_LANGS>
@@ -104,67 +100,73 @@
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>01</DOMVALUE_L>
-     <DDTEXT>Kostenbasis &amp; Gesellschafteraufwand kalkulieren</DDTEXT>
+     <DDTEXT>Standardverrechnungen: Kalkulieren</DDTEXT>
     </item>
     <item>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>02</DOMVALUE_L>
-     <DDTEXT>Kostenbasis &amp; Gesellschafteraufwand abschließen</DDTEXT>
+     <DDTEXT>Standardverrechnungen: Abschließen</DDTEXT>
     </item>
     <item>
      <VALPOS>0003</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>03</DOMVALUE_L>
-     <DDTEXT>Kostenbasis &amp; Gesellschafteraufwand erneut öffnen</DDTEXT>
+     <DDTEXT>Standardverrechnungen: Erneut öffnen</DDTEXT>
     </item>
     <item>
      <VALPOS>0004</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>04</DOMVALUE_L>
-     <DDTEXT>Kosten Serviceprodukt und Empfängeranteil kalkulieren</DDTEXT>
+     <DDTEXT>Sequentielle Verrechnungen: Kalkulieren</DDTEXT>
     </item>
     <item>
      <VALPOS>0005</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>05</DOMVALUE_L>
-     <DDTEXT>Kosten Serviceprodukt und Empfängeranteil abschließen</DDTEXT>
+     <DDTEXT>Sequentielle Verrechnungen: Abschließen</DDTEXT>
     </item>
     <item>
      <VALPOS>0006</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>06</DOMVALUE_L>
-     <DDTEXT>Kosten Serviceprodukt und Empfängeranteil erneut öffnen</DDTEXT>
+     <DDTEXT>Sequentielle Verrechnungen: Erneut öffnen</DDTEXT>
     </item>
     <item>
      <VALPOS>0007</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>07</DOMVALUE_L>
-     <DDTEXT>Aufschläge und Allokationen/Verrechnungsbeträge kalkulieren</DDTEXT>
+     <DDTEXT>True-up-Neuberechnung: Neuberechnen</DDTEXT>
     </item>
     <item>
      <VALPOS>0008</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>08</DOMVALUE_L>
-     <DDTEXT>Aufschläge und Allokationen/Verrechnungsbeträge abschließen</DDTEXT>
+     <DDTEXT>True-up-Neuberechnung: Abschließen</DDTEXT>
     </item>
     <item>
      <VALPOS>0009</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>09</DOMVALUE_L>
-     <DDTEXT>Aufschläge und Allokationen/Verrechnungsbeträge erneut öffne</DDTEXT>
+     <DDTEXT>True-up-Neuberechnung: Erneut öffnen</DDTEXT>
     </item>
     <item>
      <VALPOS>0010</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>10</DOMVALUE_L>
-     <DDTEXT>Sequentielle Verrechnungen kalkulieren &amp; abschließen</DDTEXT>
+     <DDTEXT>True-up für Sequentielle: Neuberechnen</DDTEXT>
     </item>
     <item>
      <VALPOS>0011</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>11</DOMVALUE_L>
-     <DDTEXT>Sequentielle Verrechnungen erneut öffnen</DDTEXT>
+     <DDTEXT>True-up für Sequentielle: Abschließen</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0012</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>12</DOMVALUE_L>
+     <DDTEXT>True-up für Sequentielle: Erneut öffnen</DDTEXT>
     </item>
    </DD07_TEXTS>
   </asx:values>

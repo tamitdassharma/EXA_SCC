@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service Definition for /ESRCC/C_RoyaltyBaseValue'
+define service /ESRCC/C_RoyaltyBaseValue {
+  expose /ESRCC/C_RoyaltyBaseValue as RoyaltyBaseValue;
+}

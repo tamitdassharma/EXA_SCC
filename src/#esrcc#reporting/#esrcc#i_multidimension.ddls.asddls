@@ -129,7 +129,14 @@ define view entity /ESRCC/I_MultiDimension
       @DefaultAggregation: #SUM
       cast( RecPassthroughMarkup as abap.dec(23,2)) as RecPassthroughMarkup,
       
-
+      @EndUserText.label: 'Charge-Out Amount'
+      @DefaultAggregation: #SUM
+      cast( StdChargeout as abap.dec(23,2)) as TotalStdChargeout,
+      
+      @EndUserText.label: 'Total True-up Amount'
+      @DefaultAggregation: #SUM
+      cast( TotalTrueupAmount as abap.dec(23,2)) as TotalTrueupAmount,
+      
       @EndUserText.label: 'Total Charge-Out Amount'
       @DefaultAggregation: #SUM
       cast( TotalChargeout as abap.dec(23,2)) as TotalChargeout,
@@ -143,7 +150,5 @@ define view entity /ESRCC/I_MultiDimension
       _businessdiv,
       _srvtyp,
       _srvtransactiongroup
-
-      
-
-}
+    
+}where ProcessType <> 'R'

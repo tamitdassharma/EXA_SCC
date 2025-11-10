@@ -9,12 +9,15 @@ lock master total etag LastChangedAtMax
 authorization master ( global )
 
 {
+  field ( readonly )
+  SingletonID;
+
   update;
   internal create;
   internal delete;
 
   draft action ( features : instance ) Edit;
-  draft action Activate;
+  draft action Activate optimized;
   draft action Discard;
   draft action Resume;
   draft determine action Prepare;
@@ -44,23 +47,24 @@ authorization dependent by _BillingFrequencyAll
   Billingvalue,
   Poper;
 
-
   update ( features : global );
   delete ( features : global );
 
-  mapping for /ESRCC/BILLFREQ
-  {
-    Billingfreq = BILLINGFREQ;
-    Billingvalue = BILLINGVALUE;
-    Poper = POPER;
-    CreatedBy = CREATED_BY;
-    CreatedAt = CREATED_AT;
-    LastChangedBy = LAST_CHANGED_BY;
-    LastChangedAt = LAST_CHANGED_AT;
-    LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
-  }
+  factory action ( features : instance ) Copy parameter /ESRCC/D_CopyBillingFrequencyP [1];
+
+  mapping for /esrcc/billfreq
+    {
+      Billingfreq        = BILLINGFREQ;
+      Billingvalue       = BILLINGVALUE;
+      Poper              = POPER;
+      CreatedBy          = CREATED_BY;
+      CreatedAt          = CREATED_AT;
+      LastChangedBy      = LAST_CHANGED_BY;
+      LastChangedAt      = LAST_CHANGED_AT;
+      LocalLastChangedAt = LOCAL_LAST_CHANGED_AT;
+    }
 
   association _BillingFrequencyAll { with draft; }
 
-  validation ValidateRecordChanges on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
+  validation ValidateTransportRequest on save ##NOT_ASSIGNED_TO_DETACT { create; update; delete; }
 }

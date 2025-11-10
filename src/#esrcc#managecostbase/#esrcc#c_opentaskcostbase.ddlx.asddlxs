@@ -108,6 +108,17 @@ annotate view /ESRCC/C_OPENTASKCOSTBASE with
   } ]
   @UI.textArrangement: #TEXT_ONLY
   Fplv;
+  
+  @UI.lineItem: [ {
+    position: 15 ,
+    importance: #MEDIUM,
+    label: ''
+  } ]
+  @UI.identification: [ {
+    position: 15 ,
+    label: ''
+  } ]
+  Ledger;
 
   @UI.lineItem: [ {
     position: 40 ,

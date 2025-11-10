@@ -36,7 +36,7 @@ as select from /esrcc/chargeout as _chargeout
     srvprot.description as serviceproductdescription,
     rule.chargeout_method,
     rule.key_version,
-    rule.cost_version,
+//    rule.cost_version,
     rule.adhoc_allocation_key,
     rulet.description as ruledescription,
   //allocation

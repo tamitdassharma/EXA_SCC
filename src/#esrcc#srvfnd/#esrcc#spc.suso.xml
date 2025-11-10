@@ -7,15 +7,17 @@
     <FIEL1>ACTVT</FIEL1>
     <OCLSS>CPAE</OCLSS>
    </TOBJ>
-   <TOBJ_ATTR>
-    <OBJCT>/ESRCC/SPC</OBJCT>
-    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
-   </TOBJ_ATTR>
    <TOBJT>
     <LANGU>E</LANGU>
     <OBJECT>/ESRCC/SPC</OBJECT>
     <TTEXT>Authorization object Special Process Control</TTEXT>
    </TOBJT>
+   <TOBJVORFLG>
+    <OBJCT>/ESRCC/SPC</OBJCT>
+    <FLAG3>N</FLAG3>
+    <FLAG4>A</FLAG4>
+    <FLAG5>A</FLAG5>
+   </TOBJVORFLG>
    <TACTZ>
     <TACTZ>
      <BROBJ>/ESRCC/SPC</BROBJ>

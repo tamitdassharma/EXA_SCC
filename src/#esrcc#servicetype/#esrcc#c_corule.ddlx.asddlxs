@@ -1,8 +1,8 @@
 @Metadata.layer: #CUSTOMER
 @UI: {
   headerInfo: {
-    typeName: 'Standard Charge-out Rule',
-    typeNamePlural: 'Standard Charge-out Rules',
+    typeName: 'Charge-out Rule',
+    typeNamePlural: 'Charge-out Rules',
     title: {
       type: #STANDARD,
       value: 'RuleId'
@@ -60,9 +60,10 @@ annotate view /ESRCC/C_CoRule with
   } ]
   
   @UI.lineItem: [{ position: 1 },
-                 { type: #FOR_ACTION, dataAction: 'Submit', label: 'Submit', position: 10 },
-                 { type: #FOR_ACTION, dataAction: 'Finalize', label: 'Finalize', position: 20 },
-                 { type: #FOR_ACTION, dataAction: 'Reopen', label: 'Re-open', position: 30 }]
+                 { type: #FOR_ACTION, position: 10, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 20, dataAction: 'Submit', label: 'Submit', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 30, dataAction: 'Finalize', label: 'Finalize', invocationGrouping: #CHANGE_SET },
+                 { type: #FOR_ACTION, position: 40, dataAction: 'Reopen', label: 'Re-open', invocationGrouping: #CHANGE_SET }]
   RuleId;
 
   @UI.identification: [ { hidden: true, position: 2 } ]
@@ -74,11 +75,11 @@ annotate view /ESRCC/C_CoRule with
   @Consumption.valueHelpDefinition: [{entity: { name: '/ESRCC/I_CHGOUT', element: 'Chargeout' }, useForValidation: true }]
   ChargeoutMethod;
 
-  @UI.identification: [ { position: 4, hidden: #(HideCostVersion) } ]
-  @UI.lineItem: [{ hidden: true }]
-  @UI.textArrangement: #TEXT_LAST
-  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_COST_VERSION', element: 'CostVersion' } } ]
-  CostVersion;
+//  @UI.identification: [ { position: 4, hidden: #(HideCostVersion) } ]
+//  @UI.lineItem: [{ hidden: true }]
+//  @UI.textArrangement: #TEXT_LAST
+//  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_COST_VERSION', element: 'CostVersion' } } ]
+//  CostVersion;
 
   @UI.identification: [ { position: 5, hidden: #(HideCapacityVersion) } ]
   @UI.lineItem: [ { position: 5, cssDefault.width: '13rem', hidden: true } ]
@@ -108,7 +109,7 @@ annotate view /ESRCC/C_CoRule with
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
   WorkflowId;
 
-  @UI.lineItem: [ { position: 11, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.lineItem: [ { position: 11, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
   @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
   @UI.textArrangement: #TEXT_ONLY
   @EndUserText.label: 'Workflow Status'
@@ -144,8 +145,6 @@ annotate view /ESRCC/C_CoRule with
   CapacityVersionDescription;
   @UI.hidden
   ConsumptionVersionDescription;
-  @UI.hidden
-  CostVersionDescription;
   @UI.hidden
   KeyVersionDescription;
   @UI.hidden: true

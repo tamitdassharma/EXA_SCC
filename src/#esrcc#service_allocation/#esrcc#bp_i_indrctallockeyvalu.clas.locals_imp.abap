@@ -4,10 +4,7 @@ CLASS lcl_custom_validation DEFINITION.
       ts_allocvalue TYPE STRUCTURE FOR READ RESULT /esrcc/i_indirectallockeyvalue\\indirectallocationkeyvalues,
 
       BEGIN OF ts_control,
-        ryear         TYPE if_abap_behv=>t_xflag,
-        poper         TYPE if_abap_behv=>t_xflag,
-        allocationkey TYPE if_abap_behv=>t_xflag,
-        fplv          TYPE if_abap_behv=>t_xflag,
+        value TYPE if_abap_behv=>t_xflag,
       END OF ts_control.
 
     METHODS:
@@ -33,10 +30,7 @@ CLASS lcl_custom_validation IMPLEMENTATION.
       RETURN.
     ENDIF.
 
-    IF control-ryear         = if_abap_behv=>mk-on. APPEND VALUE #( fieldname = 'RYEAR' ) TO fields. ENDIF.
-    IF control-poper         = if_abap_behv=>mk-on. APPEND VALUE #( fieldname = 'POPER' ) TO fields. ENDIF.
-    IF control-allocationkey = if_abap_behv=>mk-on. APPEND VALUE #( fieldname = 'ALLOCATIONKEY' ) TO fields. ENDIF.
-    IF control-fplv          = if_abap_behv=>mk-on. APPEND VALUE #( fieldname = 'FPLV' ) TO fields. ENDIF.
+    IF control-value = if_abap_behv=>mk-on. APPEND VALUE #( fieldname = 'VALUE' ) TO fields. ENDIF.
 
     config_util_ref->validate_initial(
       fields = fields
@@ -50,8 +44,6 @@ CLASS lhc_indirectallocationkeyvalue DEFINITION INHERITING FROM cl_abap_behavior
 
     METHODS get_global_authorizations FOR GLOBAL AUTHORIZATION
       IMPORTING REQUEST requested_authorizations FOR indirectallocationkeyvalues RESULT result.
-    METHODS validatedata FOR VALIDATE ON SAVE
-      IMPORTING keys FOR indirectallocationkeyvalues~validatedata.
     METHODS precheck_create FOR PRECHECK
       IMPORTING entities FOR CREATE indirectallocationkeyvalues.
 
@@ -66,35 +58,6 @@ ENDCLASS.
 CLASS lhc_indirectallocationkeyvalue IMPLEMENTATION.
 
   METHOD get_global_authorizations.
-  ENDMETHOD.
-
-  METHOD validatedata.
-    READ ENTITIES OF /esrcc/i_indirectallockeyvalue IN LOCAL MODE
-          ENTITY indirectallocationkeyvalues
-          ALL FIELDS WITH CORRESPONDING #( keys )
-          RESULT DATA(entities).
-
-    DATA(lo_validation) = NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
-                                                                         EXPORTING
-                                                                           paths              = VALUE #( ( path = 'IndirectAllocationKeyValues' ) )
-                                                                           source_entity_name = '/ESRCC/C_INDIRECTALLOCKEYVALUE'
-                                                                         CHANGING
-                                                                           reported_entity    = reported-indirectallocationkeyvalues
-                                                                           failed_entity      = failed-indirectallocationkeyvalues
-                                                                       ) ).
-
-    LOOP AT entities ASSIGNING FIELD-SYMBOL(<entity>) WHERE ryear IS INITIAL
-                                                         OR poper IS INITIAL
-                                                         OR allocationkey IS INITIAL
-                                                         OR fplv IS INITIAL.
-      lo_validation->validate_allocvalue(
-        entity  = <entity>
-        control = VALUE #( ryear         = if_abap_behv=>mk-on
-                           poper         = if_abap_behv=>mk-on
-                           allocationkey = if_abap_behv=>mk-on
-                           fplv          = if_abap_behv=>mk-on )
-      ).
-    ENDLOOP.
   ENDMETHOD.
 
   METHOD precheck_create.
@@ -114,6 +77,15 @@ CLASS lhc_indirectallocationkeyvalue IMPLEMENTATION.
         activity   = /esrcc/cl_authorization=>c_authorization_activity-create
     ).
 
+    DATA(lo_config_util) = /esrcc/cl_config_util=>create(
+      EXPORTING
+        source_entity_name = '/ESRCC/C_INDIRECTALLOCKEYVALUE'
+        is_transition      = abap_true
+      CHANGING
+        reported_entity    = reported-indirectallocationkeyvalues
+        failed_entity      = failed-indirectallocationkeyvalues
+    ).
+
 *   Check duplicates
     SELECT SINGLE @abap_true
         FROM /esrcc/indtalloc
@@ -124,15 +96,13 @@ CLASS lhc_indirectallocationkeyvalue IMPLEMENTATION.
           AND poper            = @entity-poper
         INTO @DATA(is_duplicate).
     IF sy-subrc = 0.
-      /esrcc/cl_config_util=>create(
-        EXPORTING
-          source_entity_name = '/ESRCC/C_INDIRECTALLOCKEYVALUE'
-          is_transition      = abap_true
-        CHANGING
-          reported_entity    = reported-indirectallocationkeyvalues
-          failed_entity      = failed-indirectallocationkeyvalues
-      )->set_duplicate_error( entity = entity ).
+      lo_config_util->set_duplicate_error( entity = entity ).
     ENDIF.
+
+    NEW lcl_custom_validation( config_util_ref = lo_config_util )->validate_allocvalue(
+      entity  = CORRESPONDING #( entity )
+      control = VALUE #( value = if_abap_behv=>mk-on )
+    ).
 
   ENDMETHOD.
 
@@ -158,6 +128,18 @@ CLASS lhc_indirectallocationkeyvalue IMPLEMENTATION.
           activity   = /esrcc/cl_authorization=>c_authorization_activity-change
       ).
 
+*   Validate mandatory field
+    DATA(entity_in) = entities[ 1 ].
+    NEW lcl_custom_validation( config_util_ref = /esrcc/cl_config_util=>create(
+      EXPORTING
+        source_entity_name = '/ESRCC/C_INDIRECTALLOCKEYVALUE'
+      CHANGING
+        reported_entity    = reported-indirectallocationkeyvalues
+        failed_entity      = failed-indirectallocationkeyvalues
+    ) )->validate_allocvalue(
+      entity  = CORRESPONDING #( entity_in )
+      control = CORRESPONDING #( entity_in-%control )
+    ).
   ENDMETHOD.
 
   METHOD precheck_delete.

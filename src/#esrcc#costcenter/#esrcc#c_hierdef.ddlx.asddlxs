@@ -1,0 +1,178 @@
+@Metadata.layer: #CUSTOMER
+@UI: {
+  headerInfo: {
+    typeName: 'Hierarchy Definition',
+    typeNamePlural: 'Hierarchy Definitions',
+    title: {
+      type: #STANDARD,
+      value: 'Hierarchy1'
+    }
+  }
+}
+annotate view /ESRCC/C_HierDef with
+{
+  @UI.facet: [ {
+    id: 'CE',
+    purpose: #STANDARD,
+    type: #COLLECTION,
+    position: 1
+  },
+  {
+    id: '/ESRCC/I_HierDef',
+    purpose: #STANDARD,
+    type: #IDENTIFICATION_REFERENCE,
+    label: 'General Information',
+    parentId: 'CE',
+    position: 10
+  },
+  {
+    id: 'Validity',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    label: 'Validity',
+    targetQualifier: 'ValidityGroup',
+    parentId: 'CE',
+    position: 20
+  },
+  {
+    id: 'Workflow',
+    purpose: #STANDARD,
+    type: #FIELDGROUP_REFERENCE,
+    label: 'Workflow Information',
+    targetQualifier: 'WorkflowGroup',
+    parentId: 'CE',
+    position: 30
+  },
+  {
+   type: #FIELDGROUP_REFERENCE,
+   purpose: #STANDARD,
+   label: 'Admin Information',
+   targetQualifier: 'AdminGroup',
+   parentId: 'CE',
+   position: 40
+  } ]
+
+  @UI.lineItem: [ { position: 1 },
+                  { type: #FOR_ACTION, position: 10, dataAction: 'Copy', label: 'Copy', invocationGrouping: #CHANGE_SET },
+                  { type: #FOR_ACTION, position: 20, dataAction: 'Submit', label: 'Submit', invocationGrouping: #CHANGE_SET },
+                  { type: #FOR_ACTION, position: 30, dataAction: 'Finalize', label: 'Finalize', invocationGrouping: #CHANGE_SET },
+                  { type: #FOR_ACTION, position: 40, dataAction: 'Reopen', label: 'Re-open', invocationGrouping: #CHANGE_SET },
+                  { type: #FOR_ACTION, position: 50, dataAction: 'Sync', label: 'Synchronize', invocationGrouping: #CHANGE_SET, hidden: true },
+                  { type: #FOR_ACTION, position: 60, dataAction: 'AutoGenerate', label: 'Generate', invocationGrouping: #CHANGE_SET, hidden: true }]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy1_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy1;
+
+  @UI.identification: [ { position: 2 } ]
+  @UI.lineItem: [ { position: 2 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy2_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy2;
+
+  @UI.identification: [ { position: 3 } ]
+  @UI.lineItem: [ { position: 3 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy3_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy3;
+
+  @UI.identification: [ { position: 4 } ]
+  @UI.lineItem: [ { position: 4 } ]
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_Hierarchy4_F4', element: 'Hierarchy' }, useForValidation: true }]
+  @UI.textArrangement: #TEXT_LAST
+  Hierarchy4;
+
+  @UI.lineItem: [ { position: 5 } ]
+  @UI.fieldGroup: [{ position: 10, qualifier: 'ValidityGroup' }]
+  ValidFrom;
+
+  @UI.lineItem: [ { position: 6 } ]
+  @UI.fieldGroup: [{ position: 20, qualifier: 'ValidityGroup' }]
+  ValidTo;
+
+  @UI.identification: [{ position: 7 }]
+  @UI.lineItem: [ { position: 7 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [{ entity: { name: '/ESRCC/I_ChargeoutRule_F4', element: 'RuleId' },
+                                       useForValidation: true }]
+  RuleId;
+
+  @UI.identification: [ { position: 8 } ]
+  @UI.lineItem: [ { position: 8 } ]
+  SrvPrdDef;
+
+  @UI.identification: [ { position: 9 } ]
+  @UI.lineItem: [ { position: 9 } ]
+  SrvRecDef;
+
+  @UI.identification: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10 } ]
+  Stewardship;
+
+  @UI.identification: [ { position: 10 } ]
+  @UI.lineItem: [ { position: 10 } ]
+  @UI.hidden: true
+  ChainId;
+
+  @UI.identification: [ { position: 11 } ]
+  @UI.lineItem: [ { position: 11 } ]
+  @UI.textArrangement: #TEXT_LAST
+  @Consumption.valueHelpDefinition: [ { entity: { name: '/ESRCC/I_CurrencyDerivationTyp', element: 'CurrencyType' },
+                                        useForValidation: true } ]
+  CurrencyDerivationType;
+
+  @UI.identification: [ { position: 12 } ]
+  @UI.lineItem: [ { position: 12 } ]
+  IsHub;
+
+  @UI.lineItem: [ { position: 13 } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 10 }]
+  WorkflowId;
+
+  @UI.lineItem: [ { position: 14, cssDefault.width: '10rem', criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON } ]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 20, criticality: 'WorkflowStatusCriticality', criticalityRepresentation: #WITHOUT_ICON }]
+  @UI.textArrangement: #TEXT_ONLY
+  @EndUserText.label: 'Workflow Status'
+  WorkflowStatus;
+
+  @UI.lineItem: [{ hidden: true }]
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', hidden: true }]
+  CommentId;
+
+  @UI.lineItem: [{ hidden: true }]
+  @UI.multiLineText: true
+  @UI.fieldGroup: [{ qualifier: 'WorkflowGroup', position: 30 }]
+  Comments;
+
+  @UI.lineItem: [ { position: 15 } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 10 }]
+  CreatedBy;
+
+  @UI.lineItem: [ { position: 16, cssDefault.width: '9.5rem' } ]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 20 }]
+  CreatedAt;
+
+  @UI.lineItem: [{ position: 17 }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 30 }]
+  LastChangedBy;
+
+  @UI.lineItem: [{ position: 18, cssDefault.width: '9.5rem' }]
+  @UI.fieldGroup: [{ qualifier: 'AdminGroup', position: 40 }]
+  LastChangedAt;
+
+  @UI.hidden: true
+  Hierarchy1Description;
+  @UI.hidden: true
+  Hierarchy2Description;
+  @UI.hidden: true
+  Hierarchy3Description;
+  @UI.hidden: true
+  Hierarchy4Description;
+  @UI.hidden: true
+  RuleDescription;
+  @UI.hidden: true
+  WorkflowStatusDescription;
+  @UI.hidden: true
+  WorkflowStatusCriticality;
+  @UI.hidden: true
+  CurrencyDerivationTypeDesc;
+}

@@ -12,12 +12,12 @@ define view entity /ESRCC/I_ALLOCATION_KEY_F4
 {
       @ObjectModel.text.element: ['AllocationKeyDescription']
       @UI.textArrangement: #TEXT_LAST
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.lineItem: [{ position: 1 }]
   key allocationkey                  as Allocationkey,
 
       @Consumption.filter.hidden: true
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       _AllocationKeyText.description as AllocationKeyDescription
 }

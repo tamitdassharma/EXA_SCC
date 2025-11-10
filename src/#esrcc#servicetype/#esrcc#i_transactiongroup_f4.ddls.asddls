@@ -10,11 +10,11 @@ define view entity /ESRCC/I_TRANSACTIONGROUP_F4
                                              and srvtgt.spras           = $session.system_language
 {
       @ObjectModel.text: { element: ['Description'] }
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       @UI.textArrangement: #TEXT_SEPARATE
   key srvtg.transactiongroup as Transactiongroup,
       
       @Semantics.text: true
-      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.7 }
+      @Search: { defaultSearchElement: true, fuzzinessThreshold: 0.9 }
       srvtgt.description      as Description
 }

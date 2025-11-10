@@ -10,56 +10,62 @@
     <OUTPUTLEN>000003</OUTPUTLEN>
     <VALEXI>X</VALEXI>
     <DDTEXT>Application Type</DDTEXT>
+    <ABAP_LANGUAGE_VERSION>5</ABAP_LANGUAGE_VERSION>
    </DD01V>
    <DD07V_TAB>
     <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
      <VALPOS>0001</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>CBL</DOMVALUE_L>
      <DDTEXT>Cost Base Line Items</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>CBS</DOMVALUE_L>
-     <DDTEXT>Cost Base &amp; Stewardship</DDTEXT>
-    </DD07V>
-    <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
-     <VALPOS>0003</VALPOS>
-     <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>SCM</DOMVALUE_L>
-     <DDTEXT>Service Cost Share &amp; Markup</DDTEXT>
-    </DD07V>
-    <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
-     <VALPOS>0004</VALPOS>
-     <DDLANGUAGE>E</DDLANGUAGE>
-     <DOMVALUE_L>CHR</DOMVALUE_L>
-     <DDTEXT>Charge-out to Receiver</DDTEXT>
-    </DD07V>
-    <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
-     <VALPOS>0005</VALPOS>
-     <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>CST</DOMVALUE_L>
-     <DDTEXT>Business Configuration: Stewardship</DDTEXT>
+     <DDTEXT>Business Configuration: Stewardship &amp; Relation</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
-     <VALPOS>0006</VALPOS>
+     <VALPOS>0003</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>CCR</DOMVALUE_L>
      <DDTEXT>Business Configuration: Charge-out Rules</DDTEXT>
     </DD07V>
     <DD07V>
-     <DOMNAME>/ESRCC/APPLICATION_TYPE</DOMNAME>
-     <VALPOS>0007</VALPOS>
+     <VALPOS>0004</VALPOS>
      <DDLANGUAGE>E</DDLANGUAGE>
      <DOMVALUE_L>CPM</DOMVALUE_L>
      <DDTEXT>Business Configuration: Service Product Mark-ups</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0005</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>CHD</DOMVALUE_L>
+     <DDTEXT>Business Configuration: Hierarchy Definition</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0006</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>ADH</DOMVALUE_L>
+     <DDTEXT>Ad-hoc Charge-out</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0007</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>STD</DOMVALUE_L>
+     <DDTEXT>Standard Charge-out</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0008</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>TRU</DOMVALUE_L>
+     <DDTEXT>True-up Recalculation</DDTEXT>
+    </DD07V>
+    <DD07V>
+     <VALPOS>0009</VALPOS>
+     <DDLANGUAGE>E</DDLANGUAGE>
+     <DOMVALUE_L>ROY</DOMVALUE_L>
+     <DDTEXT>License &amp; Royalty Computation</DDTEXT>
     </DD07V>
    </DD07V_TAB>
    <I18N_LANGS>
@@ -68,6 +74,7 @@
    <DD01_TEXTS>
     <item>
      <DDLANGUAGE>D</DDLANGUAGE>
+     <DDTEXT>Anwendungstyp</DDTEXT>
     </item>
    </DD01_TEXTS>
    <DD07_TEXTS>
@@ -80,38 +87,50 @@
     <item>
      <VALPOS>0002</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>CBS</DOMVALUE_L>
-     <DDTEXT>Kostenbasis &amp; Gesellschafteraufwand</DDTEXT>
+     <DOMVALUE_L>CST</DOMVALUE_L>
+     <DDTEXT>Business Konfiguration: Gesellschafteraufwand &amp; Beziehung</DDTEXT>
     </item>
     <item>
      <VALPOS>0003</VALPOS>
-     <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>SCM</DOMVALUE_L>
-     <DDTEXT>Servicekostenanteil &amp; Aufschlag</DDTEXT>
-    </item>
-    <item>
-     <VALPOS>0004</VALPOS>
-     <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>CHR</DOMVALUE_L>
-     <DDTEXT>Verrechnung an Empfänger</DDTEXT>
-    </item>
-    <item>
-     <VALPOS>0005</VALPOS>
-     <DDLANGUAGE>D</DDLANGUAGE>
-     <DOMVALUE_L>CST</DOMVALUE_L>
-     <DDTEXT>Business Konfiguration: Gesellschafteraufwand</DDTEXT>
-    </item>
-    <item>
-     <VALPOS>0006</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>CCR</DOMVALUE_L>
      <DDTEXT>Business Konfiguration: Verrechnungsregeln</DDTEXT>
     </item>
     <item>
-     <VALPOS>0007</VALPOS>
+     <VALPOS>0004</VALPOS>
      <DDLANGUAGE>D</DDLANGUAGE>
      <DOMVALUE_L>CPM</DOMVALUE_L>
      <DDTEXT>Business Konfiguration: Serviceprodukt-Aufschläge</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0005</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>CHD</DOMVALUE_L>
+     <DDTEXT>Geschäftskonfiguration: Hierarchiedefinition</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0006</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>ADH</DOMVALUE_L>
+     <DDTEXT>Ad-hoc-Verrechnung</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0007</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>STD</DOMVALUE_L>
+     <DDTEXT>Standard-Verrechnung</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0008</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>TRU</DOMVALUE_L>
+     <DDTEXT>Neuberechnung True-up</DDTEXT>
+    </item>
+    <item>
+     <VALPOS>0009</VALPOS>
+     <DDLANGUAGE>D</DDLANGUAGE>
+     <DOMVALUE_L>ROY</DOMVALUE_L>
+     <DDTEXT>Lizenzgebührenberechnung</DDTEXT>
     </item>
    </DD07_TEXTS>
   </asx:values>

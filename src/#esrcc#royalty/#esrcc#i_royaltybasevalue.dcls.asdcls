@@ -1,0 +1,11 @@
+@EndUserText.label: 'Access Control for /ESRCC/I_RoyaltyBaseValue'
+@MappingRole: true
+define role /ESRCC/I_ROYALTYBASEVALUE {
+    grant
+        select
+            on
+                /ESRCC/I_ROYALTYBASEVALUE
+                        where (LegalEntity) = aspect pfcg_auth('/ESRCC/LE',  ACTVT = '03', /ESRCC/LE) AND
+                              (Costobject,Costcenter) = aspect pfcg_auth('/ESRCC/CO', /ESRCC/OBJ, /ESRCC/CN, ACTVT = '03');
+                        
+}
